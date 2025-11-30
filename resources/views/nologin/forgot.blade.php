@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/x-icon" href="{{ asset('frontend/img/favicon.ico') }}" />
+  <title>Quên mật khẩu · 3 bước</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.2.0/remixicon.min.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Inter", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #eef2ff, #fdf2f8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 420px;
+      background: #fff;
+      border-radius: 24px;
+      padding: 32px;
+      box-shadow: 0 30px 80px rgba(15, 23, 42, 0.12);
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 8px;
+      color: #111827;
+    }
+
+    p.subtitle {
+      color: #6b7280;
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 30px;
+    }
+
+    .step {
+      text-align: center;
+      font-size: 12px;
+      color: #94a3b8;
+    }
+
+    .step span {
+      display: inline-flex;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid currentColor;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .step.active {
+      color: #2563eb;
+    }
+
+    .step.completed {
+      color: #10b981;
+    }
+
+    .step.completed span {
+      background: #10b981;
+      color: #fff;
+      border-color: #10b981;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 18px;
+    }
+
+    label {
+      font-size: 14px;
+      color: #4b5563;
+      font-weight: 600;
+    }
+
+    input {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 15px;
+      transition: border 0.2s ease;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .button {
+      width: 100%;
+      border: none;
+      border-radius: 14px;
+      padding: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      background: linear-gradient(120deg, #2563eb, #1d4ed8);
+      color: white;
+      margin-top: 10px;
+    }
+
+    .button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .helper {
+      font-size: 13px;
+      color: #9ca3af;
+    }
+
+    .status-note {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #ecfdf5;
+      color: #047857;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    .status-note.error {
+      background: #fef2f2;
+      color: #b91c1c;
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: #6b7280;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .back-link:hover {
+      color: #2563eb;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <h1>Quên mật khẩu</h1>
+    <p class="subtitle">Hoàn tất 3 bước: Nhập email → Nhập mã xác nhận → Tạo mật khẩu mới.</p>
+
+    <div class="steps" id="stepper">
+      <div class="step active" data-step="1"><span>1</span> Email</div>
+      <div class="step" data-step="2"><span>2</span> Mã OTP</div>
+      <div class="step" data-step="3"><span>3</span> Mật khẩu</div>
+    </div>
+
+    <div id="statusNote" class="status-note" style="display:none;">
+      <i class="ri-information-line"></i>
+      <span></span>
+    </div>
+
+    <form id="forgotForm" novalidate>
+      <div id="step1" class="form-step">
+        <div class="form-group">
+          <label>Nhập email đã đăng ký</label>
+          <input type="email" id="emailInput" placeholder="you@email.com">
+        </div>
+        <p class="helper">Chúng tôi sẽ gửi mã xác nhận gồm 6 chữ số tới email của bạn.</p>
+        <button class="button" type="submit">Gửi mã xác nhận</button>
+      </div>
+
+      <div id="step2" class="form-step" style="display:none;">
+        <div class="form-group">
+          <label>Nhập mã OTP</label>
+          <input type="text" id="otpInput" maxlength="6" placeholder="Nhập mã xác nhận">
+        </div>
+        <p class="helper">Mã có hiệu lực trong 5 phút. <a href="#" id="resendLink">Gửi lại mã</a></p>
+        <button class="button" type="submit">Xác nhận mã</button>
+      </div>
+
+      <div id="step3" class="form-step" style="display:none;">
+        <div class="form-group">
+          <label>Mật khẩu mới</label>
+          <input type="password" id="passwordInput" placeholder="Ít nhất 6 ký tự" autocomplete="new-password">
+        </div>
+        <div class="form-group">
+          <label>Nhập lại mật khẩu</label>
+          <input type="password" id="confirmInput" placeholder="Nhập lại mật khẩu" autocomplete="new-password">
+        </div>
+        <p class="helper">Bật xác thực 2 lớp trong lần đăng nhập tiếp theo để bảo vệ tài khoản.</p>
+        <button class="button" type="submit">Đặt lại mật khẩu</button>
+      </div>
+    </form>
+
+    <a href="{{ route('dang-nhap') }}" class="back-link">← Quay lại trang đăng nhập</a>
+  </div>
+
+  <script>
+    const API_BASE = '/api';
+    const stepper = document.querySelectorAll('.step');
+    const statusNote = document.getElementById('statusNote');
+    const steps = {
+      1: document.getElementById('step1'),
+      2: document.getElementById('step2'),
+      3: document.getElementById('step3')
+    };
+    let currentStep = 1;
+    let userEmail = '';
+    let tempToken = '';
+    let countdownTimer = null;
+
+    function setNote(type, message) {
+      statusNote.style.display = 'flex';
+      statusNote.classList.toggle('error', type === 'error');
+      statusNote.querySelector('span').textContent = message;
+    }
+
+    function goToStep(step) {
+      currentStep = step;
+      Object.values(steps).forEach((el, index) => {
+        el.style.display = (index + 1 === step) ? 'block' : 'none';
+      });
+      stepper.forEach((el) => {
+        const value = Number(el.dataset.step);
+        el.classList.toggle('active', value === step);
+        el.classList.toggle('completed', value < step);
+      });
+      statusNote.style.display = 'none';
+      
+      // Clear password fields when entering step 3
+      if (step === 3) {
+        document.getElementById('passwordInput').value = '';
+        document.getElementById('confirmInput').value = '';
+      }
+    }
+
+    function startCountdown(seconds) {
+      const helper = steps[2].querySelector('.helper');
+      const resendLink = document.getElementById('resendLink');
+      
+      if (countdownTimer) clearInterval(countdownTimer);
+      
+      resendLink.style.pointerEvents = 'none';
+      resendLink.style.opacity = '0.5';
+      
+      countdownTimer = setInterval(() => {
+        seconds--;
+        if (seconds <= 0) {
+          clearInterval(countdownTimer);
+          helper.innerHTML = 'Mã đã hết hạn. <a href="#" id="resendLink" onclick="resendCode(event)">Gửi lại mã</a>';
+        } else {
+          const mins = Math.floor(seconds / 60);
+          const secs = seconds % 60;
+          helper.innerHTML = `Mã còn hiệu lực: <strong style="color:#2563eb">${mins}:${secs.toString().padStart(2, '0')}</strong>. <a href="#" id="resendLink" style="pointer-events:none;opacity:0.5">Gửi lại mã</a>`;
+        }
+      }, 1000);
+    }
+
+    async function resendCode(e) {
+      if (e) e.preventDefault();
+      if (!userEmail) return;
+      
+      try {
+        const res = await fetch(`${API_BASE}/auth/send-verification-code`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: userEmail, type: 'RESET_PASSWORD' })
+        });
+        const data = await res.json();
+        
+        if (res.ok && data.success) {
+          setNote('info', 'Đã gửi lại mã OTP tới email của bạn.');
+          startCountdown(data.expires_in || 300);
+        } else {
+          setNote('error', data.message || 'Không thể gửi lại mã. Vui lòng thử lại sau.');
+        }
+      } catch (err) {
+        setNote('error', 'Lỗi kết nối. Vui lòng thử lại.');
+      }
+    }
+
+    document.getElementById('forgotForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const submitBtn = steps[currentStep].querySelector('.button');
+      submitBtn.disabled = true;
+
+      try {
+        if (currentStep === 1) {
+          userEmail = document.getElementById('emailInput').value.trim();
+          
+          // Validate email
+          if (!userEmail) {
+            setNote('error', 'Vui lòng nhập email.');
+            submitBtn.disabled = false;
+            return;
+          }
+          if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userEmail)) {
+            setNote('error', 'Email không hợp lệ.');
+            submitBtn.disabled = false;
+            return;
+          }
+          
+          const res = await fetch(`${API_BASE}/auth/send-verification-code`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: userEmail, type: 'RESET_PASSWORD' })
+          });
+          const data = await res.json();
+          
+          if (res.ok && data.success) {
+            setNote('info', 'Đã gửi mã OTP tới email của bạn. Vui lòng kiểm tra hộp thư.');
+            goToStep(2);
+            startCountdown(data.expires_in || 300);
+          } else {
+            if (data.error === 'EMAIL_NOT_FOUND') {
+              setNote('error', 'Email không tồn tại trong hệ thống.');
+            } else {
+              setNote('error', data.message || 'Không thể gửi mã. Vui lòng thử lại.');
+            }
+          }
+          submitBtn.disabled = false;
+          return;
+        }
+
+        if (currentStep === 2) {
+          const otp = document.getElementById('otpInput').value.trim();
+          if (!otp || otp.length !== 6) {
+            setNote('error', 'Mã OTP phải đủ 6 ký tự.');
+            submitBtn.disabled = false;
+            return;
+          }
+          
+          const res = await fetch(`${API_BASE}/auth/verify-code`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: userEmail, code: otp, type: 'RESET_PASSWORD' })
+          });
+          const data = await res.json();
+          
+          if (res.ok && data.success) {
+            tempToken = data.temp_token;
+            if (countdownTimer) clearInterval(countdownTimer);
+            setNote('info', 'Mã xác nhận hợp lệ! Hãy đặt mật khẩu mới.');
+            goToStep(3);
+          } else {
+            if (data.error === 'CODE_EXPIRED') {
+              setNote('error', 'Mã OTP đã hết hạn. Vui lòng gửi lại mã mới.');
+            } else if (data.error === 'INVALID_CODE') {
+              setNote('error', 'Mã OTP không chính xác. Vui lòng kiểm tra lại.');
+            } else {
+              setNote('error', data.message || 'Xác thực thất bại.');
+            }
+          }
+          submitBtn.disabled = false;
+          return;
+        }
+
+        if (currentStep === 3) {
+          const pwd = document.getElementById('passwordInput').value;
+          const confirm = document.getElementById('confirmInput').value;
+          
+          if (!pwd) {
+            setNote('error', 'Vui lòng nhập mật khẩu mới.');
+            submitBtn.disabled = false;
+            return;
+          }
+          if (pwd.length < 6) {
+            setNote('error', 'Mật khẩu mới phải từ 6 ký tự trở lên.');
+            submitBtn.disabled = false;
+            return;
+          }
+          if (pwd !== confirm) {
+            setNote('error', 'Mật khẩu nhập lại chưa khớp.');
+            submitBtn.disabled = false;
+            return;
+          }
+          
+          const res = await fetch(`${API_BASE}/auth/reset-password`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: userEmail,
+              temp_token: tempToken,
+              new_password: pwd,
+              confirm_password: confirm
+            })
+          });
+          const data = await res.json();
+          
+          if (res.ok && data.success) {
+            setNote('info', '🎉 Thành công! Mật khẩu đã được cập nhật. Đang chuyển đến trang đăng nhập...');
+            setTimeout(() => {
+              window.location.href = '{{ route("dang-nhap") }}';
+            }, 2000);
+          } else {
+            setNote('error', data.message || 'Không thể đặt lại mật khẩu. Vui lòng thử lại.');
+            submitBtn.disabled = false;
+          }
+        }
+      } catch (err) {
+        console.error(err);
+        setNote('error', 'Lỗi kết nối. Vui lòng thử lại.');
+        submitBtn.disabled = false;
+      }
+    });
+
+    document.getElementById('resendLink').addEventListener('click', resendCode);
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="{{ asset('frontend/img/favicon.ico') }}" />
+    <title>Đặt lịch nhanh - Nam Sài Gòn</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", sans-serif;
+      }
+
+      body {
+        min-height: 100vh;
+        background: linear-gradient(
+          135deg,
+          #e8f0ff 0%,
+          #fdfdfd 60%,
+          #eef7ff 100%
+        );
+        color: #1f2a37;
+      }
+
+      header {
+        padding: 24px 48px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .brand img {
+        width: 280px;
+        height: 70px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      nav {
+        display: flex;
+        gap: 12px;
+      }
+
+      .cta-btn {
+        padding: 10px 20px;
+        border-radius: 999px;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+      }
+
+      .cta-btn.primary {
+        background: linear-gradient(120deg, #2563eb, #1d4ed8);
+        color: #fff;
+      }
+
+      .cta-btn.secondary {
+        background: transparent;
+        border: 1px solid #d0d7e3;
+        color: #1f2a37;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 40px;
+        padding: 40px 48px 24px;
+        align-items: center;
+      }
+
+      .hero h2 {
+        font-size: 42px;
+        line-height: 1.2;
+        margin-bottom: 16px;
+      }
+
+      .hero p {
+        font-size: 17px;
+        color: #4b5563;
+        margin-bottom: 24px;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 14px;
+        border-radius: 999px;
+        background: rgba(37, 99, 235, 0.1);
+        color: #1d4ed8;
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .hero-card {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 24px;
+        padding: 28px;
+        box-shadow: 0 20px 80px rgba(15, 23, 42, 0.08);
+        border: 1px solid rgba(37, 99, 235, 0.1);
+      }
+
+      .hero-card h3 {
+        font-size: 18px;
+        color: #1d4ed8;
+        margin-bottom: 12px;
+      }
+
+      .hero-card ul {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      .hero-card li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+      }
+
+      .hero-card strong {
+        display: block;
+        font-size: 16px;
+        margin-bottom: 4px;
+      }
+
+      .timeline {
+        padding: 24px 48px 48px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 20px;
+      }
+
+      .timeline-step {
+        background: #fff;
+        border-radius: 18px;
+        padding: 24px;
+        border: 1px solid #e5e7eb;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .timeline-step span {
+        font-size: 14px;
+        color: #6b7280;
+        font-weight: 600;
+      }
+
+      .timeline-step h4 {
+        font-size: 20px;
+        margin: 12px 0;
+      }
+
+      .timeline-step p {
+        color: #4b5563;
+        line-height: 1.6;
+      }
+
+      .timeline-step::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 18px;
+        background: linear-gradient(
+          135deg,
+          rgba(37, 99, 235, 0.08),
+          transparent
+        );
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: -1;
+      }
+
+      .timeline-step:hover::after {
+        opacity: 1;
+      }
+
+      footer {
+        text-align: center;
+        padding: 24px 0 40px;
+        color: #6b7280;
+        font-size: 14px;
+      }
+
+      @media (max-width: 768px) {
+        header {
+          flex-direction: column;
+          gap: 16px;
+          text-align: center;
+        }
+
+        nav {
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+
+        .hero {
+          padding: 40px 24px;
+        }
+
+        .timeline {
+          padding: 24px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="brand">
+        <img src="{{ asset('frontend/img/logomau.jpg') }}" alt="Nam Sài Gòn Logo" />
+      </div>
+      <nav>
+        <button class="cta-btn secondary" onclick="window.location.href='/tim-bac-si'">Tìm bác sĩ</button>
+        <button class="cta-btn secondary">Tra cứu lịch</button>
+        <a
+          href="{{ route('dat-lich.bieu-mau') }}"
+          class="cta-btn primary"
+          style="text-decoration: none; text-align: center"
+          >Đặt lịch ngay</a
+        >
+        <a
+          href="{{ route('dang-nhap') }}"
+          class="cta-btn secondary"
+          style="text-decoration: none; text-align: center"
+          id="authBtn"
+          >Đăng nhập</a
+        >
+      </nav>
+    </header>
+
+    <script>
+      // Check if user is logged in
+      document.addEventListener('DOMContentLoaded', function() {
+        const token = localStorage.getItem('access_token');
+        const authBtn = document.getElementById('authBtn');
+        
+        if (token && token !== 'null' && token !== 'undefined') {
+          // User is logged in - show profile link
+          authBtn.textContent = 'Tài khoản';
+          authBtn.href = '/ho-so';
+        }
+      });
+    </script>
+
+    <section class="hero">
+      <div>
+        <div class="badge">
+          <i class="ri-flashlight-line"></i>
+          2 bước đến phòng khám
+        </div>
+        <h2>Chọn bác sĩ - Xác nhận giờ - Nhận lịch ngay trong 60 giây</h2>
+        <p>
+          Giao diện mới giúp người bệnh đi thẳng vào đặt lịch mà không cần qua
+          nhiều trang trung gian. Bạn chỉ cần chọn chuyên khoa, bác sĩ, khung
+          giờ phù hợp và xác nhận thông tin liên hệ.
+        </p>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap">
+          <a href="#timeline" class="cta-btn secondary">Xem quy trình</a>
+          <a
+            href="{{ route('dat-lich.bieu-mau') }}"
+            class="cta-btn primary"
+            style="text-decoration: none; text-align: center"
+            >Mở biểu mẫu đặt lịch</a
+          >
+        </div>
+      </div>
+      <div class="hero-card">
+        <h3>Đường tắt đi thẳng đến đặt lịch</h3>
+        <ul>
+          <li>
+            <div>
+              <strong>Bước 1 - Chọn nhu cầu</strong>
+              Chuyên khoa, triệu chứng nhanh, hoặc bác sĩ thường khám.
+            </div>
+          </li>
+          <li>
+            <div>
+              <strong>Bước 2 - Điền thông tin</strong>
+              Họ tên, số CCCD, số điện thoại, phương thức thanh toán.
+            </div>
+          </li>
+          <li>
+            <div>
+              <strong>Bước 3 - Nhận xác nhận</strong>
+              Xác thực OTP (nếu bật) và nhận mã lịch qua email/SMS.
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="timeline" class="timeline">
+      <article class="timeline-step">
+        <span>01</span>
+        <h4>Cá nhân hóa ngay tại trang chủ</h4>
+        <p>
+          Hệ thống ghi nhớ hồ sơ gần nhất và gợi ý bác sĩ phù hợp trong hộp
+          "Tiếp tục đặt lịch".
+        </p>
+      </article>
+      <article class="timeline-step">
+        <span>02</span>
+        <h4>Đặt lịch không cần đăng nhập</h4>
+        <p>
+          Khi admin bật cho phép, biểu mẫu đón bệnh mới sẽ hiển thị ngay trên
+          landing page.
+        </p>
+      </article>
+      <article class="timeline-step">
+        <span>03</span>
+        <h4>Theo dõi & yêu cầu hoàn tiền</h4>
+        <p>
+          Liên kết trực tiếp đến trang tra cứu lịch đã đặt, giúp bệnh nhân yêu
+          cầu hoàn tiền khi cần.
+        </p>
+      </article>
+      <article class="timeline-step">
+        <span>04</span>
+        <h4>Góp ý và đánh giá tức thời</h4>
+        <p>
+          Form góp ý mới gửi song song cho bộ phận CSKH và bác sĩ, đảm bảo phản
+          hồi trong 2 giờ.
+        </p>
+      </article>
+    </section>
+
+    <footer>
+      © 2025 Hệ thóng đặt lịch hẹn· Giao diện đi thẳng đến đặt lịch · Liên hệ 1900
+      1187
+    </footer>
+  </body>
+</html>

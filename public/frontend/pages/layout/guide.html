@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../../img/favicon.ico" />
+    <title>Hướng dẫn - Bệnh viện Đa khoa Quốc tế Nam Sài Gòn</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+    </style>
+    <style>
+        /* Lienhe styles from lienhe.html */
+        .steps-wrapper {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 40px;
+            padding: 40px 0;
+        }
+
+        .step-card {
+            width: 100%;
+            height: 350px;
+            border-radius: 20px;
+            padding: 30px;
+            position: relative;
+            color: white;
+            display: flex;
+            align-items: stretch;
+            overflow: hidden;
+        }
+
+        .step-card.blue {
+            background: linear-gradient(135deg, #2d5aa6 0%, #1e3f7a 100%);
+            height: 300px;
+        }
+
+        .step-card.yellow {
+            background: linear-gradient(135deg, #f4c430 0%, #e6b800 100%);
+            color: #333;
+            height: 300px;
+        }
+
+        .step-card.light-blue {
+            background: linear-gradient(135deg, #5ba3d0 0%, #3d88b8 100%);
+            height: 300px;
+        }
+
+        .step-badge {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 28px;
+            z-index: 10;
+        }
+
+        .step-card.blue .step-badge {
+            color: #2d5aa6;
+        }
+
+        .step-card.yellow .step-badge {
+            color: #f4c430;
+        }
+
+        .step-card.light-blue .step-badge {
+            color: #5ba3d0;
+        }
+
+        .step-content-left {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding-right: 30px;
+            z-index: 2;
+        }
+
+        .step-title {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .step-card.yellow .step-title {
+            border-bottom-color: rgba(0, 0, 0, 0.2);
+        }
+
+        .step-title:hover {
+            color: inherit;
+        }
+
+        .step-card.blue .step-title:hover,
+        .step-card.light-blue .step-title:hover {
+            color: #f4c430;
+        }
+
+        .step-card.yellow .step-title:hover {
+            color: white;
+        }
+
+        .step-description {
+            font-size: 18px;
+            line-height: 1.5;
+        }
+
+        .step-card.blue .step-description {
+            font-size: 16px;
+        }
+
+        .step-icon-right {
+            flex: 0 0 auto;
+            width: 100px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.8;
+        }
+
+        .step-icon-right svg {
+            width: 80px;
+            height: 80px;
+            margin-top: 50px;
+        }
+
+        /* Responsive for steps */
+        @media (max-width: 768px) {
+            .steps-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .step-card {
+                width: 100%;
+            }
+
+            .step-title {
+                font-size: 24px;
+            }
+
+            .step-description {
+                font-size: 14px;
+            }
+        }
+
+        /* Additional spacing */
+        .steps-wrapper {
+            padding: 40px 0;
+            margin-bottom: 60px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="steps-wrapper">
+        <!-- Step 1: Call -->
+        <div class="step-card blue">
+            <div class="step-badge">01</div>
+            <div class="step-content-left">
+                <a href="tel:18006767" class="step-title">Gọi tổng đài</a>
+                <div class="step-description">
+                    Để được tư vấn về triệu chứng bệnh, chuyên khoa cần thăm khám, đội ngũ bác sĩ và phương pháp điều trị của bệnh viện.
+                </div>
+            </div>
+            <div class="step-icon-right">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" fill="white" stroke="white" stroke-width="2"/>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Step 2: Book Appointment -->
+        <div class="step-card yellow">
+            <div class="step-badge">02</div>
+            <div class="step-content-left">
+                <a href="https://benhviennamsaigon.com/dat-lich-hen-kham-benh/" class="step-title">Đặt lịch hẹn</a>
+                <div class="step-description">
+                    Để đặt hẹn trực tuyến hoặc cần dịch vụ khám cấp vào bất kỳ lúc nào. Bệnh viện hỗ trợ khách hàng 24/7.
+                </div>
+            </div>
+            <div class="step-icon-right">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" stroke="#333" stroke-width="2" fill="none"/>
+                    <path d="M16 2v4M8 2v4M3 10h18" stroke="#333" stroke-width="2"/>
+                    <circle cx="9" cy="15" r="1.5" fill="#333"/>
+                    <circle cx="15" cy="15" r="1.5" fill="#333"/>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Step 3: Find Doctor -->
+        <div class="step-card light-blue">
+            <div class="step-badge">03</div>
+            <div class="step-content-left">
+                <a href="https://benhviennamsaigon.com/doi-ngu-bac-si/" class="step-title">Tìm bác sĩ</a>
+                <div class="step-description">
+                    Để trực tiếp thăm khám và điều trị bệnh với bác sĩ mà bạn tin tưởng nhất.
+                </div>
+            </div>
+            <div class="step-icon-right">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="8" r="4" fill="white" stroke="white" stroke-width="2"/>
+                    <path d="M4 20c0-4 3.5-7 8-7s8 3 8 7" fill="white" stroke="white" stroke-width="2"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

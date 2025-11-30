@@ -1,0 +1,324 @@
+<!-- banner.html -->
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../../img/favicon.ico" />
+    <title>Banner - Hệ thống Đặt lịch Hẹn Bác sĩ - Bệnh viện Đa khoa Quốc tế Nam Sài Gòn</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            line-height: 1.6;
+            color: #333;
+        }
+    </style>
+    <style>
+        /* Header banner styles from header.html */
+        .header-banner {
+            position: relative;
+            width: 100%;
+            min-height: 420px;
+            overflow: hidden;
+            background-color: #f5e6f0;
+            background-image: url('../img/Banner-Website-MIEN-PHI-KHAM-VA-SIEU-AM-TUYEN-VU.png');
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            display: flex;
+            align-items: center;
+        }
+
+        .header-container {
+            position: relative;
+            z-index: 3;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+            width: 100%;
+        }
+
+        /* Left section */
+        .header-left {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .header-boxes {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .header-box-main {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            backdrop-filter: blur(8px) saturate(120%);
+            -webkit-backdrop-filter: blur(8px) saturate(120%);
+        }
+
+        .header-box-main h1 {
+            color: #003d99;
+            font-size: 34px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+
+        .header-box-main p {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            width: fit-content;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+            margin-top: 10px;
+        }
+
+        .btn-primary:hover {
+            background: #f4c430;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(244, 196, 48, 0.4);
+        }
+
+        .btn-icon::before {
+            content: '🔍';
+            display: inline-block;
+            font-size: 16px;
+        }
+
+        .header-boxes-secondary {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .header-box-small.compact {
+            padding: 12px;
+        }
+
+        .header-box-small {
+            background: rgba(255, 255, 255, 0.75);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            backdrop-filter: blur(6px) saturate(120%);
+            -webkit-backdrop-filter: blur(6px) saturate(120%);
+        }
+
+        .header-box-small img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .header-box-small h3 {
+            color: #003d99;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .header-box-small p {
+            color: #555;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .btn-secondary {
+            background: #ffd700;
+            color: #003d99;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: fit-content;
+        }
+
+        .btn-secondary:hover {
+            background: #ffed4e;
+        }
+
+        .hotline {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #003d99;
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .hotline-btn {
+            background: #ffd700;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(255,215,0,0.25);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .hotline-btn::before {
+            content: '☎';
+            font-size: 16px;
+        }
+
+        .hotline-btn:hover {
+            background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+            color: white;
+        }
+
+        /* Right section */
+        .header-right {
+            position: relative;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding-right: 10px;
+        }
+
+        .header-right img {
+            width: 90%;
+            height: auto;
+            max-width: 480px;
+            object-fit: contain;
+            display: block;
+            filter: drop-shadow(0 20px 40px rgba(0,0,0,0.15));
+        }
+
+        .header-banner::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.18) 100%);
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .header-banner::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(255,255,255,0.12);
+            mix-blend-mode: screen;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .header-left,
+        .header-boxes,
+        .header-box-main,
+        .header-boxes-secondary {
+            position: relative;
+            z-index: 4;
+        }
+
+        .header-boxes-secondary .header-box-small:first-child {
+            padding: 0;
+            overflow: hidden;
+            background: none;
+            box-shadow: none;
+            border-radius: 12px;
+        }
+
+        .header-boxes-secondary .header-box-small:first-child img {
+            width: 100%;
+            height: 100%;
+            min-height: 220px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin: 0;
+            display: block;
+        }
+
+        /* Responsive for header */
+        @media (max-width: 768px) {
+            .header-container {
+                grid-template-columns: 1fr;
+                padding: 30px 20px;
+            }
+
+            .header-box-main h1 {
+                font-size: 24px;
+            }
+
+            .header-boxes-secondary {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<section class="header-banner">
+    <div class="header-container">
+        <!-- Left Section -->
+        <div class="header-left">
+            <div class="header-boxes">
+                <div class="header-box-main">
+                    <h1>Hệ thống Đặt lịch Hẹn Bác sĩ - GIÚP BẠN KẾT NỐI VỚI BÁC SĨ DỄ DÀNG HƠN</h1>
+                    <p>Hệ thống đặt lịch hẹn giúp bạn dễ dàng kết nối với đội ngũ chuyên gia hàng đầu. Đặt lịch nhanh chóng theo chuyên khoa, nhận thông báo kịp thời và quản lý lịch khám hiệu quả.</p>
+                    <button class="btn-primary btn-icon">Tìm hiểu thêm</button>
+                </div>
+            </div>
+
+            <div class="header-boxes-secondary">
+                <div class="header-box-small">
+                    <img src="../img/supply2.jpg" alt="Đội ngũ bác sĩ">
+                </div>
+                <div class="header-box-small compact">
+                    <h3>Chào mừng bạn đến Hệ thống Đặt lịch Hẹn</h3>
+                    <p>Đặt hẹn trực tuyến dễ dàng với bác sĩ phù hợp, hỗ trợ khẩn cấp 24/7 qua hotline.</p>
+                    <div class="hotline">
+                        <a href="tel:18006767" class="hotline-btn"> Hotline: 1800 6767</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</section>
+</body>
+</html>

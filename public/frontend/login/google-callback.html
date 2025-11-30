@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../img/favicon.ico" />
+    <title>Đang xử lý đăng nhập Google...</title>
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap");
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+        body {
+            background: linear-gradient(to right, #e2e2e2, #c9d6ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .loading-container {
+            background: white;
+            padding: 40px 60px;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 400px;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #512da8;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        p {
+            color: #666;
+            font-size: 14px;
+        }
+        .error {
+            color: #e74c3c;
+            background: #ffeaea;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+        }
+        .success {
+            color: #28a745;
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        .user-info {
+            margin-top: 15px;
+            text-align: left;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 8px;
+        }
+        .user-info img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-container">
+        <div class="spinner" id="spinner"></div>
+        <h2 id="title">Đang xử lý đăng nhập...</h2>
+        <p id="status">Vui lòng đợi trong giây lát</p>
+        <div class="error" id="errorMsg"></div>
+        <div class="user-info" id="userInfo" style="display:none;"></div>
+    </div>
+
+    <script src="../js/auth.js"></script>
+    <script>
+        // Xử lý callback từ Google OAuth
+        (async function() {
+            const spinnerEl = document.getElementById('spinner');
+            const titleEl = document.getElementById('title');
+            const statusEl = document.getElementById('status');
+            const errorEl = document.getElementById('errorMsg');
+            const userInfoEl = document.getElementById('userInfo');
+            
+            // Lấy hash fragment từ URL (Google trả về token trong hash với implicit flow)
+            const hash = window.location.hash.substring(1);
+            const hashParams = new URLSearchParams(hash);
+            
+            // Lấy từ query string nếu có lỗi
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            // Kiểm tra lỗi từ Google
+            const error = urlParams.get('error') || hashParams.get('error');
+            if (error) {
+                const errorDesc = urlParams.get('error_description') || hashParams.get('error_description') || error;
+                showError('Đăng nhập bị từ chối: ' + decodeURIComponent(errorDesc));
+                return;
+            }
+            
+            // Lấy id_token từ hash (implicit flow)
+            const idToken = hashParams.get('id_token');
+            const accessToken = hashParams.get('access_token');
+            
+            if (!idToken) {
+                showError('Không nhận được thông tin đăng nhập từ Google. Vui lòng thử lại.');
+                return;
+            }
+            
+            try {
+                statusEl.textContent = 'Đang xác thực thông tin...';
+                
+                // Decode JWT để lấy thông tin user
+                const payload = JSON.parse(atob(idToken.split('.')[1]));
+                
+                console.log('Google user info:', payload);
+                
+                // Hiển thị thông tin user
+                userInfoEl.style.display = 'block';
+                userInfoEl.innerHTML = `
+                    <img src="${payload.picture || ''}" alt="Avatar" onerror="this.style.display='none'">
+                    <p><strong>${payload.name}</strong></p>
+                    <p style="color:#666;font-size:12px;">${payload.email}</p>
+                `;
+                
+                statusEl.textContent = 'Đang đăng nhập vào hệ thống...';
+                
+                // Gửi thông tin đến backend
+                const googleData = {
+                    email: payload.email,
+                    full_name: payload.name,
+                    avatar_url: payload.picture,
+                    dob: null,
+                    gender: null,
+                    address: null
+                };
+                
+                const res = await AuthAPI.googleLogin(googleData);
+                
+                if (res.ok) {
+                    spinnerEl.style.display = 'none';
+                    titleEl.textContent = 'Đăng nhập thành công!';
+                    statusEl.innerHTML = `<span style="color:#28a745;">Xin chào <strong>${res.data.user.full_name}</strong>! Đang chuyển hướng...</span>`;
+                    
+                    // Lưu vào sessionStorage
+                    const access = localStorage.getItem('access_token');
+                    const refresh = localStorage.getItem('refresh_token');
+                    const sid = localStorage.getItem('session_id');
+                    if (access) sessionStorage.setItem('access_token', access);
+                    if (refresh) sessionStorage.setItem('refresh_token', refresh);
+                    if (sid) sessionStorage.setItem('session_id', sid);
+                    
+                    // Chuyển hướng dựa theo role
+                    const userType = res.data.user.type;
+                    setTimeout(() => {
+                        if (userType === 'ADMIN') {
+                            window.location.href = '/quan-tri';
+                        } else if (userType === 'DOCTOR') {
+                            window.location.href = '/bac-si/ho-so';
+                        } else {
+                            // USER và Google login mặc định đến trang cá nhân
+                            window.location.href = '/ho-so';
+                        }
+                    }, 1500);
+                } else {
+                    showError(res.data.message || res.data.error || 'Đăng nhập thất bại. Vui lòng thử lại.');
+                }
+            } catch (e) {
+                console.error('Google callback error:', e);
+                showError('Lỗi xử lý đăng nhập: ' + e.message);
+            }
+            
+            function showError(msg) {
+                spinnerEl.style.display = 'none';
+                titleEl.textContent = 'Đăng nhập thất bại';
+                statusEl.style.display = 'none';
+                errorEl.style.display = 'block';
+                errorEl.textContent = msg;
+                
+                // Quay lại trang login sau 3 giây
+                setTimeout(() => {
+                    window.location.href = '/dang-nhap';
+                }, 3000);
+            }
+        })();
+    </script>
+</body>
+</html>
