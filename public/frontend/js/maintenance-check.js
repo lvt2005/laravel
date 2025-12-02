@@ -6,7 +6,8 @@
 (function() {
     'use strict';
     
-    const API_BASE = (location.port === '8000' ? '/api' : 'http://127.0.0.1:8000/api');
+    // Use relative path for same-origin requests (Docker port 80 or Laravel port 8000)
+    const API_BASE = (location.protocol === 'http:' || location.protocol === 'https:') ? '/api' : 'http://127.0.0.1:8000/api';
     
     // Pages that are always allowed (login, maintenance page itself)
     const ALLOWED_PAGES = [

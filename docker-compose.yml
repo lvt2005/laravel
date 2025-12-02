@@ -1,0 +1,253 @@
+# =============================================================================
+# Docker Compose Configuration cho Laravel Medical Clinic
+# =============================================================================
+# Sử dụng: 
+#   1. Copy .env.docker.example thành .env.docker và cấu hình
+#   2. docker-compose --env-file .env.docker up -d
+# Hoặc đơn giản: docker-compose up -d (nếu đã có .env.docker)
+# =============================================================================
+
+services:
+  # ===========================================================================
+  # Nginx Web Server
+  # ===========================================================================
+  nginx:
+    image: nginx:alpine
+    container_name: laravel_nginx
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-80}:80"
+      - "${APP_SSL_PORT:-443}:443"
+    volumes:
+      - ./public:/var/www/html/public:ro
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./storage/logs/nginx:/var/log/nginx
+      - storage_data:/var/www/html/storage:ro
+    depends_on:
+      - app
+    networks:
+      - laravel_network
+
+  # ===========================================================================
+  # Laravel PHP Application (PHP-FPM)
+  # ===========================================================================
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    image: nhom5/laravel-clinic:latest
+    container_name: laravel_app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    user: "1000:1000"
+    environment:
+      - APP_ENV=${APP_ENV:-production}
+      - APP_DEBUG=${APP_DEBUG:-false}
+      - APP_KEY=${APP_KEY}
+      - APP_URL=${APP_URL:-http://localhost}
+      - DB_CONNECTION=mysql
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=${DB_DATABASE:-laravel_clinic}
+      - DB_USERNAME=${DB_USERNAME:-laravel}
+      - DB_PASSWORD=${DB_PASSWORD:-secret}
+      - CACHE_STORE=redis
+      - QUEUE_CONNECTION=redis
+      - SESSION_DRIVER=redis
+      - REDIS_HOST=redis
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-null}
+      - REDIS_PORT=6379
+      - MAIL_MAILER=${MAIL_MAILER:-smtp}
+      - MAIL_HOST=${MAIL_HOST:-mailhog}
+      - MAIL_PORT=${MAIL_PORT:-1025}
+      - MAIL_USERNAME=${MAIL_USERNAME:-null}
+      - MAIL_PASSWORD=${MAIL_PASSWORD:-null}
+      - MAIL_FROM_ADDRESS=${MAIL_FROM_ADDRESS:-noreply@clinic.local}
+      - MAIL_FROM_NAME=${MAIL_FROM_NAME:-Clinic System}
+      - JWT_SECRET=${JWT_SECRET}
+    volumes:
+      - storage_data:/var/www/html/storage
+      - cache_data:/var/www/html/bootstrap/cache
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - laravel_network
+
+  # ===========================================================================
+  # MySQL Database
+  # ===========================================================================
+  mysql:
+    image: mysql:8.0
+    container_name: laravel_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootsecret}
+      MYSQL_DATABASE: ${DB_DATABASE:-laravel_clinic}
+      MYSQL_USER: ${DB_USERNAME:-laravel}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-secret}
+    ports:
+      - "${DB_EXTERNAL_PORT:-3307}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD:-rootsecret}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - laravel_network
+
+  # ===========================================================================
+  # Redis Cache & Session Store
+  # ===========================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: laravel_redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes ${REDIS_PASSWORD:+--requirepass $REDIS_PASSWORD}
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - laravel_network
+
+  # ===========================================================================
+  # Queue Worker (Laravel Queue Processing)
+  # ===========================================================================
+  queue:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    image: nhom5/laravel-clinic:latest
+    container_name: laravel_queue
+    restart: unless-stopped
+    working_dir: /var/www/html
+    user: "1000:1000"
+    entrypoint: ["php", "artisan", "queue:work", "--sleep=3", "--tries=3", "--max-time=3600"]
+    command: []
+    environment:
+      - APP_ENV=${APP_ENV:-production}
+      - APP_DEBUG=${APP_DEBUG:-false}
+      - APP_KEY=${APP_KEY}
+      - DB_CONNECTION=mysql
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=${DB_DATABASE:-laravel_clinic}
+      - DB_USERNAME=${DB_USERNAME:-laravel}
+      - DB_PASSWORD=${DB_PASSWORD:-secret}
+      - CACHE_STORE=redis
+      - QUEUE_CONNECTION=redis
+      - REDIS_HOST=redis
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-null}
+    volumes:
+      - storage_data:/var/www/html/storage
+    depends_on:
+      - app
+      - mysql
+      - redis
+    networks:
+      - laravel_network
+
+  # ===========================================================================
+  # Scheduler (Laravel Task Scheduler)
+  # ===========================================================================
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    image: nhom5/laravel-clinic:latest
+    container_name: laravel_scheduler
+    restart: unless-stopped
+    working_dir: /var/www/html
+    user: "1000:1000"
+    entrypoint: ["sh", "-c"]
+    command: ["while true; do php artisan schedule:run --verbose --no-interaction; sleep 60; done"]
+    environment:
+      - APP_ENV=${APP_ENV:-production}
+      - APP_DEBUG=${APP_DEBUG:-false}
+      - APP_KEY=${APP_KEY}
+      - DB_CONNECTION=mysql
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=${DB_DATABASE:-laravel_clinic}
+      - DB_USERNAME=${DB_USERNAME:-laravel}
+      - DB_PASSWORD=${DB_PASSWORD:-secret}
+      - CACHE_STORE=redis
+      - REDIS_HOST=redis
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-null}
+    volumes:
+      - storage_data:/var/www/html/storage
+    depends_on:
+      - app
+      - mysql
+      - redis
+    networks:
+      - laravel_network
+
+  # ===========================================================================
+  # phpMyAdmin (Development/Debug - Optional)
+  # ===========================================================================
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: laravel_phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootsecret}
+    ports:
+      - "${PMA_PORT:-8080}:80"
+    depends_on:
+      - mysql
+    networks:
+      - laravel_network
+    profiles:
+      - dev
+
+  # ===========================================================================
+  # Mailhog (Development - Email Testing)
+  # ===========================================================================
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: laravel_mailhog
+    restart: unless-stopped
+    ports:
+      - "${MAILHOG_PORT:-8025}:8025"
+      - "1025:1025"
+    networks:
+      - laravel_network
+    profiles:
+      - dev
+
+# =============================================================================
+# Volumes - Persistent Data Storage
+# =============================================================================
+volumes:
+  mysql_data:
+    driver: local
+  redis_data:
+    driver: local
+  storage_data:
+    driver: local
+  cache_data:
+    driver: local
+
+# =============================================================================
+# Networks
+# =============================================================================
+networks:
+  laravel_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+

@@ -15,6 +15,10 @@ class MailService
 {
     private $mailer;
     
+    // Error messages
+    private const EMAIL_DISABLED_FOR_USER_TYPE = self::EMAIL_DISABLED_FOR_USER_TYPE;
+    private const EMAIL_SYSTEM_MAINTENANCE = self::EMAIL_SYSTEM_MAINTENANCE;
+    
     public function __construct()
     {
         $this->mailer = new PHPMailer(true);
@@ -68,7 +72,7 @@ class MailService
     {
         // Check if email is enabled for this user type
         if (!$this->canSendEmail($userType)) {
-            return ['success' => false, 'message' => 'Email đã bị tắt cho loại người dùng này', 'disabled' => true];
+            return ['success' => false, 'message' => self::EMAIL_DISABLED_FOR_USER_TYPE, 'disabled' => true];
         }
         
         try {
@@ -96,7 +100,7 @@ class MailService
     {
         // Check if email is enabled for this user type
         if (!$this->canSendEmail($userType)) {
-            return ['success' => false, 'message' => 'Email đã bị tắt cho loại người dùng này', 'disabled' => true];
+            return ['success' => false, 'message' => self::EMAIL_DISABLED_FOR_USER_TYPE, 'disabled' => true];
         }
         
         try {
@@ -124,7 +128,7 @@ class MailService
     {
         // Check if email is enabled for this user type
         if (!$this->canSendEmail($userType)) {
-            return ['success' => false, 'message' => 'Email đã bị tắt cho loại người dùng này', 'disabled' => true];
+            return ['success' => false, 'message' => self::EMAIL_DISABLED_FOR_USER_TYPE, 'disabled' => true];
         }
         
         try {
@@ -161,7 +165,7 @@ class MailService
     {
         // System emails are always allowed if email is enabled
         if (!$this->canSendEmail('SYSTEM')) {
-            return ['success' => false, 'message' => 'Hệ thống email đang bảo trì', 'disabled' => true];
+            return ['success' => false, 'message' => self::EMAIL_SYSTEM_MAINTENANCE, 'disabled' => true];
         }
         
         try {
@@ -190,7 +194,7 @@ class MailService
     {
         // System emails are always allowed if email is enabled
         if (!$this->canSendEmail('SYSTEM')) {
-            return ['success' => false, 'message' => 'Hệ thống email đang bảo trì', 'disabled' => true];
+            return ['success' => false, 'message' => self::EMAIL_SYSTEM_MAINTENANCE, 'disabled' => true];
         }
         
         try {
@@ -218,7 +222,7 @@ class MailService
     {
         // Check if email is enabled for this user type
         if (!$this->canSendEmail($userType)) {
-            return ['success' => false, 'message' => 'Email đã bị tắt cho loại người dùng này', 'disabled' => true];
+            return ['success' => false, 'message' => self::EMAIL_DISABLED_FOR_USER_TYPE, 'disabled' => true];
         }
         
         try {
@@ -247,7 +251,7 @@ class MailService
     {
         // Check if email is enabled for this user type
         if (!$this->canSendEmail($userType)) {
-            return ['success' => false, 'message' => 'Email đã bị tắt cho loại người dùng này', 'disabled' => true];
+            return ['success' => false, 'message' => self::EMAIL_DISABLED_FOR_USER_TYPE, 'disabled' => true];
         }
         
         try {
@@ -524,7 +528,7 @@ class MailService
     {
         // Check if email is enabled for this user type
         if (!$this->canSendEmail($userType)) {
-            return ['success' => false, 'message' => 'Email đã bị tắt cho loại người dùng này', 'disabled' => true];
+            return ['success' => false, 'message' => self::EMAIL_DISABLED_FOR_USER_TYPE, 'disabled' => true];
         }
         
         try {
@@ -552,7 +556,7 @@ class MailService
     {
         // OTP is a SYSTEM email - always allowed
         if (!$this->canSendEmail('SYSTEM')) {
-            return ['success' => false, 'message' => 'Hệ thống email đang bảo trì', 'disabled' => true];
+            return ['success' => false, 'message' => self::EMAIL_SYSTEM_MAINTENANCE, 'disabled' => true];
         }
         
         try {
@@ -580,7 +584,7 @@ class MailService
     {
         // Check if email is enabled for this user type
         if (!$this->canSendEmail($userType)) {
-            return ['success' => false, 'message' => 'Email đã bị tắt cho loại người dùng này', 'disabled' => true];
+            return ['success' => false, 'message' => self::EMAIL_DISABLED_FOR_USER_TYPE, 'disabled' => true];
         }
         
         try {

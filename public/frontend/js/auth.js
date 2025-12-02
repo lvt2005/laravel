@@ -1,7 +1,8 @@
 // Frontend local auth script (served alongside login.html)
-// Dynamic API base: if current origin port is 8000 assume served by Laravel, else use explicit Laravel dev server.
+// Dynamic API base: Use relative path for same-origin requests (Docker port 80 or Laravel port 8000)
+// Falls back to localhost:8000 only for file:// protocol or other non-standard access
 (function(){
-const API_BASE = (location.port === '8000' ? '/api' : 'http://127.0.0.1:8000/api');
+const API_BASE = (location.protocol === 'http:' || location.protocol === 'https:') ? '/api' : 'http://127.0.0.1:8000/api';
 let accessToken = null;
 let refreshToken = null;
 let sessionId = null;

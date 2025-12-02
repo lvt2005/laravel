@@ -1,0 +1,63 @@
+# =============================================================================
+# Docker Ignore File
+# =============================================================================
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+.DS_Store
+
+# Node modules (sẽ được rebuild trong container)
+node_modules
+
+# Vendor (sẽ được cài lại bằng composer)
+# vendor
+
+# Testing
+tests
+phpunit.xml
+.phpunit.result.cache
+.phpunit.cache
+
+# Laravel specific
+storage/logs/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+!storage/logs/.gitkeep
+!storage/framework/cache/.gitkeep
+!storage/framework/sessions/.gitkeep
+!storage/framework/views/.gitkeep
+
+# Environment files (sẽ được mount hoặc sử dụng biến môi trường)
+.env
+.env.backup
+.env.production
+
+# Documentation
+README.md
+CHANGELOG.md
+docs
+
+# Docker files
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# Build files (sẽ được tạo lại)
+public/hot
+public/build
+
+# Misc
+*.log
+*.txt
+npm-debug.log
+yarn-error.log
+

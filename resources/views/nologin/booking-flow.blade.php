@@ -2049,7 +2049,7 @@
         if (response.ok && result.success) {
           inputEl.classList.remove('error');
           inputEl.classList.add('success');
-          statusEl.textContent = '✅ Xác nhận thành công!';
+          statusEl.textContent = '✅ Xác nhận thành công! Đang đặt lịch...';
           statusEl.className = 'verification-status success';
           isEmailVerified = true;
 
