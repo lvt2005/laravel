@@ -740,7 +740,7 @@ function closeModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
         modal.classList.remove('active');
-        modal.style.display = 'none';
+        // Don't set display:none - let CSS handle it through .active class
     }
 }
 
@@ -748,8 +748,9 @@ function closeModal(modalId) {
 function openModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
+        // Remove display:none if it was set, and add active class
+        modal.style.display = '';
         modal.classList.add('active');
-        modal.style.display = 'flex';
     }
 }
 

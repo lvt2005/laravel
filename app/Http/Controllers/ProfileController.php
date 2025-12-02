@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Models\Doctor;
 use App\Models\Notification;
+use App\Models\SystemSetting;
 use App\Services\MailService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -464,6 +465,13 @@ class ProfileController extends Controller
 
     public function requestOnlinePayment(Request $request, $appointmentId)
     {
+        // Check if payment system is enabled
+        if (!SystemSetting::isPaymentEnabled()) {
+            return response()->json([
+                'message' => 'Chức năng thanh toán hệ thống đang bảo trì. Vui lòng thử lại sau.'
+            ], 503);
+        }
+        
         $user = $request->user();
         
         // Find appointment by id AND (patient_id OR patient_email OR patient_phone match)

@@ -571,4 +571,21 @@ class PublicController extends Controller
             'message' => $isMaintenanceMode ? $message : null
         ]);
     }
+    
+    /**
+     * Get booking settings (for booking-flow page)
+     * Returns settings relevant to the booking process
+     */
+    public function getBookingSettings()
+    {
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'guest_booking_enabled' => \App\Models\SystemSetting::isGuestBookingEnabled(),
+                'payment_enabled' => \App\Models\SystemSetting::isPaymentEnabled(),
+                'maintenance_mode' => \App\Models\SystemSetting::isMaintenanceMode(),
+                'maintenance_message' => \App\Models\SystemSetting::getMaintenanceMessage(),
+            ]
+        ]);
+    }
 }

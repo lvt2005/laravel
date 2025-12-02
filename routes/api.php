@@ -47,6 +47,9 @@ Route::post('/public/verify-booking-code', [PublicController::class, 'verifyBook
 // Maintenance status check (always public, not affected by maintenance middleware)
 Route::get('/public/maintenance-status', [PublicController::class, 'getMaintenanceStatus']);
 
+// Booking settings check (for booking-flow page to check guest booking, payment enabled, etc.)
+Route::get('/public/booking-settings', [PublicController::class, 'getBookingSettings']);
+
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\DoctorMedicalNoteController;
 Route::middleware(['jwt.custom'])->group(function() {

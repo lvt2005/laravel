@@ -9,6 +9,7 @@ require_once base_path('PHPMailer/Exception.php');
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
+use App\Models\SystemSetting;
 
 class MailService
 {
@@ -37,10 +38,39 @@ class MailService
     }
     
     /**
+     * Check if email can be sent based on system settings
+     * @param string $userType - 'USER', 'DOCTOR', or 'SYSTEM' (for verification codes, etc.)
+     * @return bool
+     */
+    public function canSendEmail($userType = 'SYSTEM')
+    {
+        // Always allow system emails (verification codes, password reset, etc.)
+        if ($userType === 'SYSTEM') {
+            return SystemSetting::isEmailEnabled();
+        }
+        
+        // Check user type specific settings
+        if ($userType === 'USER') {
+            return SystemSetting::isUserEmailEnabled();
+        }
+        
+        if ($userType === 'DOCTOR') {
+            return SystemSetting::isDoctorEmailEnabled();
+        }
+        
+        return SystemSetting::isEmailEnabled();
+    }
+    
+    /**
      * Send appointment reminder email
      */
-    public function sendAppointmentReminder($toEmail, $toName, $appointmentDate, $appointmentTime, $doctorName, $clinicName)
+    public function sendAppointmentReminder($toEmail, $toName, $appointmentDate, $appointmentTime, $doctorName, $clinicName, $userType = 'USER')
     {
+        // Check if email is enabled for this user type
+        if (!$this->canSendEmail($userType)) {
+            return ['success' => false, 'message' => 'Email đã bị tắt cho loại người dùng này', 'disabled' => true];
+        }
+        
         try {
             $this->mailer->clearAddresses();
             $this->mailer->addAddress($toEmail, $toName);
@@ -62,8 +92,13 @@ class MailService
     /**
      * Send payment confirmation email
      */
-    public function sendPaymentConfirmation($toEmail, $toName, $transactionId, $amount, $paymentMethod, $appointmentDetails)
+    public function sendPaymentConfirmation($toEmail, $toName, $transactionId, $amount, $paymentMethod, $appointmentDetails, $userType = 'USER')
     {
+        // Check if email is enabled for this user type
+        if (!$this->canSendEmail($userType)) {
+            return ['success' => false, 'message' => 'Email đã bị tắt cho loại người dùng này', 'disabled' => true];
+        }
+        
         try {
             $this->mailer->clearAddresses();
             $this->mailer->addAddress($toEmail, $toName);
@@ -85,8 +120,13 @@ class MailService
     /**
      * Send forum activity notification email
      */
-    public function sendForumActivityNotification($toEmail, $toName, $activityType, $actorName, $postTitle, $content = null)
+    public function sendForumActivityNotification($toEmail, $toName, $activityType, $actorName, $postTitle, $content = null, $userType = 'USER')
     {
+        // Check if email is enabled for this user type
+        if (!$this->canSendEmail($userType)) {
+            return ['success' => false, 'message' => 'Email đã bị tắt cho loại người dùng này', 'disabled' => true];
+        }
+        
         try {
             $this->mailer->clearAddresses();
             $this->mailer->addAddress($toEmail, $toName);
@@ -115,9 +155,15 @@ class MailService
     
     /**
      * Send verification code email
+     * Note: Verification codes are SYSTEM emails - always sent if email system is enabled
      */
     public function sendVerificationCode($toEmail, $toName, $code, $expiresInMinutes = 5)
     {
+        // System emails are always allowed if email is enabled
+        if (!$this->canSendEmail('SYSTEM')) {
+            return ['success' => false, 'message' => 'Hệ thống email đang bảo trì', 'disabled' => true];
+        }
+        
         try {
             $this->mailer->clearAddresses();
             $this->mailer->addAddress($toEmail, $toName);
@@ -138,9 +184,15 @@ class MailService
 
     /**
      * Send 2FA verification code for login
+     * Note: 2FA codes are SYSTEM emails - always sent if email system is enabled
      */
     public function send2FACode($toEmail, $toName, $code, $expiresInMinutes = 10)
     {
+        // System emails are always allowed if email is enabled
+        if (!$this->canSendEmail('SYSTEM')) {
+            return ['success' => false, 'message' => 'Hệ thống email đang bảo trì', 'disabled' => true];
+        }
+        
         try {
             $this->mailer->clearAddresses();
             $this->mailer->addAddress($toEmail, $toName);
@@ -162,8 +214,13 @@ class MailService
     /**
      * Send missed appointment notification
      */
-    public function sendMissedAppointmentNotification($toEmail, $toName, $appointmentDate, $appointmentTime, $doctorName)
+    public function sendMissedAppointmentNotification($toEmail, $toName, $appointmentDate, $appointmentTime, $doctorName, $userType = 'USER')
     {
+        // Check if email is enabled for this user type
+        if (!$this->canSendEmail($userType)) {
+            return ['success' => false, 'message' => 'Email đã bị tắt cho loại người dùng này', 'disabled' => true];
+        }
+        
         try {
             $this->mailer->clearAddresses();
             $this->mailer->addAddress($toEmail, $toName);
@@ -184,9 +241,15 @@ class MailService
     
     /**
      * Generic send email method
+     * @param string $userType - USER, DOCTOR, or SYSTEM for checking email settings
      */
-    public function send($toEmail, $toName, $subject, $htmlBody, $textBody = null)
+    public function send($toEmail, $toName, $subject, $htmlBody, $textBody = null, $userType = 'USER')
     {
+        // Check if email is enabled for this user type
+        if (!$this->canSendEmail($userType)) {
+            return ['success' => false, 'message' => 'Email đã bị tắt cho loại người dùng này', 'disabled' => true];
+        }
+        
         try {
             $this->mailer->clearAddresses();
             $this->mailer->addAddress($toEmail, $toName);
@@ -457,8 +520,13 @@ class MailService
     /**
      * Send payment pending approval confirmation email
      */
-    public function sendPaymentPendingConfirmation($toEmail, $toName, $transactionId, $amount, $paymentMethod, $appointmentDetails)
+    public function sendPaymentPendingConfirmation($toEmail, $toName, $transactionId, $amount, $paymentMethod, $appointmentDetails, $userType = 'USER')
     {
+        // Check if email is enabled for this user type
+        if (!$this->canSendEmail($userType)) {
+            return ['success' => false, 'message' => 'Email đã bị tắt cho loại người dùng này', 'disabled' => true];
+        }
+        
         try {
             $this->mailer->clearAddresses();
             $this->mailer->addAddress($toEmail, $toName);
@@ -478,10 +546,15 @@ class MailService
     }
 
     /**
-     * Send refund OTP email
+     * Send refund OTP email (SYSTEM email - always allowed if email is enabled)
      */
     public function sendRefundOtp($toEmail, $toName, $otp)
     {
+        // OTP is a SYSTEM email - always allowed
+        if (!$this->canSendEmail('SYSTEM')) {
+            return ['success' => false, 'message' => 'Hệ thống email đang bảo trì', 'disabled' => true];
+        }
+        
         try {
             $this->mailer->clearAddresses();
             $this->mailer->addAddress($toEmail, $toName);
@@ -503,8 +576,13 @@ class MailService
     /**
      * Send refund approved notification email
      */
-    public function sendRefundApprovedNotification($toEmail, $toName, $amount, $appointmentDetails)
+    public function sendRefundApprovedNotification($toEmail, $toName, $amount, $appointmentDetails, $userType = 'USER')
     {
+        // Check if email is enabled for this user type
+        if (!$this->canSendEmail($userType)) {
+            return ['success' => false, 'message' => 'Email đã bị tắt cho loại người dùng này', 'disabled' => true];
+        }
+        
         try {
             $this->mailer->clearAddresses();
             $this->mailer->addAddress($toEmail, $toName);

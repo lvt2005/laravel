@@ -139,6 +139,21 @@ class AuthController extends Controller
             $user->locked_at = null;
             $user->locked_until = null;
         }
+        
+        // Check access control settings for USER and DOCTOR (not ADMIN)
+        if ($user->type === 'USER' && !SystemSetting::isUserAccessEnabled()) {
+            return response()->json([
+                'error' => 'ACCESS_DISABLED',
+                'message' => 'Dữ liệu của bệnh nhân đang được bảo trì. Vui lòng thử lại sau.'
+            ], 403);
+        }
+        
+        if ($user->type === 'DOCTOR' && !SystemSetting::isDoctorAccessEnabled()) {
+            return response()->json([
+                'error' => 'ACCESS_DISABLED',
+                'message' => 'Dữ liệu của bác sĩ đang được bảo trì. Vui lòng thử lại sau.'
+            ], 403);
+        }
 
         // Check if 2FA is enabled (only for USER and DOCTOR, not ADMIN)
         if ($user->two_factor_enabled && in_array($user->type, ['USER', 'DOCTOR'])) {

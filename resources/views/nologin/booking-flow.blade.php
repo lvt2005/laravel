@@ -1155,6 +1155,9 @@
 
     // Initialize page
     document.addEventListener('DOMContentLoaded', async function () {
+      // Check booking settings first
+      await checkBookingSettings();
+      
       await loadServices();
       await loadSpecializations();
       setupEventListeners();
@@ -1221,6 +1224,99 @@
         updateEstimatedEndTime();
       }
     });
+    
+    // Check booking settings and redirect if guest booking is disabled
+    async function checkBookingSettings() {
+      try {
+        const response = await fetch(`${API_BASE}/public/booking-settings`);
+        const result = await response.json();
+        
+        if (result.success) {
+          const settings = result.data;
+          
+          // Check if system is in maintenance mode
+          if (settings.maintenance_mode) {
+            showMaintenanceMessage(settings.maintenance_message);
+            return;
+          }
+          
+          // Check if user is logged in
+          const accessToken = localStorage.getItem('access_token');
+          const hasSession = accessToken && accessToken !== 'null' && accessToken !== 'undefined';
+          
+          // If guest booking is disabled and user is not logged in, redirect to login
+          if (!settings.guest_booking_enabled && !hasSession) {
+            showLoginRequiredModal();
+          }
+        }
+      } catch (error) {
+        console.error('Error checking booking settings:', error);
+      }
+    }
+    
+    // Show login required modal
+    function showLoginRequiredModal() {
+      // Create modal if not exists
+      let modal = document.getElementById('loginRequiredModal');
+      if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'loginRequiredModal';
+        modal.className = 'verification-modal active';
+        modal.innerHTML = `
+          <div class="verification-content" style="text-align: center;">
+            <div style="font-size: 64px; margin-bottom: 20px;">🔐</div>
+            <h3 style="margin-bottom: 15px; color: #1e5ba8;">Cần đăng nhập</h3>
+            <p style="color: #666; margin-bottom: 25px; line-height: 1.6;">
+              Để đặt lịch hẹn khám bệnh, vui lòng đăng nhập hoặc đăng ký tài khoản.
+            </p>
+            <div style="display: flex; gap: 15px; justify-content: center;">
+              <a href="/dang-nhap" class="submit-btn" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                <span>Đăng nhập ngay</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                  <polyline points="10 17 15 12 10 7"></polyline>
+                  <line x1="15" y1="12" x2="3" y2="12"></line>
+                </svg>
+              </a>
+              <a href="/dang-ky" style="text-decoration: none; padding: 12px 24px; border: 2px solid #1e5ba8; border-radius: 8px; color: #1e5ba8; font-weight: 600;">
+                Đăng ký mới
+              </a>
+            </div>
+            <p style="color: #999; font-size: 13px; margin-top: 20px;">
+              <a href="/" style="color: #1e5ba8;">← Về trang chủ</a>
+            </p>
+          </div>
+        `;
+        document.body.appendChild(modal);
+      } else {
+        modal.classList.add('active');
+      }
+    }
+    
+    // Show maintenance message
+    function showMaintenanceMessage(message) {
+      let modal = document.getElementById('maintenanceModal');
+      if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'maintenanceModal';
+        modal.className = 'verification-modal active';
+        modal.innerHTML = `
+          <div class="verification-content" style="text-align: center;">
+            <div style="font-size: 64px; margin-bottom: 20px;">🔧</div>
+            <h3 style="margin-bottom: 15px; color: #e74c3c;">Hệ thống đang bảo trì</h3>
+            <p style="color: #666; margin-bottom: 25px; line-height: 1.6;">
+              ${message || 'Hệ thống đang được bảo trì. Vui lòng quay lại sau.'}
+            </p>
+            <a href="/" class="submit-btn" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+              <span>Về trang chủ</span>
+            </a>
+          </div>
+        `;
+        document.body.appendChild(modal);
+      } else {
+        modal.classList.add('active');
+      }
+    }
 
     // Show notification toast
     function showNotification(message, type = 'info') {
@@ -1953,14 +2049,18 @@
         if (response.ok && result.success) {
           inputEl.classList.remove('error');
           inputEl.classList.add('success');
-          statusEl.textContent = '✅ Xác nhận thành công! Đang đặt lịch...';
+          statusEl.textContent = '✅ Xác nhận thành công!';
           statusEl.className = 'verification-status success';
           isEmailVerified = true;
 
-          // Auto submit booking after verification with proper async handling
-          btnVerify.disabled = true;
-          await new Promise(resolve => setTimeout(resolve, 1000));
+          // Show immediate success notification to user
+          showNotification('✅ Mã xác nhận chính xác! Đang tiến hành đặt lịch...', 'success');
+          
+          // Close modal immediately after showing success
+          await new Promise(resolve => setTimeout(resolve, 500));
           closeVerificationModal();
+          
+          // Submit booking in the background
           await submitBooking();
         } else {
           inputEl.classList.remove('success');
