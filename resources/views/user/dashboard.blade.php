@@ -671,9 +671,9 @@
         }
 
         .header-right img {
-            width: 90%;
-            height: auto;
-            max-width: 480px;
+            width: 100%;
+            height: 100%;
+            max-width: 30px;
             object-fit: contain;
             display: block;
             filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.15));

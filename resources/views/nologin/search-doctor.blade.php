@@ -1315,8 +1315,10 @@
 
     <div class="search-section">
         <div class="search-row">
-            <input type="text" class="search-input" placeholder="Nhập tên bác sĩ..." id="nameSearch" />
-            <button class="search-btn" id="searchBtn">Tìm kiếm</button>
+            <input type="text" class="search-input" placeholder="Tìm theo tên, học vị, chuyên môn..." id="nameSearch" />
+            <button class="search-btn" id="searchBtn">
+                <i class="fas fa-search"></i> Tìm kiếm
+            </button>
         </div>
         <div class="search-row">
             <div class="filter-group">
@@ -1337,12 +1339,37 @@
                 </select>
             </div>
             <div class="filter-group">
-                <div class="filter-label">Sắp xếp theo đánh giá</div>
-                <select class="search-select" id="ratingFilter">
-                    <option value="">Mặc định</option>
-                    <option value="desc">Cao đến thấp</option>
-                    <option value="asc">Thấp đến cao</option>
+                <div class="filter-label">Đánh giá tối thiểu</div>
+                <select class="search-select" id="minRatingFilter">
+                    <option value="">Tất cả</option>
+                    <option value="4.5">⭐ 4.5+ Xuất sắc</option>
+                    <option value="4">⭐ 4.0+ Rất tốt</option>
+                    <option value="3.5">⭐ 3.5+ Tốt</option>
+                    <option value="3">⭐ 3.0+ Khá</option>
                 </select>
+            </div>
+            <div class="filter-group">
+                <div class="filter-label">Sắp xếp theo</div>
+                <select class="search-select" id="sortFilter">
+                    <option value="rating-desc">Đánh giá cao nhất</option>
+                    <option value="rating-asc">Đánh giá thấp nhất</option>
+                    <option value="exp-desc">Kinh nghiệm nhiều nhất</option>
+                    <option value="exp-asc">Kinh nghiệm ít nhất</option>
+                    <option value="name-asc">Tên A-Z</option>
+                    <option value="name-desc">Tên Z-A</option>
+                    <option value="reviews-desc">Nhiều đánh giá nhất</option>
+                </select>
+            </div>
+        </div>
+        <div class="search-row" style="justify-content: space-between; align-items: center; margin-top: 15px;">
+            <div class="filter-tags" id="filterTags" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <!-- Active filter tags will appear here -->
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <span id="resultCount" style="color: #7f8c8d; font-size: 14px;"></span>
+                <button class="reset-btn" id="resetBtn" style="padding: 8px 16px; background: #e74c3c; color: white; border: none; border-radius: 20px; cursor: pointer; font-size: 13px; display: none;">
+                    <i class="fas fa-times"></i> Xóa bộ lọc
+                </button>
             </div>
         </div>
     </div>
@@ -1355,85 +1382,9 @@
 <div class="pagination" id="pagination">
     <!-- Phân trang sẽ được tạo động bằng JavaScript -->
 </div>
-<footer>
-    <div class="container">
-        <div class="footer-content">
-            <!-- Logo & Info -->
-            <div class="footer-logo-section">
-                <div class="footer-logo">
-                    <img src="{{ asset('frontend/img/logomau.jpg') }}" alt="Logo" />
-                </div>
-                <p>
-                    Địa chỉ: 70 Đ. Tô Ký, Tân Chánh Hiệp, Quận 12, Thành phố Hồ Chí
-                    Minh, Việt Nam
-                </p>
-                <p>Email: nhom5@gmail.com</p>
-                <p>
-                    GPDKKD: 0312088602 cấp ngày 14/12/2012 bởi Sở Kế hoạch và Đầu tư
-                    TPHCM. Giấy phép hoạt động khám bệnh, chữa bệnh số 230/BYT-GPHD do
-                    Bộ Y Tế cấp.
-                </p>
-            </div>
 
-            <!-- About -->
-            <div class="footer-section">
-                <h4>Về chúng tôi</h4>
-                <ul>
-                    <li><a href="/tim-bac-si">Đội ngũ bác sĩ</a></li>
-                    <li><a href="#">Cơ sở vật chất</a></li>
-                    <li><a href="#">Câu chuyện khách hàng</a></li>
-                    <li><a href="#">Tuyên dụng</a></li>
-                    <li><a href="#">Cảm nang bệnh</a></li>
-                    <li><a href="#">Chính sách bảo mật</a></li>
-                </ul>
-            </div>
+@include('partials.footer')
 
-            <!-- Working Hours -->
-            <div class="footer-section">
-                <h4>Giờ làm việc</h4>
-                <div class="working-hours">
-                    <p><strong>Từ thứ 2 đến thứ 7</strong></p>
-                    <p>Buổi sáng:<br />7:00 - 12:00</p>
-                    <p>Buổi chiều:<br />13:30 - 17:00</p>
-                </div>
-                <a href="tel:18006767" class="hotline-btn">Hotline: 1800 6767</a>
-            </div>
-
-            <!-- Contact -->
-            <div class="contact-section">
-                <h4>Liên hệ</h4>
-                <div class="social-icons">
-                    <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
-                    <a href="#" title="TikTok"><i class="fab fa-tiktok"></i></a>
-                    <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
-                    <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
-                </div>
-                <div class="newsletter-section">
-                    <p><strong>Theo dõi bản tin chúng tôi</strong></p>
-                    <form class="newsletter-form">
-                        <input type="email" placeholder="Email" required />
-                        <button type="submit">Đăng ký</button>
-                    </form>
-                </div>
-                <div class="dmca-badge">
-                    <img src="{{ asset('frontend/img/dmca_protected_16_120.png') }}" alt="" />
-                </div>
-            </div>
-        </div>
-
-        <hr class="footer-divider" />
-
-        <div class="footer-bottom">
-            <p>&copy; Hệ thống đặt lịch hẹn. Tất cả các quyền được bảo vệ.</p>
-            <ul class="footer-links">
-                <li><a href="#">Chính sách bảo mật</a></li>
-                <li><a href="#">Điều khoản sử dụng</a></li>
-                <li><a href="#">Liên hệ</a></li>
-            </ul>
-        </div>
-    </div>
-</footer>
 <script>
     const API_BASE = '/api';
     const ITEMS_PER_PAGE = 6;
@@ -1441,6 +1392,336 @@
     let allDoctors = [];
     let filteredDoctors = [];
     let specializations = [];
+    let searchTimeout = null;
+    let activeFilters = {};
+
+    // ============================================
+    // ADVANCED SEARCH & FILTER ENGINE
+    // ============================================
+
+    // Normalize Vietnamese text for search (remove diacritics)
+    function normalizeVietnamese(str) {
+        if (!str) return '';
+        return str
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/đ/g, 'd')
+            .replace(/Đ/g, 'D');
+    }
+
+    // Fuzzy search - find similar strings
+    function fuzzyMatch(text, query) {
+        if (!text || !query) return false;
+        
+        const normalizedText = normalizeVietnamese(text);
+        const normalizedQuery = normalizeVietnamese(query);
+        
+        // Exact match
+        if (normalizedText.includes(normalizedQuery)) return true;
+        
+        // Word-by-word match
+        const queryWords = normalizedQuery.split(/\s+/).filter(w => w.length > 1);
+        const textWords = normalizedText.split(/\s+/);
+        
+        // All query words must be found
+        return queryWords.every(qWord => 
+            textWords.some(tWord => tWord.includes(qWord) || qWord.includes(tWord))
+        );
+    }
+
+    // Calculate search relevance score
+    function calculateRelevanceScore(doctor, query) {
+        if (!query) return 0;
+        
+        let score = 0;
+        const normalizedQuery = normalizeVietnamese(query);
+        
+        // Name match (highest priority)
+        const fullName = normalizeVietnamese(doctor.full_name || '');
+        if (fullName === normalizedQuery) score += 100;
+        else if (fullName.startsWith(normalizedQuery)) score += 80;
+        else if (fullName.includes(normalizedQuery)) score += 60;
+        
+        // Degree match
+        const degree = normalizeVietnamese(doctor.degree || '');
+        if (degree.includes(normalizedQuery)) score += 40;
+        
+        // Specialization match
+        const specName = normalizeVietnamese(doctor.specialization?.name || '');
+        if (specName.includes(normalizedQuery)) score += 50;
+        
+        // Bio/description match
+        const bio = normalizeVietnamese(doctor.bio || '');
+        if (bio.includes(normalizedQuery)) score += 20;
+        
+        // Clinic name match
+        const clinicName = normalizeVietnamese(doctor.clinic?.name || '');
+        if (clinicName.includes(normalizedQuery)) score += 30;
+        
+        // Clinic address match
+        const clinicAddress = normalizeVietnamese(doctor.clinic?.address || '');
+        if (clinicAddress.includes(normalizedQuery)) score += 15;
+        
+        return score;
+    }
+
+    // Advanced filter function
+    function advancedFilter(doctors, filters) {
+        return doctors.filter(doctor => {
+            // Text search filter
+            if (filters.search) {
+                const searchTerms = filters.search.toLowerCase().split(/\s+/).filter(t => t.length > 0);
+                const searchableText = [
+                    doctor.full_name,
+                    doctor.degree,
+                    doctor.specialization?.name,
+                    doctor.bio,
+                    doctor.clinic?.name,
+                    doctor.clinic?.address,
+                    doctor.phone,
+                    doctor.email
+                ].filter(Boolean).join(' ').toLowerCase();
+                
+                const normalizedSearchable = normalizeVietnamese(searchableText);
+                
+                // All search terms must match
+                const allTermsMatch = searchTerms.every(term => {
+                    const normalizedTerm = normalizeVietnamese(term);
+                    return normalizedSearchable.includes(normalizedTerm) || 
+                           fuzzyMatch(searchableText, term);
+                });
+                
+                if (!allTermsMatch) return false;
+            }
+            
+            // Specialization filter
+            if (filters.specialization && doctor.specialization_id != filters.specialization) {
+                return false;
+            }
+            
+            // Experience filter
+            if (filters.experience) {
+                const exp = parseInt(doctor.experience) || 0;
+                switch (filters.experience) {
+                    case '0-5': if (exp > 5) return false; break;
+                    case '5-10': if (exp < 5 || exp > 10) return false; break;
+                    case '10-20': if (exp < 10 || exp > 20) return false; break;
+                    case '20+': if (exp < 20) return false; break;
+                }
+            }
+            
+            // Minimum rating filter
+            if (filters.minRating) {
+                const rating = parseFloat(doctor.rating_avg) || 0;
+                if (rating < parseFloat(filters.minRating)) return false;
+            }
+            
+            return true;
+        });
+    }
+
+    // Advanced sort function
+    function advancedSort(doctors, sortBy, searchQuery = '') {
+        return [...doctors].sort((a, b) => {
+            // If there's a search query, prioritize by relevance first
+            if (searchQuery) {
+                const scoreA = calculateRelevanceScore(a, searchQuery);
+                const scoreB = calculateRelevanceScore(b, searchQuery);
+                if (scoreA !== scoreB) return scoreB - scoreA;
+            }
+            
+            switch (sortBy) {
+                case 'rating-desc':
+                    return (parseFloat(b.rating_avg) || 0) - (parseFloat(a.rating_avg) || 0);
+                case 'rating-asc':
+                    return (parseFloat(a.rating_avg) || 0) - (parseFloat(b.rating_avg) || 0);
+                case 'exp-desc':
+                    return (parseInt(b.experience) || 0) - (parseInt(a.experience) || 0);
+                case 'exp-asc':
+                    return (parseInt(a.experience) || 0) - (parseInt(b.experience) || 0);
+                case 'name-asc':
+                    return (a.full_name || '').localeCompare(b.full_name || '', 'vi');
+                case 'name-desc':
+                    return (b.full_name || '').localeCompare(a.full_name || '', 'vi');
+                case 'reviews-desc':
+                    return (parseInt(b.rating_count) || 0) - (parseInt(a.rating_count) || 0);
+                default:
+                    return (parseFloat(b.rating_avg) || 0) - (parseFloat(a.rating_avg) || 0);
+            }
+        });
+    }
+
+    // Apply all filters and sort
+    function applyFiltersAndSort() {
+        const searchValue = document.getElementById('nameSearch').value.trim();
+        const specialtyValue = document.getElementById('specialtyFilter').value;
+        const experienceValue = document.getElementById('experienceFilter').value;
+        const minRatingValue = document.getElementById('minRatingFilter').value;
+        const sortValue = document.getElementById('sortFilter').value;
+        
+        // Build filters object
+        activeFilters = {};
+        if (searchValue) activeFilters.search = searchValue;
+        if (specialtyValue) activeFilters.specialization = specialtyValue;
+        if (experienceValue) activeFilters.experience = experienceValue;
+        if (minRatingValue) activeFilters.minRating = minRatingValue;
+        
+        // Apply filters
+        filteredDoctors = advancedFilter(allDoctors, activeFilters);
+        
+        // Apply sort
+        filteredDoctors = advancedSort(filteredDoctors, sortValue, searchValue);
+        
+        // Update UI
+        currentPage = 1;
+        renderDoctors();
+        updateFilterTags();
+        updateResultCount();
+        updateResetButton();
+        
+        // Save filters to URL
+        updateURLParams();
+    }
+
+    // Update filter tags display
+    function updateFilterTags() {
+        const container = document.getElementById('filterTags');
+        container.innerHTML = '';
+        
+        if (activeFilters.search) {
+            container.appendChild(createFilterTag('Tìm kiếm', activeFilters.search, 'search'));
+        }
+        
+        if (activeFilters.specialization) {
+            const specName = specializations.find(s => s.id == activeFilters.specialization)?.name || '';
+            container.appendChild(createFilterTag('Chuyên khoa', specName, 'specialization'));
+        }
+        
+        if (activeFilters.experience) {
+            const expLabels = {
+                '0-5': '0-5 năm',
+                '5-10': '5-10 năm',
+                '10-20': '10-20 năm',
+                '20+': 'Trên 20 năm'
+            };
+            container.appendChild(createFilterTag('Kinh nghiệm', expLabels[activeFilters.experience], 'experience'));
+        }
+        
+        if (activeFilters.minRating) {
+            container.appendChild(createFilterTag('Đánh giá', `≥ ${activeFilters.minRating}⭐`, 'minRating'));
+        }
+    }
+
+    // Create filter tag element
+    function createFilterTag(label, value, filterKey) {
+        const tag = document.createElement('span');
+        tag.className = 'filter-tag';
+        tag.style.cssText = 'background: #e3f2fd; color: #1976d2; padding: 6px 12px; border-radius: 20px; font-size: 13px; display: inline-flex; align-items: center; gap: 8px;';
+        tag.innerHTML = `
+            <span>${label}: <strong>${value}</strong></span>
+            <button onclick="removeFilter('${filterKey}')" style="background: none; border: none; color: #1976d2; cursor: pointer; font-size: 16px; padding: 0; line-height: 1;">×</button>
+        `;
+        return tag;
+    }
+
+    // Remove individual filter
+    function removeFilter(filterKey) {
+        switch (filterKey) {
+            case 'search':
+                document.getElementById('nameSearch').value = '';
+                break;
+            case 'specialization':
+                document.getElementById('specialtyFilter').value = '';
+                break;
+            case 'experience':
+                document.getElementById('experienceFilter').value = '';
+                break;
+            case 'minRating':
+                document.getElementById('minRatingFilter').value = '';
+                break;
+        }
+        applyFiltersAndSort();
+    }
+
+    // Update result count
+    function updateResultCount() {
+        const countEl = document.getElementById('resultCount');
+        const total = filteredDoctors.length;
+        const allTotal = allDoctors.length;
+        
+        if (Object.keys(activeFilters).length > 0) {
+            countEl.textContent = `Tìm thấy ${total} / ${allTotal} bác sĩ`;
+        } else {
+            countEl.textContent = `Tổng cộng ${allTotal} bác sĩ`;
+        }
+    }
+
+    // Update reset button visibility
+    function updateResetButton() {
+        const resetBtn = document.getElementById('resetBtn');
+        resetBtn.style.display = Object.keys(activeFilters).length > 0 ? 'inline-block' : 'none';
+    }
+
+    // Reset all filters
+    function resetAllFilters() {
+        document.getElementById('nameSearch').value = '';
+        document.getElementById('specialtyFilter').value = '';
+        document.getElementById('experienceFilter').value = '';
+        document.getElementById('minRatingFilter').value = '';
+        document.getElementById('sortFilter').value = 'rating-desc';
+        applyFiltersAndSort();
+    }
+
+    // Update URL params for sharing/bookmarking
+    function updateURLParams() {
+        const params = new URLSearchParams();
+        
+        if (activeFilters.search) params.set('q', activeFilters.search);
+        if (activeFilters.specialization) params.set('spec', activeFilters.specialization);
+        if (activeFilters.experience) params.set('exp', activeFilters.experience);
+        if (activeFilters.minRating) params.set('rating', activeFilters.minRating);
+        
+        const sortValue = document.getElementById('sortFilter').value;
+        if (sortValue !== 'rating-desc') params.set('sort', sortValue);
+        
+        const newURL = params.toString() ? `${window.location.pathname}?${params.toString()}` : window.location.pathname;
+        window.history.replaceState({}, '', newURL);
+    }
+
+    // Load filters from URL params
+    function loadFiltersFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        
+        if (params.has('q')) document.getElementById('nameSearch').value = params.get('q');
+        if (params.has('spec')) document.getElementById('specialtyFilter').value = params.get('spec');
+        if (params.has('exp')) document.getElementById('experienceFilter').value = params.get('exp');
+        if (params.has('rating')) document.getElementById('minRatingFilter').value = params.get('rating');
+        if (params.has('sort')) document.getElementById('sortFilter').value = params.get('sort');
+    }
+
+    // Debounced search for real-time filtering
+    function debouncedSearch() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            applyFiltersAndSort();
+        }, 300);
+    }
+
+    // Highlight search terms in text
+    function highlightSearchTerms(text, query) {
+        if (!query || !text) return text;
+        
+        const terms = query.split(/\s+/).filter(t => t.length > 1);
+        let result = text;
+        
+        terms.forEach(term => {
+            const regex = new RegExp(`(${term})`, 'gi');
+            result = result.replace(regex, '<mark style="background: #fff59d; padding: 0 2px; border-radius: 2px;">$1</mark>');
+        });
+        
+        return result;
+    }
 
 
 // Check login status from localStorage/sessionStorage
@@ -1579,6 +1860,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Load data khi trang được tải
     document.addEventListener('DOMContentLoaded', async function() {
         await loadSpecializations();
+        loadFiltersFromURL();
         await loadDoctors();
         setupEventListeners();
     });
@@ -1608,24 +1890,25 @@ document.addEventListener('DOMContentLoaded', function () {
     // Load danh sách bác sĩ từ API
     async function loadDoctors() {
         const grid = document.getElementById('doctorsGrid');
-        grid.innerHTML = '<div class="loading-spinner"></div>';
+        grid.innerHTML = '<div class="loading-spinner" style="text-align: center; padding: 60px;"><i class="fas fa-spinner fa-spin fa-3x" style="color: #4a69bd;"></i><p style="margin-top: 15px; color: #7f8c8d;">Đang tải danh sách bác sĩ...</p></div>';
 
         try {
             const response = await fetch(`${API_BASE}/public/doctors?per_page=100`);
             const result = await response.json();
             allDoctors = result.data || result || [];
-            filteredDoctors = [...allDoctors];
-
-            // Sắp xếp theo đánh giá cao nhất
-            sortDoctors('desc');
-            renderDoctors();
+            
+            // Apply initial filters from URL
+            applyFiltersAndSort();
         } catch (error) {
             console.error('Error loading doctors:', error);
             grid.innerHTML = `
-                <div class="no-results">
-                    <div class="icon">❌</div>
-                    <h3>Không thể tải dữ liệu</h3>
-                    <p>Vui lòng thử lại sau</p>
+                <div class="no-results" style="text-align: center; padding: 60px; grid-column: 1/-1;">
+                    <div style="font-size: 60px; margin-bottom: 20px;">❌</div>
+                    <h3 style="color: #e74c3c; margin-bottom: 10px;">Không thể tải dữ liệu</h3>
+                    <p style="color: #7f8c8d;">Vui lòng thử lại sau</p>
+                    <button onclick="loadDoctors()" style="margin-top: 20px; padding: 12px 24px; background: #4a69bd; color: white; border: none; border-radius: 25px; cursor: pointer;">
+                        <i class="fas fa-redo"></i> Thử lại
+                    </button>
                 </div>
             `;
         }
@@ -1633,79 +1916,58 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Setup event listeners
     function setupEventListeners() {
-        document.getElementById('searchBtn').addEventListener('click', filterDoctors);
+        // Search button click
+        document.getElementById('searchBtn').addEventListener('click', applyFiltersAndSort);
+        
+        // Real-time search on typing
+        document.getElementById('nameSearch').addEventListener('input', debouncedSearch);
+        
+        // Enter key to search
         document.getElementById('nameSearch').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') filterDoctors();
+            if (e.key === 'Enter') {
+                clearTimeout(searchTimeout);
+                applyFiltersAndSort();
+            }
         });
-        document.getElementById('specialtyFilter').addEventListener('change', filterDoctors);
-        document.getElementById('experienceFilter').addEventListener('change', filterDoctors);
-        document.getElementById('ratingFilter').addEventListener('change', filterDoctors);
-    }
-
-    // Lọc bác sĩ
-    function filterDoctors() {
-        const nameSearch = document.getElementById('nameSearch').value.toLowerCase().trim();
-        const specialtyFilter = document.getElementById('specialtyFilter').value;
-        const experienceFilter = document.getElementById('experienceFilter').value;
-        const ratingFilter = document.getElementById('ratingFilter').value;
-
-        filteredDoctors = allDoctors.filter(doctor => {
-            // Lọc theo tên
-            if (nameSearch) {
-                const fullName = (doctor.full_name || '').toLowerCase();
-                const degree = (doctor.degree || '').toLowerCase();
-                if (!fullName.includes(nameSearch) && !degree.includes(nameSearch)) {
-                    return false;
-                }
+        
+        // Filter changes - instant apply
+        document.getElementById('specialtyFilter').addEventListener('change', applyFiltersAndSort);
+        document.getElementById('experienceFilter').addEventListener('change', applyFiltersAndSort);
+        document.getElementById('minRatingFilter').addEventListener('change', applyFiltersAndSort);
+        document.getElementById('sortFilter').addEventListener('change', applyFiltersAndSort);
+        
+        // Reset button
+        document.getElementById('resetBtn').addEventListener('click', resetAllFilters);
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Ctrl/Cmd + K to focus search
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                document.getElementById('nameSearch').focus();
             }
-
-            // Lọc theo chuyên khoa
-            if (specialtyFilter) {
-                if (doctor.specialization_id != specialtyFilter) {
-                    return false;
-                }
+            // Escape to clear search
+            if (e.key === 'Escape' && document.activeElement.id === 'nameSearch') {
+                document.getElementById('nameSearch').value = '';
+                applyFiltersAndSort();
             }
-
-            // Lọc theo kinh nghiệm
-            if (experienceFilter) {
-                const exp = parseInt(doctor.experience) || 0;
-                if (experienceFilter === '0-5' && !(exp >= 0 && exp <= 5)) return false;
-                if (experienceFilter === '5-10' && !(exp > 5 && exp <= 10)) return false;
-                if (experienceFilter === '10-20' && !(exp > 10 && exp <= 20)) return false;
-                if (experienceFilter === '20+' && exp <= 20) return false;
-            }
-
-            return true;
-        });
-
-        // Sắp xếp theo đánh giá
-        if (ratingFilter) {
-            sortDoctors(ratingFilter);
-        }
-
-        currentPage = 1;
-        renderDoctors();
-    }
-
-    // Sắp xếp bác sĩ theo đánh giá
-    function sortDoctors(order) {
-        filteredDoctors.sort((a, b) => {
-            const ratingA = parseFloat(a.rating_avg) || 0;
-            const ratingB = parseFloat(b.rating_avg) || 0;
-            return order === 'desc' ? ratingB - ratingA : ratingA - ratingB;
         });
     }
 
     // Render danh sách bác sĩ
     function renderDoctors() {
         const grid = document.getElementById('doctorsGrid');
+        const searchQuery = document.getElementById('nameSearch').value.trim();
 
         if (filteredDoctors.length === 0) {
             grid.innerHTML = `
-                <div class="no-results">
-                    <div class="icon">🔍</div>
-                    <h3>Không tìm thấy bác sĩ</h3>
-                    <p>Vui lòng thử lại với từ khóa hoặc bộ lọc khác</p>
+                <div class="no-results" style="text-align: center; padding: 60px; grid-column: 1/-1;">
+                    <div style="font-size: 60px; margin-bottom: 20px;">🔍</div>
+                    <h3 style="color: #2c3e50; margin-bottom: 10px;">Không tìm thấy bác sĩ</h3>
+                    <p style="color: #7f8c8d; margin-bottom: 20px;">Vui lòng thử lại với từ khóa hoặc bộ lọc khác</p>
+                    <button onclick="resetAllFilters()" style="padding: 12px 24px; background: #4a69bd; color: white; border: none; border-radius: 25px; cursor: pointer;">
+                        <i class="fas fa-undo"></i> Xóa bộ lọc
+                    </button>
                 </div>
             `;
             document.getElementById('pagination').style.display = 'none';
@@ -1718,42 +1980,60 @@ document.addEventListener('DOMContentLoaded', function () {
         const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, filteredDoctors.length);
         const currentDoctors = filteredDoctors.slice(startIndex, endIndex);
 
-        // Render cards
-        grid.innerHTML = currentDoctors.map(doctor => createDoctorCard(doctor)).join('');
+        // Render cards with search highlighting
+        grid.innerHTML = currentDoctors.map(doctor => createDoctorCard(doctor, searchQuery)).join('');
 
         // Render pagination
         renderPagination(totalPages);
     }
 
-    // Tạo card bác sĩ
-    function createDoctorCard(doctor) {
+    // Tạo card bác sĩ với highlight
+    function createDoctorCard(doctor, searchQuery = '') {
         const avatarUrl = doctor.avatar_url || '/frontend/img/Screenshot 2025-10-17 201418.png';
         const degree = doctor.degree || 'BS';
-        const displayName = `${degree} ${doctor.full_name}`.toUpperCase();
-        const specialization = doctor.specialization?.name || 'Đa khoa';
+        let displayName = `${degree} ${doctor.full_name}`.toUpperCase();
+        let specialization = doctor.specialization?.name || 'Đa khoa';
         const experience = doctor.experience || 0;
         const rating = parseFloat(doctor.rating_avg) || 0;
         const ratingCount = doctor.rating_count || 0;
-        const clinicAddress = doctor.clinic?.address || 'Chưa cập nhật';
+        let clinicAddress = doctor.clinic?.address || 'Chưa cập nhật';
         const phone = doctor.phone || 'Chưa cập nhật';
         const email = doctor.email || 'Chưa cập nhật';
 
+        // Highlight search terms
+        if (searchQuery) {
+            displayName = highlightSearchTerms(displayName, searchQuery);
+            specialization = highlightSearchTerms(specialization, searchQuery);
+            clinicAddress = highlightSearchTerms(clinicAddress, searchQuery);
+        }
+
         // Tạo sao đánh giá
-        const stars = '★'.repeat(Math.round(rating)) + '☆'.repeat(5 - Math.round(rating));
+        const fullStars = Math.floor(rating);
+        const hasHalfStar = rating % 1 >= 0.5;
+        const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+        const stars = '★'.repeat(fullStars) + (hasHalfStar ? '½' : '') + '☆'.repeat(emptyStars);
+
+        // Rating badge color
+        let ratingBadgeColor = '#95a5a6';
+        if (rating >= 4.5) ratingBadgeColor = '#27ae60';
+        else if (rating >= 4) ratingBadgeColor = '#2ecc71';
+        else if (rating >= 3.5) ratingBadgeColor = '#f39c12';
+        else if (rating >= 3) ratingBadgeColor = '#e67e22';
 
         return `
             <div class="doctor-card" data-doctor-id="${doctor.id}">
                 <div class="doctor-image">
                     <img src="${avatarUrl}" alt="${doctor.full_name}"
-                         onerror="this.src='/frontend/img/Screenshot 2025-10-17 201418.png'" />
+                         onerror="this.src='/frontend/img/Screenshot 2025-10-17 201418.png'" 
+                         loading="lazy" />
                     <button class="book-btn" onclick="bookDoctor(${doctor.id})">Đặt lịch hẹn</button>
                 </div>
                 <div class="doctor-info">
                     <h2 class="doctor-name">${displayName}</h2>
                     <div class="rating">
-                        <span class="rating-score">${rating.toFixed(1)}</span>
-                        <span class="rating-stars">${stars}</span>
-                        <span style="color: #95a5a6; font-size: 14px">(${ratingCount} đánh giá)</span>
+                        <span class="rating-score" style="background: ${ratingBadgeColor}; color: white; padding: 4px 10px; border-radius: 12px; font-size: 14px;">${rating.toFixed(1)}</span>
+                        <span class="rating-stars" style="color: #f39c12;">${stars}</span>
+                        <span style="color: #95a5a6; font-size: 13px">(${ratingCount} đánh giá)</span>
                     </div>
                     <div class="info-item">
                         <span class="info-icon">🎓</span>
@@ -1761,7 +2041,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     </div>
                     <div class="info-item">
                         <span class="info-icon">🏥</span>
-                        <span>${experience} năm kinh nghiệm</span>
+                        <span><strong>${experience}</strong> năm kinh nghiệm</span>
                     </div>
                     <div class="info-item">
                         <span class="info-icon">💼</span>

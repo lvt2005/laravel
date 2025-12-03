@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -2184,9 +2184,6 @@
         <h1 id="pageTitleText">Th�ng Tin C� Nh�n</h1>
       </div>
       <div class="top-actions">
-        <a href="/dat-lich/bieu-mau" class="btn-primary" style="margin-right: 15px; text-decoration: none; display: flex; align-items: center; gap: 8px;">
-          <i class="ri-calendar-check-line"></i> �?t l?ch ngay
-        </a>
         <div class="icon-btn" onclick="openNotificationsModal()">
           <i class="ri-notification-3-line"></i>
           <span class="badge">5</span>
