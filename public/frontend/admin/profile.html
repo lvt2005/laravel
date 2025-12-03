@@ -1,0 +1,3876 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../img/favicon.ico" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.2.0/remixicon.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- Load API module first -->
+    <script src="../js/admin_profile.js"></script>
+    <title>Trang Quản Trị Admin</title>
+    <link rel="stylesheet" href="admin.css">
+    <style>
+        /* Payment Detail Styles */
+        .detail-section {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .detail-section:last-child {
+            border-bottom: none;
+        }
+
+        .detail-section h3 {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .detail-section h3 i {
+            color: #3498db;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .detail-item label {
+            font-size: 12px;
+            color: #777;
+        }
+
+        .detail-item span {
+            font-size: 14px;
+            color: #333;
+        }
+
+        /* Payment tabs badges */
+        .filter-tabs .badge {
+            background: #e74c3c;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            margin-left: 5px;
+        }
+
+        .filter-tabs .badge-success {
+            background: #27ae60;
+        }
+
+        .filter-tabs .badge-danger {
+            background: #e74c3c;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        /* Chart type buttons */
+        .chart-type-btn {
+            padding: 10px 20px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .chart-type-btn:hover {
+            background: #f5f5f5;
+            border-color: #667eea;
+        }
+
+        .chart-type-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+    </style>
+
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <img src="../img/logomau.jpg" style="width: 280px; height: 70px; border-radius: 50%; object-fit: cover;">
+        </div>
+
+        <nav class="nav-menu">
+            <div class="nav-item active" data-section="dashboard">
+                <i class="ri-dashboard-line"></i>
+                <span>Tổng quan</span>
+            </div>
+            <div class="nav-item" data-section="users">
+                <i class="ri-user-line"></i>
+                <span>Quản lý người dùng</span>
+            </div>
+            <div class="nav-item" data-section="doctors">
+                <i class="ri-stethoscope-line"></i>
+                <span>Quản lý bác sĩ</span>
+            </div>
+            <div class="nav-item" data-section="clinics">
+                <i class="ri-hospital-line"></i>
+                <span>Quản lý phòng khám</span>
+            </div>
+            <div class="nav-item" data-section="appointments">
+                <i class="ri-calendar-check-line"></i>
+                <span>Quản lý lịch hẹn</span>
+            </div>
+            <div class="nav-item" data-section="payments">
+                <i class="ri-money-dollar-circle-line"></i>
+                <span>Quản lý thanh toán</span>
+            </div>
+            <div class="nav-item" data-section="specialties">
+                <i class="ri-first-aid-kit-line"></i>
+                <span>Quản lý chuyên khoa</span>
+            </div>
+            <div class="nav-item" data-section="reports">
+                <i class="ri-file-chart-line"></i>
+                <span>Báo cáo thống kê</span>
+            </div>
+            <div class="nav-item" data-section="reviews">
+                <i class="ri-star-line"></i>
+                <span>Quản lý đánh giá</span>
+            </div>
+            <div class="nav-item" data-section="settings">
+                <i class="ri-settings-3-line"></i>
+                <span>Cấu hình hệ thống</span>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="page-title">
+                <i class="ri-dashboard-fill"></i>
+                <h1 id="pageTitle">Tổng Quan Hệ Thống</h1>
+            </div>
+            <div class="admin-info" onclick="toggleAdminMenu()" style="cursor: pointer; position: relative;">
+                <div class="admin-avatar" id="adminAvatar"></div>
+                <div class="admin-name">
+                    <strong id="adminName"></strong>
+                    <span id="adminRole"></span>
+                </div>
+                <i class="ri-arrow-down-s-line" style="font-size: 20px; color: #7f8c8d; margin-left: 10px;"></i>
+
+                <!-- Admin Dropdown Menu -->
+                <div id="adminMenu" class="admin-dropdown-menu">
+                    <div class="admin-menu-header">
+                        <div class="admin-menu-avatar" id="menuAvatar"></div>
+                        <div>
+                            <div class="admin-menu-name" id="menuName"></div>
+                            <div class="admin-menu-email" id="menuEmail"></div>
+                        </div>
+                    </div>
+                    <div class="admin-menu-divider"></div>
+                    <a href="javascript:void(0)" class="admin-menu-item" onclick="openAdminProfile()">
+                        <i class="ri-user-line"></i>
+                        <span>Thông tin cá nhân</span>
+                    </a>
+                    <a href="javascript:void(0)" class="admin-menu-item" onclick="openChangePassword()">
+                        <i class="ri-lock-password-line"></i>
+                        <span>Đổi mật khẩu</span>
+                    </a>
+                    <a href="javascript:void(0)" class="admin-menu-item" onclick="openNotificationSettings()">
+                        <i class="ri-notification-3-line"></i>
+                        <span>Cài đặt thông báo</span>
+                    </a>
+                    <div class="admin-menu-divider"></div>
+                    <a href="javascript:void(0)" class="admin-menu-item" onclick="adminLogout()"
+                        style="color: #e74c3c;">
+                        <i class="ri-logout-box-r-line"></i>
+                        <span>Đăng xuất</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Profile Modal -->
+        <div id="adminProfileModal" class="modal">
+            <div class="modal-content" style="max-width: 700px;">
+                <div class="modal-header">
+                    <h2>Thông tin cá nhân</h2>
+                    <div class="close-modal" onclick="closeModal('adminProfileModal')">
+                        <i class="ri-close-line"></i>
+                    </div>
+                </div>
+
+                <div class="profile-avatar-section">
+                    <div class="profile-avatar-large" id="profileAvatarLarge"></div>
+                    <h3 id="profileName" style="font-size: 20px; font-weight: 700; margin-bottom: 5px;"></h3>
+                    <p id="profileRole" style="opacity: 0.9; font-size: 14px;"></p>
+                    <button class="change-avatar-btn" onclick="changeAvatar()">
+                        <i class="ri-camera-line"></i> Thay đổi ảnh đại diện
+                    </button>
+                    <!-- Hidden file input for avatar upload -->
+                    <input type="file" id="avatarFileInput" accept="image/*" style="display:none">
+                </div>
+
+                <form id="adminProfileForm">
+                    <div class="profile-form-row">
+                        <div class="form-group">
+                            <label>Họ và tên *</label>
+                            <input type="text" id="profileFullName" placeholder="" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Tên đăng nhập</label>
+                            <input type="text" id="profileUsername" readonly style="background: #f8f9fa;"
+                                placeholder="">
+                        </div>
+                    </div>
+
+                    <div class="profile-form-row">
+                        <div class="form-group">
+                            <label>Email *</label>
+                            <input type="email" id="profileEmail" placeholder="" required readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Số điện thoại *</label>
+                            <input type="tel" id="profilePhone" placeholder="" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Địa chỉ</label>
+                        <input type="text" id="profileAddress" placeholder="">
+                    </div>
+
+                    <div class="profile-form-row">
+                        <div class="form-group">
+                            <label>Ngày tạo tài khoản</label>
+                            <input type="text" id="profileCreatedDate" readonly style="background: #f8f9fa;"
+                                placeholder="">
+                        </div>
+                        <div class="form-group">
+                            <label>Đăng nhập lần cuối</label>
+                            <input type="text" id="profileLastLogin" readonly style="background: #f8f9fa;"
+                                placeholder="">
+                        </div>
+                    </div>
+
+                    <div class="info-badge">
+                        <i class="ri-shield-check-line"></i>
+                        <span>Tài khoản đã xác thực</span>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" class="btn-cancel" onclick="closeModal('adminProfileModal')">Hủy</button>
+                        <button type="submit" class="btn-primary">
+                            <i class="ri-save-line"></i>
+                            Lưu thay đổi
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Change Password Modal -->
+        <div id="changePasswordModal" class="modal">
+            <div class="modal-content" style="max-width: 550px;">
+                <div class="modal-header">
+                    <h2>Đổi mật khẩu</h2>
+                    <div class="close-modal" onclick="closeModal('changePasswordModal')">
+                        <i class="ri-close-line"></i>
+                    </div>
+                </div>
+
+                <form id="changePasswordForm">
+                    <div class="form-group password-field">
+                        <label>Mật khẩu hiện tại *</label>
+                        <input type="password" id="currentPassword" placeholder="Nhập mật khẩu hiện tại" required>
+                        <i class="ri-eye-off-line password-toggle" onclick="togglePassword('currentPassword')"></i>
+                    </div>
+
+                    <div class="form-group password-field">
+                        <label>Mật khẩu mới *</label>
+                        <input type="password" id="newPassword" placeholder="Nhập mật khẩu mới" required
+                            oninput="checkPasswordStrength()">
+                        <i class="ri-eye-off-line password-toggle" onclick="togglePassword('newPassword')"></i>
+                    </div>
+
+                    <div class="password-strength">
+                        <div class="password-strength-bar">
+                            <div class="password-strength-fill" id="passwordStrengthFill"></div>
+                        </div>
+                        <span id="passwordStrengthText" style="font-size: 12px; color: #7f8c8d;">Độ mạnh: Chưa
+                            nhập</span>
+                    </div>
+
+                    <div class="password-requirements">
+                        <div style="font-weight: 600; margin-bottom: 8px; color: #2c3e50;">Yêu cầu mật khẩu:</div>
+                        <div class="password-requirement" id="req-length">
+                            <i class="ri-close-circle-line"></i>
+                            <span>Ít nhất 8 ký tự</span>
+                        </div>
+                        <div class="password-requirement" id="req-uppercase">
+                            <i class="ri-close-circle-line"></i>
+                            <span>Có chữ hoa</span>
+                        </div>
+                        <div class="password-requirement" id="req-lowercase">
+                            <i class="ri-close-circle-line"></i>
+                            <span>Có chữ thường</span>
+                        </div>
+                        <div class="password-requirement" id="req-number">
+                            <i class="ri-close-circle-line"></i>
+                            <span>Có số</span>
+                        </div>
+                        <div class="password-requirement" id="req-special">
+                            <i class="ri-close-circle-line"></i>
+                            <span>Có ký tự đặc biệt (!@#$%^&*)</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group password-field">
+                        <label>Xác nhận mật khẩu mới *</label>
+                        <input type="password" id="confirmPassword" placeholder="Nhập lại mật khẩu mới" required>
+                        <i class="ri-eye-off-line password-toggle" onclick="togglePassword('confirmPassword')"></i>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" class="btn-cancel"
+                            onclick="closeModal('changePasswordModal')">Hủy</button>
+                        <button type="submit" class="btn-primary">
+                            <i class="ri-lock-password-line"></i>
+                            Đổi mật khẩu
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Notification Settings Modal -->
+        <div id="notificationSettingsModal" class="modal">
+            <div class="modal-content" style="max-width: 600px;">
+                <div class="modal-header">
+                    <h2>Cài đặt thông báo</h2>
+                    <div class="close-modal" onclick="closeModal('notificationSettingsModal')">
+                        <i class="ri-close-line"></i>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <h3 style="font-size: 16px; font-weight: 600; color: #2c3e50; margin-bottom: 15px;">
+                        <i class="ri-notification-3-line" style="color: #e74c3c;"></i>
+                        Thông báo hệ thống
+                    </h3>
+
+                    <div class="notification-option">
+                        <div class="notification-option-info">
+                            <div class="notification-option-title">Lịch hẹn mới</div>
+                            <div class="notification-option-desc">Nhận thông báo khi có lịch hẹn mới</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="notif-appointments" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="notification-option">
+                        <div class="notification-option-info">
+                            <div class="notification-option-title">Thanh toán</div>
+                            <div class="notification-option-desc">Nhận thông báo về giao dịch thanh toán</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="notif-payments" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="notification-option">
+                        <div class="notification-option-info">
+                            <div class="notification-option-title">Người dùng mới</div>
+                            <div class="notification-option-desc">Nhận thông báo khi có người dùng đăng ký mới</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="notif-users" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="notification-option">
+                        <div class="notification-option-info">
+                            <div class="notification-option-title">Đánh giá mới</div>
+                            <div class="notification-option-desc">Nhận thông báo khi có đánh giá mới</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="notif-reviews" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <h3 style="font-size: 16px; font-weight: 600; color: #2c3e50; margin-bottom: 15px;">
+                        <i class="ri-mail-line" style="color: #e74c3c;"></i>
+                        Thông báo Email
+                    </h3>
+
+                    <div class="notification-option">
+                        <div class="notification-option-info">
+                            <div class="notification-option-title">Báo cáo hàng ngày</div>
+                            <div class="notification-option-desc">Nhận báo cáo tổng hợp qua email mỗi ngày</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="email-daily">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="notification-option">
+                        <div class="notification-option-info">
+                            <div class="notification-option-title">Báo cáo hàng tuần</div>
+                            <div class="notification-option-desc">Nhận báo cáo tổng hợp qua email mỗi tuần</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="email-weekly" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel"
+                        onclick="closeModal('notificationSettingsModal')">Hủy</button>
+                    <button type="button" class="btn-primary" onclick="saveNotificationSettings()">
+                        <i class="ri-save-line"></i>
+                        Lưu cài đặt
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div id="dashboardSection" class="content-section">
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="ri-user-line"></i>
+                    </div>
+                    <div class="stat-value" id="totalPatients">--</div>
+                    <div class="stat-label">Tổng bệnh nhân</div>
+                    <div class="stat-trend" id="totalPatientsChange">
+                        <i class="ri-arrow-up-line"></i>
+                        <span>Đang tải...</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="ri-stethoscope-line"></i>
+                    </div>
+                    <div class="stat-value" id="activeDoctors">--</div>
+                    <div class="stat-label">Bác sĩ hoạt động</div>
+                    <div class="stat-trend" id="activeDoctorsChange">
+                        <i class="ri-arrow-up-line"></i>
+                        <span>Đang tải...</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="ri-calendar-check-line"></i>
+                    </div>
+                    <div class="stat-value" id="appointmentsThisMonth">--</div>
+                    <div class="stat-label">Lịch hẹn tháng này</div>
+                    <div class="stat-trend" id="appointmentsThisMonthChange">
+                        <i class="ri-arrow-up-line"></i>
+                        <span>Đang tải...</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="ri-money-dollar-circle-line"></i>
+                    </div>
+                    <div class="stat-value" id="revenueThisMonth">--</div>
+                    <div class="stat-label">Doanh thu tháng này</div>
+                    <div class="stat-trend" id="revenueThisMonthChange">
+                        <i class="ri-arrow-up-line"></i>
+                        <span>Đang tải...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Grid -->
+            <div class="content-grid">
+                <!-- Recent Appointments -->
+                <div class="section-card">
+                    <div class="section-header">
+                        <div class="section-title">
+                            <i class="ri-calendar-check-line"></i>
+                            Lịch hẹn gần đây
+                        </div>
+                        <button class="btn-secondary" onclick="showSection('appointments')">
+                            <i class="ri-eye-line"></i>
+                            Xem tất cả
+                        </button>
+                    </div>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Bệnh nhân</th>
+                                <th>Bác sĩ</th>
+                                <th>Thời gian</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentAppointmentsBody">
+                            <tr class="empty-row">
+                                <td colspan="4" style="text-align: center; color: #999;">Chưa có dữ liệu</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="section-card">
+                    <div class="section-header">
+                        <div class="section-title">
+                            <i class="ri-time-line"></i>
+                            Hoạt động gần đây
+                        </div>
+                    </div>
+
+                    <div class="activity-list" id="recentActivitiesBody">
+                        <div style="text-align: center; color: #999; padding: 20px;">Chưa có dữ liệu</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users Section -->
+        <div id="usersSection" class="content-section" style="display: none;">
+            <div class="section-card full-width">
+                <div class="section-header">
+                    <div class="section-title">
+                        <i class="ri-user-line"></i>
+                        Quản lý người dùng
+                    </div>
+                    <button class="btn-primary" onclick="openAddUserModal()">
+                        <i class="ri-user-add-line"></i>
+                        Thêm người dùng
+                    </button>
+                </div>
+
+                <div class="search-filter">
+                    <div class="search-box">
+                        <input type="text" placeholder="Tìm kiếm người dùng...">
+                        <i class="ri-search-line"></i>
+                    </div>
+                    <select class="filter-select" id="userStatusFilter">
+                        <option value="all">Tất cả trạng thái</option>
+                        <option value="active">Hoạt động</option>
+                        <option value="inactive">Khóa</option>
+                    </select>
+                </div>
+
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Avatar</th>
+                            <th>Người dùng</th>
+                            <th>Giới tính</th>
+                            <th>Ngày sinh</th>
+                            <th>Email</th>
+                            <th>SĐT</th>
+                            <th>Ngày đăng ký</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Doctors Section -->
+        <div id="doctorsSection" class="content-section" style="display: none;">
+            <div class="section-card full-width">
+                <div class="section-header">
+                    <div class="section-title">
+                        <i class="ri-stethoscope-line"></i>
+                        Quản lý bác sĩ
+                    </div>
+                    <button class="btn-primary" onclick="openAddDoctorModal()">
+                        <i class="ri-user-add-line"></i>
+                        Thêm bác sĩ
+                    </button>
+                </div>
+
+                <div class="search-filter">
+                    <div class="search-box">
+                        <input type="text" placeholder="Tìm kiếm bác sĩ...">
+                        <i class="ri-search-line"></i>
+                    </div>
+                </div>
+
+                <!-- Filter Tabs for Doctors -->
+                <div class="filter-tabs">
+                    <div class="filter-tab active" data-tab="all-doctors">Tất cả bác sĩ</div>
+                    <div class="filter-tab" data-tab="active-doctors">Đang hoạt động</div>
+                    <div class="filter-tab" data-tab="locked-doctors">Đã khóa</div>
+                </div>
+
+                <!-- Tab Contents for Doctors -->
+                <div id="all-doctors-tab" class="tab-content active">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Bác sĩ</th>
+                                <th>Chuyên khoa</th>
+                                <th>Kinh nghiệm</th>
+                                <th>Phòng khám</th>
+                                <th>Trạng thái</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="doctorTableBody">
+                            <tr class="empty-row">
+                                <td colspan="7">Đang tải...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+
+                <div id="active-doctors-tab" class="tab-content">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Bác sĩ</th>
+                                <th>Chuyên khoa</th>
+                                <th>Kinh nghiệm</th>
+                                <th>Phòng khám</th>
+                                <th>Trạng thái</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="empty-row">
+                                <td colspan="7">Chưa có dữ liệu</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="locked-doctors-tab" class="tab-content">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Bác sĩ</th>
+                                <th>Chuyên khoa</th>
+                                <th>Kinh nghiệm</th>
+                                <th>Phòng khám</th>
+                                <th>Trạng thái</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="empty-row">
+                                <td colspan="7">Chưa có dữ liệu</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Clinics Section -->
+        <div id="clinicsSection" class="content-section" style="display: none;">
+            <div class="section-card full-width">
+                <div class="section-header">
+                    <div class="section-title">
+                        <i class="ri-hospital-line"></i>
+                        Quản lý phòng khám
+                    </div>
+                    <button class="btn-primary" onclick="openAddClinicModal()">
+                        <i class="ri-add-line"></i>
+                        Thêm phòng khám
+                    </button>
+                </div>
+
+                <div class="search-filter">
+                    <div class="search-box">
+                        <input type="text" id="clinicSearchInput" placeholder="Tìm kiếm phòng khám..."
+                            oninput="filterClinics()">
+                        <i class="ri-search-line"></i>
+                    </div>
+                    <select class="filter-select" id="clinicStatusFilter" onchange="filterClinics()">
+                        <option value="all">Tất cả trạng thái</option>
+                        <option value="1">Hoạt động</option>
+                        <option value="0">Ngừng hoạt động</option>
+                    </select>
+                </div>
+
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên phòng khám</th>
+                            <th>Địa chỉ</th>
+                            <th>Hotline</th>
+                            <th>Email</th>
+                            <th>Giờ mở cửa</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="clinicTableBody">
+                        <!-- Data will be loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Appointments Section -->
+        <div id="appointmentsSection" class="content-section" style="display: none;">
+            <div class="section-card full-width">
+                <div class="section-header">
+                    <div class="section-title">
+                        <i class="ri-calendar-check-line"></i>
+                        Quản lý lịch hẹn
+                    </div>
+                    <button class="btn-primary" onclick="openAddAppointmentModal()">
+                        <i class="ri-add-line"></i>
+                        Thêm lịch hẹn
+                    </button>
+                </div>
+
+                <div class="search-filter">
+                    <div class="search-box">
+                        <input type="text" id="appointmentSearchInput" placeholder="Tìm kiếm lịch hẹn..."
+                            oninput="filterAppointments()">
+                        <i class="ri-search-line"></i>
+                    </div>
+                    <select class="filter-select" id="appointmentStatusFilter" onchange="filterAppointments()">
+                        <option value="all">Tất cả trạng thái</option>
+                        <option value="pending">Chưa xác nhận</option>
+                        <option value="confirmed">Đã xác nhận</option>
+                        <option value="paid_confirmed">Đã thanh toán + Đã xác nhận</option>
+                        <option value="cancelled">Đã hủy</option>
+                        <option value="completed">Đã hoàn thành</option>
+                        <option value="ended">Đã kết thúc</option>
+                    </select>
+                </div>
+
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Bệnh nhân</th>
+                            <th>Bác sĩ</th>
+                            <th>Ngày hẹn</th>
+                            <th>Thời gian</th>
+                            <th>Phòng khám</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="appointmentTableBody">
+                        <tr>
+                            <td colspan="8" style="text-align: center; color: #999;">Đang tải...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Reviews Section -->
+        <div id="reviewsSection" class="content-section" style="display: none;">
+            <div class="section-card full-width">
+                <div class="section-header">
+                    <div class="section-title">
+                        <i class="ri-star-line"></i>
+                        Quản lý đánh giá
+                    </div>
+                    <div class="average-rating-display" id="averageRatingDisplay"
+                        style="display: flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #ffd700, #ffb347); padding: 8px 16px; border-radius: 20px; color: #333; font-weight: 600;">
+                        <i class="ri-star-fill" style="color: #ff6b35;"></i>
+                        <span id="averageRatingValue">--</span>
+                    </div>
+                </div>
+
+                <div class="search-filter">
+                    <div class="search-box">
+                        <input type="text" id="reviewSearchInput"
+                            placeholder="Tìm kiếm theo tên bệnh nhân hoặc nội dung..." oninput="filterReviews()">
+                        <i class="ri-search-line"></i>
+                    </div>
+                    <select class="filter-select" id="reviewRatingFilter" onchange="filterReviews()">
+                        <option value="all">Tất cả đánh giá</option>
+                        <option value="5">5 sao</option>
+                        <option value="4">4 sao</option>
+                        <option value="3">3 sao</option>
+                        <option value="2">2 sao</option>
+                        <option value="1">1 sao</option>
+                    </select>
+                    <div class="doctor-search-container" style="position: relative;">
+                        <input type="text" id="doctorSearchInput" class="filter-select" placeholder="Tìm bác sĩ..."
+                            style="width: 200px; cursor: text;" oninput="searchDoctorSuggestions(this.value)"
+                            onfocus="showDoctorSuggestions()" autocomplete="off">
+                        <input type="hidden" id="selectedDoctorId" value="all">
+                        <div id="doctorSuggestions" class="suggestions-dropdown"
+                            style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); max-height: 250px; overflow-y: auto; z-index: 1000;">
+                        </div>
+                    </div>
+                </div>
+
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>ID Lịch khám</th>
+                            <th>Bệnh nhân</th>
+                            <th>Bác sĩ</th>
+                            <th>Đánh giá</th>
+                            <th>Nội dung</th>
+                            <th>Ngày</th>
+                            <th>Tổng TB</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reviewTableBody">
+                        <!-- Data loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Payments Section -->
+        <div id="paymentsSection" class="content-section" style="display: none;">
+            <div class="section-card full-width">
+                <div class="section-header">
+                    <div class="section-title">
+                        <i class="ri-money-dollar-circle-line"></i>
+                        Quản lý thanh toán
+                    </div>
+                </div>
+
+                <div class="search-filter">
+                    <div class="search-box">
+                        <input type="text" id="paymentSearchInput" placeholder="Tìm kiếm giao dịch..."
+                            oninput="filterPayments()">
+                        <i class="ri-search-line"></i>
+                    </div>
+                    <select class="filter-select" id="paymentStatusFilter" onchange="filterPayments()">
+                        <option value="all">Tất cả trạng thái</option>
+                        <option value="pending">Chờ xác nhận</option>
+                        <option value="refund_pending">Yêu cầu hoàn tiền</option>
+                        <option value="success">Thành công</option>
+                        <option value="failed">Thất bại/Từ chối</option>
+                    </select>
+                </div>
+
+                <!-- Payment Tabs -->
+                <div class="filter-tabs" style="margin-bottom: 15px;">
+                    <button class="filter-tab active" data-payment-tab="pending" onclick="switchPaymentTab('pending')">
+                        <i class="ri-time-line"></i> Chờ xác nhận
+                        <span class="badge" id="pendingPaymentCount">0</span>
+                    </button>
+                    <button class="filter-tab" data-payment-tab="refund" onclick="switchPaymentTab('refund')">
+                        <i class="ri-refund-line"></i> Yêu cầu hoàn tiền
+                        <span class="badge" id="refundPaymentCount">0</span>
+                    </button>
+                    <button class="filter-tab" data-payment-tab="success" onclick="switchPaymentTab('success')">
+                        <i class="ri-checkbox-circle-line"></i> Thành công
+                        <span class="badge badge-success" id="successPaymentCount">0</span>
+                    </button>
+                    <button class="filter-tab" data-payment-tab="failed" onclick="switchPaymentTab('failed')">
+                        <i class="ri-close-circle-line"></i> Thất bại
+                        <span class="badge badge-danger" id="failedPaymentCount">0</span>
+                    </button>
+                </div>
+
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Bệnh nhân</th>
+                            <th>Bác sĩ</th>
+                            <th>Ngày khám</th>
+                            <th>Số tiền</th>
+                            <th>Phương thức</th>
+                            <th>Trạng thái</th>
+                            <th>Ngày TT</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="paymentTableBody">
+                        <!-- Data loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Payment Detail Modal -->
+        <div id="paymentDetailModal" class="modal">
+            <div class="modal-content" style="max-width: 600px;">
+                <div class="modal-header">
+                    <h2><i class="ri-file-list-3-line"></i> Chi tiết thanh toán</h2>
+                    <div class="close-modal" onclick="closeModal('paymentDetailModal')">
+                        <i class="ri-close-line"></i>
+                    </div>
+                </div>
+                <div class="payment-detail-content">
+                    <input type="hidden" id="paymentDetailId">
+
+                    <!-- Patient Info -->
+                    <div class="detail-section">
+                        <h3><i class="ri-user-line"></i> Thông tin bệnh nhân</h3>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <label>Họ tên:</label>
+                                <span id="pdPatientName">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Số điện thoại:</label>
+                                <span id="pdPatientPhone">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Email:</label>
+                                <span id="pdPatientEmail">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Appointment Info -->
+                    <div class="detail-section">
+                        <h3><i class="ri-calendar-check-line"></i> Thông tin lịch hẹn</h3>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <label>Mã lịch hẹn:</label>
+                                <span id="pdAppointmentId">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Bác sĩ:</label>
+                                <span id="pdDoctorName">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Phòng khám:</label>
+                                <span id="pdClinicName">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Ngày khám:</label>
+                                <span id="pdAppointmentDate">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Giờ khám:</label>
+                                <span id="pdTimeSlot">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Trạng thái lịch:</label>
+                                <span id="pdAppointmentStatus">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Info -->
+                    <div class="detail-section">
+                        <h3><i class="ri-bank-card-line"></i> Thông tin thanh toán</h3>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <label>Số tiền:</label>
+                                <span id="pdAmount" style="color: #e74c3c; font-weight: bold;">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Phương thức:</label>
+                                <span id="pdPaymentMethod">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Trạng thái TT:</label>
+                                <span id="pdPaymentStatus">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Ngày thanh toán:</label>
+                                <span id="pdPaidAt">-</span>
+                            </div>
+                            <div class="detail-item" id="pdRefundStatusRow" style="display:none;">
+                                <label>Trạng thái hoàn tiền:</label>
+                                <span id="pdRefundStatus">-</span>
+                            </div>
+                            <div class="detail-item" id="pdRefundDateRow" style="display:none;">
+                                <label>Ngày yêu cầu hoàn:</label>
+                                <span id="pdRefundRequestedAt">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notes -->
+                    <div class="detail-section" id="pdNotesSection">
+                        <h3><i class="ri-file-text-line"></i> Ghi chú</h3>
+                        <p id="pdNotes" style="background: #f8f9fa; padding: 10px; border-radius: 5px;">-</p>
+                    </div>
+
+                    <!-- Rejection Reason (for failed) -->
+                    <div class="detail-section" id="pdRejectionSection" style="display:none;">
+                        <h3><i class="ri-error-warning-line"></i> Lý do từ chối</h3>
+                        <p id="pdRejectionReason"
+                            style="background: #fff3cd; padding: 10px; border-radius: 5px; color: #856404;">-</p>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" class="btn-cancel"
+                            onclick="closeModal('paymentDetailModal')">Đóng</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Approve/Reject Payment Modal -->
+        <div id="paymentActionModal" class="modal">
+            <div class="modal-content" style="max-width: 500px;">
+                <div class="modal-header">
+                    <h2 id="paymentActionTitle">Xác nhận thanh toán</h2>
+                    <div class="close-modal" onclick="closeModal('paymentActionModal')">
+                        <i class="ri-close-line"></i>
+                    </div>
+                </div>
+                <form id="paymentActionForm">
+                    <input type="hidden" id="actionPaymentId">
+                    <input type="hidden" id="actionType">
+
+                    <div class="detail-section" style="margin-bottom: 15px;">
+                        <p><strong>Bệnh nhân:</strong> <span id="actionPatientName">-</span></p>
+                        <p><strong>Số tiền:</strong> <span id="actionAmount" style="color: #e74c3c;">-</span></p>
+                        <p><strong>Loại yêu cầu:</strong> <span id="actionRequestType">-</span></p>
+                    </div>
+
+                    <div class="form-group" id="rejectReasonGroup" style="display:none;">
+                        <label>Lý do từ chối <span style="color:red">*</span></label>
+                        <textarea id="rejectReason" rows="3"
+                            placeholder="Nhập lý do từ chối để gửi thông báo cho người dùng..."></textarea>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" class="btn-cancel" onclick="closeModal('paymentActionModal')">Hủy</button>
+                        <button type="button" class="btn-danger" id="btnRejectPayment"
+                            onclick="submitPaymentAction('reject')">
+                            <i class="ri-close-circle-line"></i> Từ chối
+                        </button>
+                        <button type="button" class="btn-primary" id="btnApprovePayment"
+                            onclick="submitPaymentAction('approve')">
+                            <i class="ri-checkbox-circle-line"></i> Duyệt
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Specialties Section -->
+        <div id="specialtiesSection" class="content-section" style="display: none;">
+            <div class="section-card full-width">
+                <div class="section-header">
+                    <div class="section-title">
+                        <i class="ri-first-aid-kit-line"></i>
+                        Quản lý chuyên khoa
+                    </div>
+                    <button class="btn-primary" onclick="openAddSpecialtyModal()">
+                        <i class="ri-add-line"></i>
+                        Thêm chuyên khoa
+                    </button>
+                </div>
+
+                <div class="search-filter">
+                    <div class="search-box">
+                        <input type="text" id="specialtySearch" placeholder="Tìm kiếm chuyên khoa..."
+                            oninput="filterSpecialties()">
+                        <i class="ri-search-line"></i>
+                    </div>
+                </div>
+
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Tên chuyên khoa</th>
+                            <th>Giá khám cơ bản</th>
+                            <th>Mô tả</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="specialtyTableBody">
+                        <!-- Data loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Reports Section -->
+        <div id="reportsSection" class="content-section" style="display: none;">
+            <div class="section-card full-width">
+                <div class="section-header">
+                    <div class="section-title">
+                        <i class="ri-file-chart-line"></i>
+                        Báo cáo thống kê
+                    </div>
+                    <button class="btn-primary" onclick="exportReport()">
+                        <i class="ri-file-download-line"></i>
+                        Xuất báo cáo
+                    </button>
+                </div>
+
+                <div class="search-filter">
+                    <select class="filter-select" id="reportPeriodSelect" onchange="changeReportPeriod(this.value)">
+                        <option value="month" selected>Tháng này</option>
+                        <option value="quarter">Quý này</option>
+                        <option value="year">Năm nay</option>
+                    </select>
+                    <select class="filter-select" id="reportTypeFilter">
+                        <option value="all" selected>Tất cả báo cáo</option>
+                        <option value="appointments">Báo cáo lịch hẹn</option>
+                        <option value="revenue">Báo cáo doanh thu</option>
+                        <option value="users">Báo cáo người dùng</option>
+                        <option value="reviews">Báo cáo đánh giá</option>
+                    </select>
+                    <button class="btn-secondary" onclick="refreshReports()">
+                        <i class="ri-refresh-line"></i>
+                        Làm mới
+                    </button>
+                </div>
+
+                <!-- Current Period Display -->
+                <div id="currentPeriodDisplay"
+                    style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                    <i class="ri-calendar-line" style="font-size: 20px; color: #e74c3c;"></i>
+                    <div>
+                        <strong style="color: #2c3e50; font-size: 14px;">Đang xem:</strong>
+                        <span id="reportPeriodLabel" style="color: #7f8c8d; font-size: 14px; margin-left: 5px;">Tháng
+                            này</span>
+                    </div>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="stats-grid" id="reportStatsGrid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="ri-calendar-check-line"></i>
+                        </div>
+                        <div class="stat-value" id="reportAppointments">--</div>
+                        <div class="stat-label">Tổng lịch hẹn</div>
+                        <div class="stat-trend" id="reportAppointmentsChange">
+                            <i class="ri-arrow-up-line"></i>
+                            <span>Đang tải...</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="ri-money-dollar-circle-line"></i>
+                        </div>
+                        <div class="stat-value" id="reportRevenue">--</div>
+                        <div class="stat-label">Tổng doanh thu</div>
+                        <div class="stat-trend" id="reportRevenueChange">
+                            <i class="ri-arrow-up-line"></i>
+                            <span>Đang tải...</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="ri-user-add-line"></i>
+                        </div>
+                        <div class="stat-value" id="reportNewUsers">--</div>
+                        <div class="stat-label">Người dùng mới</div>
+                        <div class="stat-trend" id="reportNewUsersChange">
+                            <i class="ri-arrow-up-line"></i>
+                            <span>Đang tải...</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="ri-star-line"></i>
+                        </div>
+                        <div class="stat-value" id="reportRating">--</div>
+                        <div class="stat-label">Đánh giá trung bình</div>
+                        <div class="stat-trend" id="reportRatingSubtext">
+                            <i class="ri-star-fill" style="color: #ffc107;"></i>
+                            <span>Đang tải...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div style="margin-top: 30px;">
+                    <h3
+                        style="color: #2c3e50; font-size: 18px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                        <i class="ri-line-chart-line" style="color: #e74c3c;"></i>
+                        Biểu đồ thống kê
+                    </h3>
+
+                    <!-- Chart Tabs -->
+                    <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                        <button class="chart-type-btn active" data-type="appointments"
+                            onclick="switchChartType('appointments')">
+                            <i class="ri-calendar-check-line"></i> Lịch hẹn
+                        </button>
+                        <button class="chart-type-btn" data-type="revenue" onclick="switchChartType('revenue')">
+                            <i class="ri-money-dollar-circle-line"></i> Doanh thu
+                        </button>
+                        <button class="chart-type-btn" data-type="users" onclick="switchChartType('users')">
+                            <i class="ri-user-add-line"></i> Người dùng
+                        </button>
+                        <button class="chart-type-btn" data-type="reviews" onclick="switchChartType('reviews')">
+                            <i class="ri-star-line"></i> Đánh giá
+                        </button>
+                    </div>
+
+                    <!-- Chart Container -->
+                    <div
+                        style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                        <canvas id="reportChart" style="max-height: 400px;"></canvas>
+                    </div>
+                </div>
+
+                <!-- Detailed Tables -->
+                <div style="margin-top: 30px;">
+                    <h3
+                        style="color: #2c3e50; font-size: 18px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                        <i class="ri-file-list-3-line" style="color: #e74c3c;"></i>
+                        Chi tiết báo cáo
+                    </h3>
+
+                    <!-- Report Tables -->
+                    <div id="appointmentReportTable" class="report-table-container">
+                        <div
+                            style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                            <h4 style="color: #2c3e50; font-size: 16px; font-weight: 600; margin-bottom: 15px;">
+                                Thống kê lịch hẹn theo trạng thái
+                            </h4>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Trạng thái</th>
+                                        <th>Số lượng</th>
+                                        <th>Tỷ lệ</th>
+                                        <th>Biểu đồ</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="appointmentStatusBody">
+                                    <tr>
+                                        <td colspan="4" style="text-align: center; color: #999;">Đang tải...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+                <!-- Settings Section -->
+        <div id="settingsSection" class="content-section" style="display: none;">
+            <div class="section-card full-width">
+                <div class="section-header">
+                    <div class="section-title">
+                        <i class="ri-toggle-line"></i>
+                        Cấu hình hệ thống
+                    </div>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <span class="badge-dot" id="settingsSyncStatus">Đang tải...</span>
+                        <button class="btn-secondary" onclick="loadSystemSettings()">
+                            <i class="ri-refresh-line"></i>
+                            Làm mới
+                        </button>
+                    </div>
+                </div>
+                <div class="system-config-grid">
+                    <div class="toggle-card">
+                        <h4><i class="ri-bank-card-line"></i> Hệ thống thanh toán</h4>
+                        <label class="switch">
+                            <input type="checkbox" id="setting_payment_enabled" onchange="saveSystemSetting('payment_enabled', this.checked)">
+                            <span class="slider"></span>
+                        </label>
+                        <p>Bật để cho phép khách hàng thanh toán trực tuyến.</p>
+                    </div>
+                    <div class="toggle-card">
+                        <h4><i class="ri-mail-send-line"></i> Gửi email hệ thống</h4>
+                        <label class="switch">
+                            <input type="checkbox" id="setting_email_enabled" onchange="saveSystemSetting('email_enabled', this.checked)">
+                            <span class="slider"></span>
+                        </label>
+                        <p>Tự động gửi mail xác nhận, thay đổi lịch và hóa đơn.</p>
+                        <div class="sub-toggles-container">
+                            <div class="sub-toggle">
+                                <span>Mail người dùng</span>
+                                <label class="switch small">
+                                    <input type="checkbox" id="setting_email_user_enabled" onchange="saveSystemSetting('email_user_enabled', this.checked)">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="sub-toggle">
+                                <span>Mail bác sĩ</span>
+                                <label class="switch small">
+                                    <input type="checkbox" id="setting_email_doctor_enabled" onchange="saveSystemSetting('email_doctor_enabled', this.checked)">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="toggle-card">
+                        <h4><i class="ri-shield-check-line"></i> Quyền truy cập</h4>
+                        <p>Cho phép 2 phân quyền bệnh nhân và bác sĩ lấy dữ liệu.</p>
+                        <div class="sub-toggles-container">
+                            <div class="sub-toggle">
+                                <span>Bệnh nhân (User)</span>
+                                <label class="switch small">
+                                    <input type="checkbox" id="setting_access_user_enabled" onchange="saveSystemSetting('access_user_enabled', this.checked)">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="sub-toggle">
+                                <span>Bác sĩ (Doctor)</span>
+                                <label class="switch small">
+                                    <input type="checkbox" id="setting_access_doctor_enabled" onchange="saveSystemSetting('access_doctor_enabled', this.checked)">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="toggle-card">
+                        <h4><i class="ri-road-map-line"></i> Đặt lịch không cần login</h4>
+                        <label class="switch">
+                            <input type="checkbox" id="setting_guest_booking_enabled" onchange="saveSystemSetting('guest_booking_enabled', this.checked)">
+                            <span class="slider"></span>
+                        </label>
+                        <p>Cho phép biểu mẫu đặt lịch chưa đăng nhập ở bệnh nhân.</p>
+                    </div>
+                    <div class="toggle-card" style="border-color: #e74c3c;">
+                        <h4 style="color: #e74c3c;"><i class="ri-error-warning-line"></i> Tạm ngưng hệ thống</h4>
+                        <label class="switch">
+                            <input type="checkbox" id="setting_maintenance_mode" onchange="saveSystemSetting('maintenance_mode', this.checked)">
+                            <span class="slider"></span>
+                        </label>
+                        <p>Ngưng toàn bộ hệ thống SERVER.<br>Áp dụng lên bệnh nhân và bác sĩ.</p>
+                        <div class="form-group" style="margin-top: 10px;">
+                            <input type="text" id="setting_maintenance_message" placeholder="Thông báo bảo trì..."
+                                style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px; font-size: 12px;"
+                                onblur="saveSystemSetting('maintenance_message', this.value)">
+                        </div>
+                    </div>
+                    <div class="toggle-card">
+                        <h4><i class="ri-spam-line"></i> Tự động khóa IP</h4>
+                        <label class="switch">
+                            <input type="checkbox" id="setting_auto_block_failed_login" onchange="saveSystemSetting('auto_block_failed_login', this.checked)">
+                            <span class="slider"></span>
+                        </label>
+                        <p>Tự động khóa IP khi đăng nhập sai quá nhiều lần.</p>
+                        <div class="form-group" style="margin-top: 10px;">
+                            <label style="font-size: 12px;">Số lần tối đa:</label>
+                            <input type="number" id="setting_max_failed_login_attempts" min="1" max="20"
+                                style="width: 60px; padding: 5px; border: 1px solid #ddd; border-radius: 5px; font-size: 12px;"
+                                onblur="saveSystemSetting('max_failed_login_attempts', this.value)">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- IP Management Section -->
+            <div class="section-card full-width">
+                <div class="section-header">
+                    <div class="section-title">
+                        <i class="ri-shield-keyhole-line"></i>
+                        Quản lý IP bị chặn
+                    </div>
+                    <button class="btn-primary" onclick="openBlockIpModal()">
+                        <i class="ri-add-line"></i>
+                        Chặn IP mới
+                    </button>
+                </div>
+                <div id="blockedIpsList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px;">
+                    <div style="text-align: center; color: #999; padding: 20px;">Đang tải...</div>
+                </div>
+            </div>
+
+            <div class="section-card full-width">
+                <div class="section-header">
+                    <div class="section-title">
+                        <i class="ri-file-list-3-line"></i>
+                        Hộp ghi log & giám sát
+                    </div>
+                    <button class="btn-secondary" onclick="refreshLogPreview()">
+                        <i class="ri-refresh-line"></i>
+                        Làm mới
+                    </button>
+                </div>
+                <div class="log-grid">
+                    <div class="log-card">
+                        <h5><i class="ri-star-smile-line"></i> Đánh giá tiêu cực <a href="javascript:void(0)" onclick="openLogDetailModal('rating')" style="float:right;font-size:12px;color:#667eea;">Xem tất cả</a></h5>
+                        <small>Đánh giá 1-2 sao gần đây</small>
+                        <div class="log-stream" id="ratingLogBox">
+                            <div style="text-align: center; color: #999; padding: 10px;">Đang tải...</div>
+                        </div>
+                    </div>
+                    <div class="log-card">
+                        <h5><i class="ri-chat-1-line"></i> Báo cáo/Phản hồi <a href="javascript:void(0)" onclick="openLogDetailModal('feedback')" style="float:right;font-size:12px;color:#667eea;">Xem tất cả</a></h5>
+                        <small>Báo cáo từ diễn đàn</small>
+                        <div class="log-stream" id="feedbackLogBox">
+                            <div style="text-align: center; color: #999; padding: 10px;">Đang tải...</div>
+                        </div>
+                    </div>
+                    <div class="log-card">
+                        <h5><i class="ri-shield-keyhole-line"></i> IP bị chặn <a href="javascript:void(0)" onclick="openLogDetailModal('ip')" style="float:right;font-size:12px;color:#667eea;">Xem tất cả</a></h5>
+                        <small>Danh sách IP bị chặn gần đây</small>
+                        <div class="log-stream" id="ipBlockLog">
+                            <div style="text-align: center; color: #999; padding: 10px;">Đang tải...</div>
+                        </div>
+                    </div>
+                    <div class="log-card">
+                        <h5><i class="ri-terminal-window-line"></i> Log hệ thống <a href="javascript:void(0)" onclick="openLogDetailModal('system')" style="float:right;font-size:12px;color:#667eea;">Xem tất cả</a></h5>
+                        <small>Ghi nhận thao tác admin</small>
+                        <div class="log-stream" id="systemLogBox">
+                            <div style="text-align: center; color: #999; padding: 10px;">Đang tải...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Modals remain the same as before -->
+    <!-- Add User Modal -->
+    <div id="addUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="userModalTitle">Thêm người dùng mới</h2>
+                <div class="close-modal" onclick="closeModal('addUserModal')">
+                    <i class="ri-close-line"></i>
+                </div>
+            </div>
+            <form id="userForm">
+                <input type="hidden" id="userId">
+                <input type="hidden" id="userAvatarUrl">
+
+                <!-- Avatar Upload Section -->
+                <div class="form-group"
+                    style="display: flex; flex-direction: column; align-items: center; margin-bottom: 20px;">
+                    <div id="userAvatarPreview"
+                        style="width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; overflow: hidden; margin-bottom: 10px; border: 3px solid #e0e0e0;">
+                        <span id="userAvatarInitials" style="color: white; font-size: 32px; font-weight: 600;">U</span>
+                    </div>
+                    <label for="userAvatarInput" class="btn-secondary"
+                        style="cursor: pointer; padding: 8px 16px; border-radius: 20px; font-size: 13px;">
+                        <i class="ri-camera-line"></i> Chọn ảnh đại diện
+                    </label>
+                    <input type="file" id="userAvatarInput" accept="image/*" style="display: none;"
+                        onchange="previewUserAvatar(this)">
+                </div>
+
+                <div class="form-group">
+                    <label>Họ và tên *</label>
+                    <input type="text" id="userName" placeholder="Nhập họ tên" required>
+                </div>
+                <div class="form-group">
+                    <label>Giới tính *</label>
+                    <select id="userGender" required>
+                        <option value="">Chọn giới tính</option>
+                        <option value="male">Nam</option>
+                        <option value="female">Nữ</option>
+                        <option value="other">Khác</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Ngày sinh *</label>
+                    <input type="date" id="userDob" required>
+                </div>
+                <div class="form-group">
+                    <label>Email *</label>
+                    <input type="email" id="userEmail" placeholder="Nhập email" required>
+                </div>
+                <div class="form-group">
+                    <label>Số điện thoại *</label>
+                    <input type="tel" id="userPhone" placeholder="Nhập số điện thoại" required>
+                </div>
+                <div class="form-group">
+                    <label>Vai trò *</label>
+                    <select id="userRole" required>
+                        <option value="">Chọn vai trò</option>
+                        <option value="user">Bệnh nhân</option>
+                        <option value="doctor">Bác sĩ</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <div class="form-group password-field">
+                    <label>Mật khẩu *</label>
+                    <input type="password" id="userPassword" placeholder="Nhập mật khẩu" required>
+                    <i class="ri-eye-off-line password-toggle" onclick="togglePassword('userPassword')"></i>
+                </div>
+                <div class="form-group">
+                    <label>Trạng thái</label>
+                    <select id="userStatus">
+                        <option value="active">Hoạt động</option>
+                        <option value="inactive">Khóa</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal('addUserModal')">Hủy</button>
+                    <button type="submit" class="btn-primary" id="userSubmitBtn">Thêm người dùng</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Doctor Modal -->
+    <div id="addDoctorModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="doctorModalTitle">Thêm bác sĩ mới</h2>
+                <div class="close-modal" onclick="closeModal('addDoctorModal')">
+                    <i class="ri-close-line"></i>
+                </div>
+            </div>
+            <form id="doctorForm">
+                <input type="hidden" id="doctorId">
+
+                <!-- Avatar Upload -->
+                <div class="form-group" style="text-align: center; margin-bottom: 20px;">
+                    <label>Ảnh đại diện</label>
+                    <div class="avatar-upload"
+                        style="margin: 10px auto; width: 100px; height: 100px; border-radius: 50%; border: 2px dashed #ddd; display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden;"
+                        onclick="document.getElementById('doctorAvatarInput').click()">
+                        <img id="doctorAvatarPreview" src="" alt=""
+                            style="width: 100%; height: 100%; object-fit: cover; display: none;">
+                        <i class="ri-camera-line" id="doctorAvatarIcon" style="font-size: 32px; color: #999;"></i>
+                    </div>
+                    <input type="file" id="doctorAvatarInput" accept="image/*" style="display: none;"
+                        onchange="previewDoctorAvatar(this)">
+                    <input type="hidden" id="doctorAvatarUrl">
+                </div>
+
+                <div class="form-group">
+                    <label>Họ và tên *</label>
+                    <input type="text" id="doctorName" placeholder="Nhập họ tên bác sĩ">
+                </div>
+                <div class="form-group">
+                    <label>Giới tính *</label>
+                    <select id="doctorGender">
+                        <option value="">Chọn giới tính</option>
+                        <option value="Nam">Nam</option>
+                        <option value="Nữ">Nữ</option>
+                        <option value="Khác">Khác</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Ngày sinh *</label>
+                    <input type="date" id="doctorDob">
+                </div>
+                <div class="form-group">
+                    <label>Email *</label>
+                    <input type="email" id="doctorEmail" placeholder="Nhập email">
+                </div>
+                <div class="form-group password-field">
+                    <label>Mật khẩu *</label>
+                    <input type="password" id="doctorPassword" placeholder="Nhập mật khẩu">
+                    <i class="ri-eye-off-line password-toggle" onclick="togglePassword('doctorPassword')"></i>
+                </div>
+                <div class="form-group">
+                    <label>Số điện thoại</label>
+                    <input type="tel" id="doctorPhone" placeholder="Nhập số điện thoại">
+                </div>
+                <div class="form-group">
+                    <label>Địa chỉ</label>
+                    <input type="text" id="doctorAddress" placeholder="Nhập địa chỉ">
+                </div>
+                <div class="form-group">
+                    <label>Bằng cấp</label>
+                    <input type="text" id="doctorDegree" placeholder="VD: Thạc sĩ, Tiến sĩ, PGS, GS...">
+                </div>
+                <div class="form-group">
+                    <label>Chuyên khoa</label>
+                    <select id="doctorSpecialty">
+                        <option value="">Chọn chuyên khoa</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Kinh nghiệm (năm)</label>
+                    <input type="number" id="doctorExperience" placeholder="Nhập số năm kinh nghiệm" min="0">
+                </div>
+                <div class="form-group">
+                    <label>Phòng khám</label>
+                    <select id="doctorClinic">
+                        <option value="">Chọn phòng khám</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Mô tả</label>
+                    <textarea id="doctorDescription" placeholder="Mô tả về bác sĩ..." rows="3"
+                        style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; resize: vertical;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Trạng thái</label>
+                    <select id="doctorStatus">
+                        <option value="ACTIVE">Hoạt động</option>
+                        <option value="INACTIVE">Ngừng hoạt động</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal('addDoctorModal')">Hủy</button>
+                    <button type="submit" class="btn-primary" id="doctorSubmitBtn">Thêm bác sĩ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Clinic Modal -->
+    <div id="addClinicModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="clinicModalTitle">Thêm phòng khám mới</h2>
+                <div class="close-modal" onclick="closeModal('addClinicModal')">
+                    <i class="ri-close-line"></i>
+                </div>
+            </div>
+            <form id="clinicForm">
+                <input type="hidden" id="clinicId">
+                <div class="form-group">
+                    <label>Tên phòng khám</label>
+                    <input type="text" id="clinicName" placeholder="Nhập tên phòng khám">
+                </div>
+                <div class="form-group">
+                    <label>Địa chỉ</label>
+                    <input type="text" id="clinicAddress" placeholder="Nhập địa chỉ">
+                </div>
+                <div class="form-group">
+                    <label>Hotline</label>
+                    <input type="tel" id="clinicHotline" placeholder="Nhập số hotline">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="clinicEmail" placeholder="Nhập email phòng khám">
+                </div>
+                <div class="form-group">
+                    <label>Giờ mở cửa</label>
+                    <select id="clinicOpeningHours">
+                        <option value="">Chọn giờ mở cửa</option>
+                        <option value="6:00 - 18:00">6:00 - 18:00</option>
+                        <option value="6:00 - 20:00">6:00 - 20:00</option>
+                        <option value="6:00 - 22:00">6:00 - 22:00</option>
+                        <option value="7:00 - 17:00">7:00 - 17:00</option>
+                        <option value="7:00 - 19:00">7:00 - 19:00</option>
+                        <option value="7:00 - 20:00">7:00 - 20:00</option>
+                        <option value="7:00 - 21:00">7:00 - 21:00</option>
+                        <option value="7:00 - 22:00">7:00 - 22:00</option>
+                        <option value="7:30 - 17:30">7:30 - 17:30</option>
+                        <option value="7:30 - 20:00">7:30 - 20:00</option>
+                        <option value="8:00 - 17:00">8:00 - 17:00</option>
+                        <option value="8:00 - 18:00">8:00 - 18:00</option>
+                        <option value="8:00 - 20:00">8:00 - 20:00</option>
+                        <option value="8:00 - 21:00">8:00 - 21:00</option>
+                        <option value="8:00 - 22:00">8:00 - 22:00</option>
+                        <option value="24/7">24/7 (Cả ngày)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Mô tả</label>
+                    <textarea id="clinicDescription" placeholder="Nhập mô tả phòng khám" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Trạng thái</label>
+                    <select id="clinicStatus">
+                        <option value="1">Hoạt động</option>
+                        <option value="0">Ngừng hoạt động</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal('addClinicModal')">Hủy</button>
+                    <button type="submit" class="btn-primary" id="clinicSubmitBtn">Thêm phòng khám</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Review Modal -->
+    <div id="reviewModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="reviewModalTitle">Xem chi tiết đánh giá</h2>
+                <div class="close-modal" onclick="closeModal('reviewModal')">
+                    <i class="ri-close-line"></i>
+                </div>
+            </div>
+            <form id="reviewForm">
+                <input type="hidden" id="reviewId">
+                <div class="form-group">
+                    <label>ID Lịch khám</label>
+                    <input type="text" id="reviewAppointmentId" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Bệnh nhân</label>
+                    <input type="text" id="reviewPatient" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Bác sĩ</label>
+                    <input type="text" id="reviewDoctor" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Đánh giá</label>
+                    <input type="text" id="reviewRating" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Nội dung đánh giá</label>
+                    <textarea id="reviewContent" readonly></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Ngày đánh giá</label>
+                    <input type="text" id="reviewDate" readonly>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal('reviewModal')">Đóng</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Specialty Modal -->
+    <div id="addSpecialtyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="specialtyModalTitle">Thêm chuyên khoa mới</h2>
+                <div class="close-modal" onclick="closeModal('addSpecialtyModal')">
+                    <i class="ri-close-line"></i>
+                </div>
+            </div>
+            <form id="specialtyForm">
+                <input type="hidden" id="specialtyId">
+                <div class="form-group">
+                    <label>Tên chuyên khoa <span style="color: red;">*</span></label>
+                    <input type="text" id="specialtyName" placeholder="Nhập tên chuyên khoa" required>
+                </div>
+                <div class="form-group">
+                    <label>Giá khám cơ bản (VNĐ) <span style="color: red;">*</span></label>
+                    <input type="number" id="specialtyBasePrice" placeholder="VD: 200000" min="0" step="1000" required>
+                </div>
+                <div class="form-group">
+                    <label>Mô tả</label>
+                    <textarea id="specialtyDescription" placeholder="Nhập mô tả về chuyên khoa" rows="4"></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal('addSpecialtyModal')">Hủy</button>
+                    <button type="submit" class="btn-primary" id="specialtySubmitBtn">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add/Edit Appointment Modal -->
+    <div id="addAppointmentModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2 id="appointmentModalTitle">Thêm lịch hẹn mới</h2>
+                <div class="close-modal" onclick="closeModal('addAppointmentModal')">
+                    <i class="ri-close-line"></i>
+                </div>
+            </div>
+            <form id="appointmentForm">
+                <input type="hidden" id="appointmentId">
+                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label>Bác sĩ <span style="color: red;">*</span></label>
+                        <select id="appointmentDoctor" required>
+                            <option value="">Chọn bác sĩ</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Bệnh nhân</label>
+                        <select id="appointmentPatient">
+                            <option value="">Chọn bệnh nhân (nếu có)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label>Ngày hẹn <span style="color: red;">*</span></label>
+                        <input type="date" id="appointmentDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Khung giờ <span style="color: red;">*</span></label>
+                        <select id="appointmentTimeSlot" required>
+                            <option value="">Chọn khung giờ</option>
+                            <option value="07:00-07:30">07:00 - 07:30</option>
+                            <option value="07:30-08:00">07:30 - 08:00</option>
+                            <option value="08:00-08:30">08:00 - 08:30</option>
+                            <option value="08:30-09:00">08:30 - 09:00</option>
+                            <option value="09:00-09:30">09:00 - 09:30</option>
+                            <option value="09:30-10:00">09:30 - 10:00</option>
+                            <option value="10:00-10:30">10:00 - 10:30</option>
+                            <option value="10:30-11:00">10:30 - 11:00</option>
+                            <option value="11:00-11:30">11:00 - 11:30</option>
+                            <option value="13:00-13:30">13:00 - 13:30</option>
+                            <option value="13:30-14:00">13:30 - 14:00</option>
+                            <option value="14:00-14:30">14:00 - 14:30</option>
+                            <option value="14:30-15:00">14:30 - 15:00</option>
+                            <option value="15:00-15:30">15:00 - 15:30</option>
+                            <option value="15:30-16:00">15:30 - 16:00</option>
+                            <option value="16:00-16:30">16:00 - 16:30</option>
+                            <option value="16:30-17:00">16:30 - 17:00</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label>Phòng khám</label>
+                        <select id="appointmentClinic">
+                            <option value="">Chọn phòng khám</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Trạng thái <span style="color: red;">*</span></label>
+                        <select id="appointmentStatus" required>
+                            <option value="pending">Chưa xác nhận</option>
+                            <option value="confirmed">Đã xác nhận</option>
+                            <option value="paid_confirmed">Đã thanh toán + Đã xác nhận</option>
+                            <option value="cancelled">Đã hủy</option>
+                            <option value="completed">Đã hoàn thành</option>
+                            <option value="ended">Đã kết thúc</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label>Phí khám (VNĐ)</label>
+                        <input type="number" id="appointmentFee" placeholder="0" min="0" step="1000">
+                    </div>
+                    <div class="form-group">
+                        <label>Số phòng</label>
+                        <input type="text" id="appointmentRoom" placeholder="Ví dụ: P.101">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Ghi chú</label>
+                    <textarea id="appointmentNotes" rows="3" placeholder="Nhập ghi chú (nếu có)"></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal('addAppointmentModal')">Hủy</button>
+                    <button type="submit" class="btn-primary">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Navigation code remains the same
+        const navItems = document.querySelectorAll('.nav-item');
+        const sections = document.querySelectorAll('.content-section');
+        const pageTitle = document.getElementById('pageTitle');
+
+        const pageTitles = {
+            'dashboard': 'Tổng Quan Hệ Thống',
+            'users': 'Quản Lý Người Dùng',
+            'doctors': 'Quản Lý Bác Sĩ',
+            'clinics': 'Quản Lý Phòng Khám',
+            'appointments': 'Quản Lý Lịch Hẹn',
+            'payments': 'Quản Lý Thanh Toán',
+            'specialties': 'Quản Lý Chuyên Khoa',
+            'reports': 'Báo Cáo Thống Kê',
+            'reviews': 'Quản Lý Đánh Giá',
+            'settings': 'Cấu Hình Hệ Thống'
+        };
+
+        // Function to show a specific section programmatically
+        function showSection(sectionName) {
+            navItems.forEach(nav => nav.classList.remove('active'));
+            const navItem = document.querySelector(`.nav-item[data-section="${sectionName}"]`);
+            if (navItem) navItem.classList.add('active');
+
+            sections.forEach(section => section.style.display = 'none');
+            const targetSection = document.getElementById(sectionName + 'Section');
+            if (targetSection) {
+                targetSection.style.display = 'block';
+            }
+
+            if (pageTitles[sectionName]) {
+                pageTitle.textContent = pageTitles[sectionName];
+            }
+        }
+        window.showSection = showSection;
+
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const sectionName = item.getAttribute('data-section');
+
+                navItems.forEach(nav => nav.classList.remove('active'));
+                item.classList.add('active');
+
+                sections.forEach(section => section.style.display = 'none');
+
+                const targetSection = document.getElementById(sectionName + 'Section');
+                if (targetSection) {
+                    targetSection.style.display = 'block';
+                }
+
+                if (pageTitles[sectionName]) {
+                    pageTitle.textContent = pageTitles[sectionName];
+                }
+            });
+        });
+
+        // Tab functionality for filters
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('filter-tab')) {
+                const tabGroup = e.target.closest('.section-card');
+                const tabs = tabGroup.querySelectorAll('.filter-tab');
+                const tabContents = tabGroup.querySelectorAll('.tab-content');
+
+                tabs.forEach(t => t.classList.remove('active'));
+                e.target.classList.add('active');
+
+                const targetTab = e.target.getAttribute('data-tab');
+                tabContents.forEach(content => content.classList.remove('active'));
+                const targetContent = tabGroup.querySelector(`#${targetTab}-tab`);
+                if (targetContent) {
+                    targetContent.classList.add('active');
+                }
+            }
+        });
+
+        // Modal functions are now defined in admin_profile.js
+
+        window.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) {
+                closeModal(e.target.id);
+            }
+        });
+
+        // Logout functionality
+        const logoutBtn = document.querySelector('.logout-btn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', adminLogout);
+        }
+
+        // ============================================
+        // SEARCH FUNCTIONALITY FOR ALL SECTIONS
+        // ============================================
+
+        // Initialize search for all sections
+        function initializeSearchFunctions() {
+            // Users section search
+            const userSearch = document.querySelector('#usersSection .search-box input');
+            if (userSearch) {
+                userSearch.addEventListener('input', function (e) {
+                    searchUsers(e.target.value.toLowerCase());
+                });
+            }
+
+            // Doctors section search
+            const doctorSearch = document.querySelector('#doctorsSection .search-box input');
+            if (doctorSearch) {
+                doctorSearch.addEventListener('input', function (e) {
+                    searchDoctors(e.target.value.toLowerCase());
+                });
+            }
+
+            // Clinics section search - handled by filterClinics() via oninput
+
+            // Appointments section search
+            const appointmentSearch = document.querySelector('#appointmentsSection .search-box input');
+            if (appointmentSearch) {
+                appointmentSearch.addEventListener('input', function (e) {
+                    searchAppointments(e.target.value.toLowerCase());
+                });
+            }
+
+            // Payments section search - handled by filterPayments() via oninput
+        }
+
+        // Search users
+        function searchUsers(searchTerm) {
+            const rows = document.querySelectorAll('#userTableBody tr');
+            let visibleCount = 0;
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                const shouldShow = text.includes(searchTerm);
+
+                row.style.display = shouldShow ? '' : 'none';
+                if (shouldShow) visibleCount++;
+            });
+
+            showSearchResults('users', visibleCount, rows.length, searchTerm);
+        }
+
+        // Search doctors
+        function searchDoctors(searchTerm) {
+            // Get current active tab
+            const activeTab = document.querySelector('#doctorsSection .filter-tab.active');
+            const activeTabName = activeTab ? activeTab.getAttribute('data-tab') : 'all-doctors';
+
+            // Only search in the active tab
+            const tbody = document.querySelector(`#${activeTabName}-tab tbody`);
+
+            if (!tbody) return;
+
+            const rows = tbody.querySelectorAll('tr');
+            let visibleCount = 0;
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                const shouldShow = text.includes(searchTerm);
+
+                row.style.display = shouldShow ? '' : 'none';
+                if (shouldShow) visibleCount++;
+            });
+
+            showSearchResults('doctors', visibleCount, rows.length, searchTerm);
+        }
+
+        // searchClinics - now handled by filterClinics() in admin_profile.js
+
+        // Search appointments
+        function searchAppointments(searchTerm) {
+            // Search in all appointment tabs
+            const tabs = ['all-appointments', 'pending-appointments', 'confirmed-appointments',
+                'completed-appointments', 'cancelled-appointments'];
+            let totalVisible = 0;
+            let totalRows = 0;
+
+            tabs.forEach(tabId => {
+                const tbody = document.querySelector(`#${tabId}-tab tbody`);
+                if (tbody) {
+                    const rows = tbody.querySelectorAll('tr');
+                    totalRows += rows.length;
+
+                    rows.forEach(row => {
+                        const text = row.textContent.toLowerCase();
+                        const shouldShow = text.includes(searchTerm);
+
+                        row.style.display = shouldShow ? '' : 'none';
+                        if (shouldShow) totalVisible++;
+                    });
+                }
+            });
+
+            showSearchResults('appointments', totalVisible, totalRows, searchTerm);
+        }
+
+        // searchPayments - now handled by filterPayments() in admin_profile.js
+
+        // Show search results notification
+        function showSearchResults(section, visibleCount, totalCount, searchTerm) {
+            // Remove existing notification
+            const existingNotif = document.querySelector(`#${section}Section .search-results-notif`);
+            if (existingNotif) {
+                existingNotif.remove();
+            }
+
+            // Don't show notification if search is empty
+            if (searchTerm === '') return;
+
+            // Create notification
+            const notif = document.createElement('div');
+            notif.className = 'search-results-notif';
+            notif.style.cssText = `
+        padding: 12px 20px;
+        background: ${visibleCount > 0 ? '#d4edda' : '#fff3cd'};
+        border-left: 4px solid ${visibleCount > 0 ? '#28a745' : '#ffc107'};
+        border-radius: 8px;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        animation: slideDown 0.3s ease;
+    `;
+
+            const icon = visibleCount > 0 ? 'ri-checkbox-circle-line' : 'ri-information-line';
+            const color = visibleCount > 0 ? '#155724' : '#856404';
+
+            notif.innerHTML = `
+        <i class="${icon}" style="font-size: 20px; color: ${color};"></i>
+        <div style="flex: 1;">
+            <strong style="color: ${color}; font-size: 14px;">
+                ${visibleCount > 0
+                    ? `Tìm thấy ${visibleCount} kết quả`
+                    : 'Không tìm thấy kết quả'}
+            </strong>
+            <div style="font-size: 12px; color: ${color}; margin-top: 2px; opacity: 0.8;">
+                ${visibleCount > 0
+                    ? `Hiển thị ${visibleCount}/${totalCount} mục cho "${searchTerm}"`
+                    : `Không có kết quả nào phù hợp với "${searchTerm}"`}
+            </div>
+        </div>
+        <button onclick="clearSearch('${section}')"
+                style="background: none; border: none; color: ${color}; cursor: pointer; padding: 5px 10px; border-radius: 5px; transition: background 0.2s;"
+                onmouseover="this.style.background='rgba(0,0,0,0.1)'"
+                onmouseout="this.style.background='none'">
+            <i class="ri-close-line" style="font-size: 18px;"></i>
+        </button>
+    `;
+
+            // Insert notification
+            const sectionCard = document.querySelector(`#${section}Section .section-card`);
+            const searchFilter = sectionCard.querySelector('.search-filter');
+            if (searchFilter) {
+                searchFilter.parentNode.insertBefore(notif, searchFilter.nextSibling);
+            }
+        }
+
+        // Clear search function
+        function clearSearch(section) {
+            const searchInput = document.querySelector(`#${section}Section .search-box input`);
+            if (searchInput) {
+                searchInput.value = '';
+                searchInput.dispatchEvent(new Event('input'));
+            }
+        }
+
+        // Add slide down animation
+        const style = document.createElement('style');
+        style.textContent = `
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+`;
+        document.head.appendChild(style);
+
+        // Initialize search functions
+        initializeSearchFunctions();
+
+        // Filter functionality
+        const filterSelects = document.querySelectorAll('.filter-select');
+        filterSelects.forEach(select => {
+            select.addEventListener('change', (e) => {
+                const filterValue = e.target.value;
+                // Add filter logic here
+            });
+        });
+
+        // Action buttons
+        document.addEventListener('click', (e) => {
+            // Edit button
+            if (e.target.closest('.btn-edit')) {
+                const btn = e.target.closest('.btn-edit');
+                // Add edit logic here
+            }
+
+            // Delete button
+            if (e.target.closest('.btn-delete')) {
+                const btn = e.target.closest('.btn-delete');
+                if (confirm('Bạn có chắc chắn muốn xóa?')) {
+                    // Add delete logic here
+                }
+            }
+
+            // Lock/Unlock button
+            if (e.target.closest('.btn-lock')) {
+                const btn = e.target.closest('.btn-lock');
+                if (confirm('Bạn có chắc chắn muốn th��c hiện hành động này?')) {
+                    // Add lock/unlock logic here
+                }
+            }
+        });
+
+        // USER FUNCTIONS - now defined in admin_profile.js
+        // editUser, lockUser, toggleUserStatus, togglePassword, openAddUserModal
+
+        // DOCTOR FUNCTIONS - now defined in admin_profile.js
+        // openAddDoctorModal, editDoctor, deleteDoctorById, toggleDoctorStatus, previewDoctorAvatar
+
+        // CLINIC FUNCTIONS - now defined in admin_profile.js
+        // openAddClinicModal, editClinic, deleteClinicById, toggleClinicStatus, filterClinics
+
+        // Appointment functions - defined in admin_profile.js
+        // openAddAppointmentModal, editAppointment, deleteAppointmentById are exported from admin_profile.js
+
+        // REVIEW FUNCTIONS
+        function viewReview(id) {
+            document.getElementById('reviewModalTitle').textContent = 'Xem chi tiết đánh giá';
+            document.getElementById('reviewId').value = id;
+
+            // Simulate loading data
+            document.getElementById('reviewAppointmentId').value = '#LH001';
+            document.getElementById('reviewPatient').value = 'Nguyễn Thị B';
+            document.getElementById('reviewDoctor').value = 'BS. Trần Văn A';
+            document.getElementById('reviewRating').value = '⭐ 5.0 - Xuất sắc';
+            document.getElementById('reviewContent').value = 'Bác sĩ rất tận tâm và chuyên nghiệp. Tôi rất hài lòng với dịch vụ khám chữa bệnh.';
+            document.getElementById('reviewDate').value = '25/10/2025 10:30';
+
+            openModal('reviewModal');
+        }
+
+        function toggleReviewVisibility(id) {
+            if (confirm('Bạn có chắc chắn muốn thay đổi trạng thái hiển thị của đánh giá này?')) {
+                alert('Đã thay đổi trạng thái hiển thị!');
+                // Update visibility status in table
+            }
+        }
+
+        function deleteReview(id) {
+            if (confirm('Bạn có chắc chắn muốn xóa đánh giá này?')) {
+                alert('Đã xóa đánh giá thành công!');
+                // Remove row from table
+            }
+        }
+        // ============================================
+        // REVIEW FILTERING FUNCTIONS
+        // ============================================
+
+        // Initialize review filters
+        function initReviewFilters() {
+            const ratingFilter = document.getElementById('reviewRatingFilter');
+            const doctorFilter = document.getElementById('reviewDoctorFilter');
+            const searchInput = document.getElementById('reviewSearchInput');
+
+            if (ratingFilter) {
+                ratingFilter.addEventListener('change', filterReviews);
+            }
+            if (doctorFilter) {
+                doctorFilter.addEventListener('change', filterReviews);
+            }
+            if (searchInput) {
+                searchInput.addEventListener('input', filterReviews);
+            }
+        }
+
+        // Main filter function
+        function filterReviews() {
+            const ratingFilter = document.getElementById('reviewRatingFilter').value;
+            const doctorFilter = document.getElementById('reviewDoctorFilter').value;
+            const searchTerm = document.getElementById('reviewSearchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#reviewTableBody tr');
+
+            let visibleCount = 0;
+            let totalRating = 0;
+            let ratingCount = 0;
+
+            rows.forEach(row => {
+                const rating = row.getAttribute('data-rating');
+                const doctor = row.getAttribute('data-doctor');
+                const text = row.textContent.toLowerCase();
+
+                let showRow = true;
+
+                // Filter by rating
+                if (ratingFilter !== 'all' && rating !== ratingFilter) {
+                    showRow = false;
+                }
+
+                // Filter by doctor
+                if (doctorFilter !== 'all' && doctor !== doctorFilter) {
+                    showRow = false;
+                }
+
+                // Filter by search term
+                if (searchTerm && !text.includes(searchTerm)) {
+                    showRow = false;
+                }
+
+                row.style.display = showRow ? '' : 'none';
+
+                if (showRow) {
+                    visibleCount++;
+                    totalRating += parseFloat(rating);
+                    ratingCount++;
+                }
+            });
+
+            // Display filter results
+            displayFilterResults(visibleCount, totalRating, ratingCount, doctorFilter);
+        }
+
+        // Display filter results
+        function displayFilterResults(count, totalRating, ratingCount, doctorName) {
+            // Remove existing result display if any
+            const existingResult = document.querySelector('.filter-result-display');
+            if (existingResult) {
+                existingResult.remove();
+            }
+
+            // Create result display
+            if (count === 0) {
+                const noResultDiv = document.createElement('div');
+                noResultDiv.className = 'filter-result-display';
+                noResultDiv.style.cssText = `
+            padding: 20px;
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        `;
+                noResultDiv.innerHTML = `
+            <i class="ri-information-line" style="font-size: 24px; color: #856404;"></i>
+            <div>
+                <strong style="color: #856404; font-size: 15px;">Không tìm thấy đánh giá</strong>
+                <p style="margin: 5px 0 0 0; color: #856404; font-size: 13px;">Vui lòng thử lại với bộ lọc khác</p>
+            </div>
+        `;
+
+                const reviewSection = document.querySelector('#reviewsSection .section-card');
+                const searchFilter = reviewSection.querySelector('.search-filter');
+                searchFilter.parentNode.insertBefore(noResultDiv, searchFilter.nextSibling);
+            } else {
+                const avgRating = (totalRating / ratingCount).toFixed(1);
+                const resultDiv = document.createElement('div');
+                resultDiv.className = 'filter-result-display';
+                resultDiv.style.cssText = `
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        `;
+
+                let doctorInfo = '';
+                if (doctorName !== 'all') {
+                    // Extract doctor name without count
+                    const cleanDoctorName = doctorName.split(' (')[0];
+                    doctorInfo = `
+                <div style="display: flex; align-items: center; gap: 10px; margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.2);">
+                    <i class="ri-stethoscope-line" style="font-size: 20px;"></i>
+                    <span style="font-size: 14px; font-weight: 500;">Đang xem đánh giá của: ${cleanDoctorName}</span>
+                </div>
+            `;
+                }
+
+                resultDiv.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+                <div>
+                    <div style="font-size: 14px; opacity: 0.9; margin-bottom: 5px;">Kết quả lọc</div>
+                    <div style="font-size: 28px; font-weight: 700;">
+                        ${count} đánh giá
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-size: 14px; opacity: 0.9; margin-bottom: 5px;">Đánh giá trung bình</div>
+                    <div style="display: flex; align-items: center; gap: 8px; justify-content: flex-end;">
+                        <i class="ri-star-fill" style="font-size: 24px; color: #ffd700;"></i>
+                        <span style="font-size: 28px; font-weight: 700;">${avgRating}</span>
+                    </div>
+                </div>
+            </div>
+            ${doctorInfo}
+        `;
+
+                const reviewSection = document.querySelector('#reviewsSection .section-card');
+                const searchFilter = reviewSection.querySelector('.search-filter');
+                searchFilter.parentNode.insertBefore(resultDiv, searchFilter.nextSibling);
+            }
+        }
+
+        // Show all reviews (clear filters)
+        function showAllReviews() {
+            const rows = document.querySelectorAll('#reviewTableBody tr');
+            rows.forEach(row => {
+                row.style.display = '';
+            });
+
+            // Remove filter result display
+            const existingResult = document.querySelector('.filter-result-display');
+            if (existingResult) {
+                existingResult.remove();
+            }
+        }
+
+        // Clear all review filters
+        function clearReviewFilters() {
+            const ratingFilter = document.getElementById('reviewRatingFilter');
+            const doctorFilter = document.getElementById('reviewDoctorFilter');
+            const searchInput = document.getElementById('reviewSearchInput');
+
+            if (ratingFilter) ratingFilter.value = 'all';
+            if (doctorFilter) doctorFilter.value = 'all';
+            if (searchInput) searchInput.value = '';
+
+            showAllReviews();
+        }
+
+        // ============================================
+        // END REVIEW FILTERING FUNCTIONS
+        // ============================================
+
+
+        // SPECIALTY FUNCTIONS - now defined in admin_profile.js
+        // openAddSpecialtyModal, editSpecialty, deleteSpecialtyById, filterSpecialties
+
+        // PAYMENT FUNCTIONS
+        function viewPaymentDetail(id) {
+            // Simulate loading data
+            document.getElementById('paymentId').value = id;
+            document.getElementById('paymentPatient').value = 'Nguyễn Thị B';
+            document.getElementById('paymentAmount').value = '₫500,000';
+            document.getElementById('paymentMethod').value = 'VNPay';
+            document.getElementById('paymentStatus').value = 'Thành công';
+            document.getElementById('paymentDate').value = '21/10/2025 14:30';
+            document.getElementById('paymentReference').value = 'VNPAY' + Date.now();
+            document.getElementById('paymentDescription').value = 'Thanh toán lịch khám với BS. Trần Văn A - Ngày 21/10/2025';
+
+            openModal('paymentDetailModal');
+        }
+
+        function printPaymentDetail() {
+            alert('Chức năng in hóa đơn đang được phát triển');
+        }
+
+        // Payment status filter
+        document.getElementById('paymentStatusFilter').addEventListener('change', function () {
+            const filterValue = this.value;
+            const rows = document.querySelectorAll('#paymentTableBody tr');
+
+            rows.forEach(row => {
+                if (filterValue === 'all') {
+                    row.style.display = '';
+                } else {
+                    const status = row.getAttribute('data-status');
+                    row.style.display = status === filterValue ? '' : 'none';
+                }
+            });
+        });
+
+        // Real-time clock for admin info (optional)
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('vi-VN');
+            // You can display this somewhere if needed
+        }
+        setInterval(updateTime, 1000);
+
+        // Simulate real-time notifications (optional)
+        function showNotification(message, type = 'info') {
+            // You can implement a notification system here
+            }
+
+        // Example: Simulate new appointment notification
+        setTimeout(() => {
+            showNotification('Có lịch hẹn mới cần xác nhận!', 'info');
+        }, 5000);
+
+        // Stats animation on load
+        window.addEventListener('load', () => {
+            const statValues = document.querySelectorAll('.stat-value');
+            statValues.forEach(stat => {
+                const finalValue = stat.textContent;
+                stat.style.opacity = '0';
+                setTimeout(() => {
+                    stat.style.transition = 'opacity 0.5s ease';
+                    stat.style.opacity = '1';
+                }, 100);
+            });
+        });
+
+        // Export functionality
+        const exportBtns = document.querySelectorAll('button:has(.ri-file-download-line)');
+        exportBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (btn.textContent.includes('Xuất báo cáo')) {
+                    alert('Đang xuất báo cáo. Vui lòng đợi...');
+                    // Add export logic here
+                }
+            });
+        });
+
+        // Responsive sidebar toggle (for mobile)
+        function createMobileMenu() {
+            if (window.innerWidth <= 768) {
+                const sidebar = document.querySelector('.sidebar');
+                const mainContent = document.querySelector('.main-content');
+
+                // Create menu toggle button if it doesn't exist
+                if (!document.querySelector('.menu-toggle')) {
+                    const menuToggle = document.createElement('div');
+                    menuToggle.className = 'menu-toggle';
+                    menuToggle.innerHTML = '<i class="ri-menu-line"></i>';
+                    menuToggle.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    left: 20px;
+                    z-index: 1001;
+                    background: #e74c3c;
+                    color: white;
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 8px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                `;
+
+                    document.body.appendChild(menuToggle);
+
+                    menuToggle.addEventListener('click', () => {
+                        sidebar.classList.toggle('active');
+                    });
+
+                    // Close sidebar when clicking outside
+                    mainContent.addEventListener('click', () => {
+                        if (sidebar.classList.contains('active')) {
+                            sidebar.classList.remove('active');
+                        }
+                    });
+                }
+            }
+        }
+
+        // Check for mobile on load and resize
+        createMobileMenu();
+        window.addEventListener('resize', createMobileMenu);
+
+        // Table row hover effect with details preview
+        const tableRows = document.querySelectorAll('.data-table tbody tr');
+        tableRows.forEach(row => {
+            row.addEventListener('mouseenter', () => {
+                row.style.transform = 'scale(1.01)';
+                row.style.transition = 'transform 0.2s ease';
+            });
+
+            row.addEventListener('mouseleave', () => {
+                row.style.transform = 'scale(1)';
+            });
+        });
+
+        // Auto-save for settings (simulated)
+        const settingsInputs = document.querySelectorAll('#settingsSection input');
+        let autoSaveTimeout;
+
+        settingsInputs.forEach(input => {
+            input.addEventListener('input', () => {
+                clearTimeout(autoSaveTimeout);
+                autoSaveTimeout = setTimeout(() => {
+                    // Add auto-save logic here
+                }, 2000);
+            });
+        });
+
+        // Status badge click to change status (optional)
+        const statusBadges = document.querySelectorAll('.status-badge');
+        statusBadges.forEach(badge => {
+            badge.style.cursor = 'pointer';
+            badge.addEventListener('click', (e) => {
+                e.stopPropagation();
+                // You can add status change logic here
+            });
+        });
+
+        // Activity feed real-time update simulation
+        function addNewActivity(title, description, type) {
+            const activityList = document.querySelector('.activity-list');
+            if (activityList) {
+                const newActivity = document.createElement('div');
+                newActivity.className = 'activity-item';
+                newActivity.style.opacity = '0';
+                newActivity.innerHTML = `
+                <div class="activity-icon activity-${type}">
+                    <i class="ri-notification-line"></i>
+                </div>
+                <div class="activity-content">
+                    <h4>${title}</h4>
+                    <p>${description}</p>
+                </div>
+                <div class="activity-time">Vừa xong</div>
+            `;
+
+                activityList.insertBefore(newActivity, activityList.firstChild);
+
+                setTimeout(() => {
+                    newActivity.style.transition = 'opacity 0.5s ease';
+                    newActivity.style.opacity = '1';
+                }, 100);
+
+                // Remove oldest activity if more than 5
+                if (activityList.children.length > 5) {
+                    activityList.removeChild(activityList.lastChild);
+                }
+            }
+        }
+
+        // Simulate new activity every 30 seconds
+        setInterval(() => {
+            const activities = [
+                { title: 'Lịch hẹn mới', desc: 'Có lịch hẹn mới cần xác nhận', type: 'appointment' },
+                { title: 'Thanh toán mới', desc: 'Giao dịch mới được thực hiện', type: 'payment' },
+                { title: 'Người dùng mới', desc: 'Có tài khoản mới đăng ký', type: 'user' }
+            ];
+
+            const randomActivity = activities[Math.floor(Math.random() * activities.length)];
+            // addNewActivity(randomActivity.title, randomActivity.desc, randomActivity.type);
+        }, 30000);
+
+        // Print functionality for reports
+        function printReport() {
+            window.print();
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Ctrl/Cmd + K for search focus
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                const searchInput = document.querySelector('.search-box input');
+                if (searchInput) {
+                    searchInput.focus();
+                }
+            }
+
+            // Escape to close modals
+            if (e.key === 'Escape') {
+                const activeModal = document.querySelector('.modal.active');
+                if (activeModal) {
+                    activeModal.classList.remove('active');
+                }
+            }
+        });
+        // View all appointments from dashboard
+        function viewAllAppointments() {
+            // Switch to appointments section
+            const appointmentsNav = document.querySelector('.nav-item[data-section="appointments"]');
+            if (appointmentsNav) {
+                appointmentsNav.click();
+            }
+        }
+        // ============================================
+        // SETTINGS FUNCTIONS
+        // ============================================
+
+        // Default settings values
+        const defaultSettings = {
+            systemName: 'Hệ thống đặt lịch hẹn bác sĩ',
+            supportEmail: 'support@booking.com',
+            supportPhone: '1900-xxxx',
+            cancelTime: '24',
+            depositFee: '100000',
+            appointmentDuration: '30',
+            advanceBooking: '30',
+            systemStatus: 'active',
+            maintenanceNote: 'Hệ thống đang được bảo trì, vui lòng quay lại sau.'
+        };
+
+        // Track if settings have been changed
+        let settingsChanged = false;
+
+        // Load saved settings from localStorage (simulated backend)
+        function loadSettings() {
+            const savedSettings = localStorage.getItem('systemSettings');
+            if (savedSettings) {
+                try {
+                    const settings = JSON.parse(savedSettings);
+                    document.getElementById('settingSystemName').value = settings.systemName || defaultSettings.systemName;
+                    document.getElementById('settingSupportEmail').value = settings.supportEmail || defaultSettings.supportEmail;
+                    document.getElementById('settingSupportPhone').value = settings.supportPhone || defaultSettings.supportPhone;
+                    document.getElementById('settingCancelTime').value = settings.cancelTime || defaultSettings.cancelTime;
+                    document.getElementById('settingDepositFee').value = settings.depositFee || defaultSettings.depositFee;
+                    document.getElementById('settingAppointmentDuration').value = settings.appointmentDuration || defaultSettings.appointmentDuration;
+                    document.getElementById('settingAdvanceBooking').value = settings.advanceBooking || defaultSettings.advanceBooking;
+                    document.getElementById('settingSystemStatus').value = settings.systemStatus || defaultSettings.systemStatus;
+                    document.getElementById('settingMaintenanceNote').value = settings.maintenanceNote || defaultSettings.maintenanceNote;
+                    } catch (error) {
+                    console.error('Error loading settings:', error);
+                }
+            }
+        }
+
+        // Save settings function
+        function saveSettings() {
+            // Get all values
+            const settings = {
+                systemName: document.getElementById('settingSystemName').value.trim(),
+                supportEmail: document.getElementById('settingSupportEmail').value.trim(),
+                supportPhone: document.getElementById('settingSupportPhone').value.trim(),
+                cancelTime: document.getElementById('settingCancelTime').value,
+                depositFee: document.getElementById('settingDepositFee').value,
+                appointmentDuration: document.getElementById('settingAppointmentDuration').value,
+                advanceBooking: document.getElementById('settingAdvanceBooking').value,
+                systemStatus: document.getElementById('settingSystemStatus').value,
+                maintenanceNote: document.getElementById('settingMaintenanceNote').value.trim()
+            };
+
+            // Validation
+            if (!settings.systemName) {
+                alert('⚠️ Vui lòng nhập tên hệ thống!');
+                document.getElementById('settingSystemName').focus();
+                return false;
+            }
+
+            if (!settings.supportEmail) {
+                alert('⚠️ Vui lòng nhập email hỗ trợ!');
+                document.getElementById('settingSupportEmail').focus();
+                return false;
+            }
+
+            // Validate email format
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(settings.supportEmail)) {
+                alert('⚠️ Email không hợp lệ! Vui lòng kiểm tra lại.');
+                document.getElementById('settingSupportEmail').focus();
+                return false;
+            }
+
+            if (!settings.supportPhone) {
+                alert('⚠️ Vui lòng nhập số điện thoại hỗ trợ!');
+                document.getElementById('settingSupportPhone').focus();
+                return false;
+            }
+
+            // Validate cancel time
+            const cancelTime = parseInt(settings.cancelTime);
+            if (isNaN(cancelTime) || cancelTime < 1 || cancelTime > 72) {
+                alert('⚠️ Thời gian hủy lịch phải từ 1 đến 72 giờ!');
+                document.getElementById('settingCancelTime').focus();
+                return false;
+            }
+
+            // Validate deposit fee
+            const depositFee = parseInt(settings.depositFee);
+            if (isNaN(depositFee) || depositFee < 0) {
+                alert('⚠️ Phí đặt cọc không được âm!');
+                document.getElementById('settingDepositFee').focus();
+                return false;
+            }
+
+            // Validate appointment duration
+            const duration = parseInt(settings.appointmentDuration);
+            if (isNaN(duration) || duration < 15 || duration > 120) {
+                alert('⚠️ Thời gian khám phải từ 15 đến 120 phút!');
+                document.getElementById('settingAppointmentDuration').focus();
+                return false;
+            }
+
+            // Validate advance booking
+            const advanceBooking = parseInt(settings.advanceBooking);
+            if (isNaN(advanceBooking) || advanceBooking < 1 || advanceBooking > 90) {
+                alert('⚠️ Thời gian đặt trước phải từ 1 đến 90 ngày!');
+                document.getElementById('settingAdvanceBooking').focus();
+                return false;
+            }
+
+            // Validate maintenance note if in maintenance mode
+            if (settings.systemStatus === 'maintenance' && !settings.maintenanceNote) {
+                alert('⚠️ Vui lòng nhập ghi chú bảo trì!');
+                document.getElementById('settingMaintenanceNote').focus();
+                return false;
+            }
+
+            // Save to localStorage (simulating backend save)
+            try {
+                localStorage.setItem('systemSettings', JSON.stringify(settings));
+                // Show success message with details
+                const successMessage = `✅ Đã lưu cấu hình hệ thống thành công!
+
+📋 Thông tin đã lưu:
+━━━━━━━━━━━━━━━━━━━━
+🏥 Tên hệ thống: ${settings.systemName}
+📧 Email hỗ trợ: ${settings.supportEmail}
+📞 SĐT hỗ trợ: ${settings.supportPhone}
+⏰ Thời gian hủy: ${settings.cancelTime} giờ
+💰 Phí đặt cọc: ${parseInt(settings.depositFee).toLocaleString('vi-VN')}₫
+⏱️ Thời gian khám: ${settings.appointmentDuration} phút
+📅 Đặt trước: ${settings.advanceBooking} ngày
+🔧 Trạng thái: ${settings.systemStatus === 'active' ? 'Hoạt động' : 'Bảo trì'}`;
+
+                alert(successMessage);
+
+                // Reset changed flag
+                settingsChanged = false;
+
+                // Update UI if needed
+                updateSystemStatus(settings.systemStatus);
+
+                return true;
+
+            } catch (error) {
+                console.error('Error saving settings:', error);
+                alert('❌ Lỗi khi lưu cấu hình! Vui lòng thử lại.');
+                return false;
+            }
+        }
+
+        // Reset settings to default
+        function resetSettings() {
+            if (confirm('⚠️ Bạn có chắc chắn muốn khôi phục cấu hình mặc định?\n\nTất cả thay đổi hiện tại sẽ bị mất!')) {
+                document.getElementById('settingSystemName').value = defaultSettings.systemName;
+                document.getElementById('settingSupportEmail').value = defaultSettings.supportEmail;
+                document.getElementById('settingSupportPhone').value = defaultSettings.supportPhone;
+                document.getElementById('settingCancelTime').value = defaultSettings.cancelTime;
+                document.getElementById('settingDepositFee').value = defaultSettings.depositFee;
+                document.getElementById('settingAppointmentDuration').value = defaultSettings.appointmentDuration;
+                document.getElementById('settingAdvanceBooking').value = defaultSettings.advanceBooking;
+                document.getElementById('settingSystemStatus').value = defaultSettings.systemStatus;
+                document.getElementById('settingMaintenanceNote').value = defaultSettings.maintenanceNote;
+
+                // Clear localStorage
+                localStorage.removeItem('systemSettings');
+
+                settingsChanged = false;
+                alert('✅ Đã khôi phục cấu hình mặc định!');
+                }
+        }
+
+        // Update system status indicator
+        function updateSystemStatus(status) {
+            // You can add visual indicators here
+            if (status === 'maintenance') {
+                // Could add a banner or notification
+            } else {
+                }
+        }
+
+        // Track changes to settings inputs
+        function initSettingsChangeTracking() {
+            const settingsInputs = document.querySelectorAll('#settingsSection input, #settingsSection select, #settingsSection textarea');
+
+            settingsInputs.forEach(input => {
+                input.addEventListener('input', () => {
+                    settingsChanged = true;
+                });
+
+                input.addEventListener('change', () => {
+                    settingsChanged = true;
+                });
+            });
+        }
+
+        // Warn if leaving without saving
+        window.addEventListener('beforeunload', (e) => {
+            if (settingsChanged) {
+                const message = 'Bạn có thay đổi chưa lưu. Bạn có chắc muốn rời khỏi trang?';
+                e.preventDefault();
+                e.returnValue = message;
+                return message;
+            }
+        });
+
+        // Keyboard shortcut Ctrl+S to save settings
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                // Check if we're on settings page
+                const settingsSection = document.getElementById('settingsSection');
+                if (settingsSection && settingsSection.style.display !== 'none') {
+                    saveSettings();
+                }
+            }
+        });
+        // Load settings when page loads
+        window.addEventListener('load', () => {
+            loadSettings();
+            initSettingsChangeTracking();
+            initReviewFilters();
+            initReports();
+            });
+
+        // NOTE: initializeApp is now handled by admin_profile.js
+
+        // ============================================
+        // REPORTS & STATISTICS FUNCTIONS
+        // ============================================
+
+        // Sample data for different time periods
+        const reportData = {
+            today: {
+                appointments: { total: 45, trend: 12, previous: 40 },
+                revenue: { total: 22500000, trend: 15, previous: 19500000 },
+                users: { total: 12, trend: 20, previous: 10 },
+                reviews: { total: 8, avgRating: 4.6, trend: 0, previous: 4.6 }
+            },
+            week: {
+                appointments: { total: 285, trend: 8, previous: 264 },
+                revenue: { total: 142500000, trend: 10, previous: 129500000 },
+                users: { total: 67, trend: 15, previous: 58 },
+                reviews: { total: 52, avgRating: 4.7, trend: 0.1, previous: 4.6 }
+            },
+            month: {
+                appointments: { total: 1834, trend: 18, previous: 1554 },
+                revenue: { total: 458000000, trend: 23, previous: 372000000 },
+                users: { total: 234, trend: 12, previous: 209 },
+                reviews: { total: 187, avgRating: 4.8, trend: 0.2, previous: 4.6 }
+            },
+            'last-month': {
+                appointments: { total: 1554, trend: 15, previous: 1351 },
+                revenue: { total: 372000000, trend: 18, previous: 315000000 },
+                users: { total: 209, trend: 10, previous: 190 },
+                reviews: { total: 156, avgRating: 4.6, trend: 0.1, previous: 4.5 }
+            },
+            '3-months': {
+                appointments: { total: 5124, trend: 16, previous: 4417 },
+                revenue: { total: 1280000000, trend: 20, previous: 1066000000 },
+                users: { total: 648, trend: 14, previous: 568 },
+                reviews: { total: 521, avgRating: 4.7, trend: 0.15, previous: 4.55 }
+            },
+            '6-months': {
+                appointments: { total: 9856, trend: 14, previous: 8645 },
+                revenue: { total: 2460000000, trend: 19, previous: 2067000000 },
+                users: { total: 1247, trend: 13, previous: 1104 },
+                reviews: { total: 1005, avgRating: 4.7, trend: 0.1, previous: 4.6 }
+            },
+            year: {
+                appointments: { total: 18542, trend: 22, previous: 15199 },
+                revenue: { total: 4635000000, trend: 25, previous: 3708000000 },
+                users: { total: 2547, trend: 12, previous: 2274 },
+                reviews: { total: 1892, avgRating: 4.8, trend: 0.2, previous: 4.6 }
+            },
+            all: {
+                appointments: { total: 45632, trend: 0, previous: 45632 },
+                revenue: { total: 11408000000, trend: 0, previous: 11408000000 },
+                users: { total: 5894, trend: 0, previous: 5894 },
+                reviews: { total: 4521, avgRating: 4.75, trend: 0, previous: 4.75 }
+            }
+        };
+
+        // Chart instance
+        let currentChart = null;
+        // Note: currentChartType is declared in admin_profile.js
+
+        // Initialize reports
+        function initReports() {
+            const timeFilter = document.getElementById('reportTimeFilter');
+            const typeFilter = document.getElementById('reportTypeFilter');
+
+            if (timeFilter) {
+                timeFilter.addEventListener('change', updateReports);
+            }
+            if (typeFilter) {
+                typeFilter.addEventListener('change', filterReportTables);
+            }
+
+            // Initial load
+            updateReports();
+        }
+
+        // Update reports based on selected time period
+        function updateReports() {
+            const timeFilterEl = document.getElementById('reportTimeFilter');
+            if (!timeFilterEl) return;
+
+            const period = timeFilterEl.value;
+            const data = reportData[period];
+
+            if (!data) return;
+
+            // Update period display
+            updatePeriodDisplay(period);
+
+            // Update stats
+            updateReportStats(data);
+
+            // Update chart
+            updateChart(currentChartType, period);
+
+            // Update tables
+            updateReportTables(period);
+        }
+
+        // Update period display
+        function updatePeriodDisplay(period) {
+            const periodNames = {
+                'today': 'Hôm nay',
+                'week': 'Tuần này',
+                'month': 'Tháng này',
+                'last-month': 'Tháng trước',
+                '3-months': '3 tháng gần đây',
+                '6-months': '6 tháng gần đây',
+                'year': 'Năm nay',
+                'all': 'Tất cả thời gian'
+            };
+
+            const now = new Date();
+            let dateRange = '';
+
+            switch (period) {
+                case 'today':
+                    dateRange = now.toLocaleDateString('vi-VN');
+                    break;
+                case 'week':
+                    const weekStart = new Date(now.setDate(now.getDate() - now.getDay() + 1));
+                    const weekEnd = new Date(now.setDate(weekStart.getDate() + 6));
+                    dateRange = `${weekStart.toLocaleDateString('vi-VN')} - ${weekEnd.toLocaleDateString('vi-VN')}`;
+                    break;
+                case 'month':
+                    dateRange = `Tháng ${now.getMonth() + 1}/${now.getFullYear()}`;
+                    break;
+                case 'year':
+                    dateRange = `Năm ${now.getFullYear()}`;
+                    break;
+            }
+
+            document.getElementById('periodText').textContent = periodNames[period];
+            document.getElementById('dateRangeText').textContent = dateRange;
+        }
+
+        // Update report stats
+        function updateReportStats(data) {
+            // Appointments
+            document.getElementById('reportAppointments').textContent = data.appointments.total.toLocaleString('vi-VN');
+            updateTrend('appointmentTrend', data.appointments.trend);
+
+            // Revenue
+            document.getElementById('reportRevenue').textContent = '₫' + data.revenue.total.toLocaleString('vi-VN');
+            updateTrend('revenueTrend', data.revenue.trend);
+
+            // Users
+            document.getElementById('reportUsers').textContent = data.users.total.toLocaleString('vi-VN');
+            updateTrend('userTrend', data.users.trend);
+
+            // Reviews
+            document.getElementById('reportRating').textContent = data.reviews.avgRating.toFixed(1);
+            const ratingTrend = document.getElementById('ratingTrend');
+            ratingTrend.innerHTML = `
+        <i class="ri-star-fill" style="color: #ffc107;"></i>
+        <span>Từ ${data.reviews.total} đánh giá</span>
+    `;
+        }
+
+        // Update trend display
+        function updateTrend(elementId, trendPercent) {
+            const trendEl = document.getElementById(elementId);
+            if (!trendEl) return;
+
+            const isUp = trendPercent >= 0;
+            const icon = isUp ? 'ri-arrow-up-line' : 'ri-arrow-down-line';
+            const className = isUp ? 'trend-up' : 'trend-down';
+
+            trendEl.className = `stat-trend ${className}`;
+            trendEl.innerHTML = `
+        <i class="${icon}"></i>
+        <span>${Math.abs(trendPercent)}% so với kỳ trước</span>
+    `;
+        }
+
+        // Switch chart type
+        function switchChart(type) {
+            currentChartType = type;
+
+            // Update button states
+            document.querySelectorAll('.chart-tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-chart="${type}"]`).classList.add('active');
+
+            // Update chart
+            const period = document.getElementById('reportTimeFilter').value;
+            updateChart(type, period);
+
+            // Show corresponding table
+            filterReportTables();
+        }
+
+        // Update chart
+        function updateChart(type, period) {
+            const canvas = document.getElementById('reportChart');
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+
+            // Destroy existing chart
+            if (currentChart) {
+                currentChart.destroy();
+            }
+
+            // Generate chart data based on type and period
+            const chartData = generateChartData(type, period);
+
+            // Create new chart
+            currentChart = new Chart(ctx, {
+                type: 'line',
+                data: chartData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        },
+                        title: {
+                            display: true,
+                            text: getChartTitle(type),
+                            font: { size: 16, weight: 'bold' }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function (value) {
+                                    if (type === 'revenue') {
+                                        return '₫' + (value / 1000000).toFixed(0) + 'M';
+                                    }
+                                    return value;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Generate chart data
+        function generateChartData(type, period) {
+            let labels = [];
+            let data = [];
+            let label = '';
+            let borderColor = '';
+            let backgroundColor = '';
+
+            // Generate labels based on period
+            if (period === 'today' || period === 'week') {
+                labels = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'];
+            } else if (period === 'month' || period === 'last-month') {
+                labels = ['Tuần 1', 'Tuần 2', 'Tuần 3', 'Tuần 4'];
+            } else if (period === '3-months') {
+                const now = new Date();
+                for (let i = 2; i >= 0; i--) {
+                    const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                    labels.push(`T${date.getMonth() + 1}`);
+                }
+            } else if (period === '6-months') {
+                const now = new Date();
+                for (let i = 5; i >= 0; i--) {
+                    const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                    labels.push(`T${date.getMonth() + 1}`);
+                }
+            } else if (period === 'year') {
+                labels = ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'];
+            } else {
+                labels = ['Q1', 'Q2', 'Q3', 'Q4'];
+            }
+
+            // Generate data based on type
+            switch (type) {
+                case 'appointments':
+                    label = 'Lịch hẹn';
+                    borderColor = 'rgb(102, 126, 234)';
+                    backgroundColor = 'rgba(102, 126, 234, 0.1)';
+                    data = generateSampleData(labels.length, 50, 300);
+                    break;
+                case 'revenue':
+                    label = 'Doanh thu (triệu ₫)';
+                    borderColor = 'rgb(76, 175, 80)';
+                    backgroundColor = 'rgba(76, 175, 80, 0.1)';
+                    data = generateSampleData(labels.length, 10000000, 60000000);
+                    break;
+                case 'users':
+                    label = 'Người dùng mới';
+                    borderColor = 'rgb(52, 152, 219)';
+                    backgroundColor = 'rgba(52, 152, 219, 0.1)';
+                    data = generateSampleData(labels.length, 20, 100);
+                    break;
+                case 'reviews':
+                    label = 'Số đánh giá';
+                    borderColor = 'rgb(255, 193, 7)';
+                    backgroundColor = 'rgba(255, 193, 7, 0.1)';
+                    data = generateSampleData(labels.length, 10, 80);
+                    break;
+            }
+
+            return {
+                labels: labels,
+                datasets: [{
+                    label: label,
+                    data: data,
+                    borderColor: borderColor,
+                    backgroundColor: backgroundColor,
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4
+                }]
+            };
+        }
+
+        // Generate sample data
+        function generateSampleData(count, min, max) {
+            const data = [];
+            for (let i = 0; i < count; i++) {
+                data.push(Math.floor(Math.random() * (max - min + 1)) + min);
+            }
+            return data;
+        }
+
+        // Get chart title
+        function getChartTitle(type) {
+            const titles = {
+                'appointments': 'Biểu đồ lịch hẹn theo thời gian',
+                'revenue': 'Biểu đồ doanh thu theo thời gian',
+                'users': 'Biểu đồ người dùng mới theo thời gian',
+                'reviews': 'Biểu đồ đánh giá theo thời gian'
+            };
+            return titles[type] || 'Biểu đồ thống kê';
+        }
+
+        // Update report tables
+        function updateReportTables(period) {
+            updateAppointmentStatusTable();
+            updateRevenueMethodTable();
+            updateUserGrowthStats();
+            updateReviewDistributionTable();
+        }
+
+        // Update appointment status table
+        function updateAppointmentStatusTable() {
+            const statuses = [
+                { name: 'Đã xác nhận', count: 856, color: '#27ae60' },
+                { name: 'Chờ xác nhận', count: 145, color: '#f39c12' },
+                { name: 'Hoàn thành', count: 745, color: '#3498db' },
+                { name: 'Đã hủy', count: 88, color: '#e74c3c' }
+            ];
+
+            const total = statuses.reduce((sum, s) => sum + s.count, 0);
+            const tbody = document.getElementById('appointmentStatusTable');
+
+            tbody.innerHTML = statuses.map(status => {
+                const percent = ((status.count / total) * 100).toFixed(1);
+                return `
+            <tr>
+                <td>
+                    <span style="display: inline-block; width: 12px; height: 12px; background: ${status.color}; border-radius: 50%; margin-right: 8px;"></span>
+                    ${status.name}
+                </td>
+                <td><strong>${status.count.toLocaleString('vi-VN')}</strong></td>
+                <td>${percent}%</td>
+                <td>
+                    <div class="progress-bar" style="width: 200px;">
+                        <div class="progress-bar-fill" style="width: ${percent}%; background: ${status.color};"></div>
+                    </div>
+                </td>
+            </tr>
+        `;
+            }).join('');
+        }
+
+        // Update revenue method table
+        function updateRevenueMethodTable() {
+            const methods = [
+                { name: 'VNPay', transactions: 856, revenue: 214000000, color: '#e74c3c' },
+                { name: 'MoMo', transactions: 523, revenue: 130750000, color: '#9b59b6' },
+                { name: 'ZaloPay', transactions: 312, revenue: 78000000, color: '#3498db' },
+                { name: 'Tiền mặt', transactions: 143, revenue: 35750000, color: '#27ae60' }
+            ];
+
+            const totalRevenue = methods.reduce((sum, m) => sum + m.revenue, 0);
+            const tbody = document.getElementById('revenueMethodTable');
+
+            tbody.innerHTML = methods.map(method => {
+                const percent = ((method.revenue / totalRevenue) * 100).toFixed(1);
+                return `
+            <tr>
+                <td>
+                    <span style="display: inline-block; width: 12px; height: 12px; background: ${method.color}; border-radius: 50%; margin-right: 8px;"></span>
+                    ${method.name}
+                </td>
+                <td><strong>${method.transactions.toLocaleString('vi-VN')}</strong></td>
+                <td>₫${method.revenue.toLocaleString('vi-VN')}</td>
+                <td>${percent}%</td>
+                <td>
+                    <div class="progress-bar" style="width: 200px;">
+                        <div class="progress-bar-fill" style="width: ${percent}%; background: ${method.color};"></div>
+                    </div>
+                </td>
+            </tr>
+        `;
+            }).join('');
+        }
+
+        // Update user growth stats
+        function updateUserGrowthStats() {
+            const container = document.getElementById('userGrowthStats');
+            if (!container) return;
+
+            const stats = `
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+            <div style="padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; color: white;">
+                <div style="font-size: 14px; opacity: 0.9; margin-bottom: 5px;">Tổng người dùng</div>
+                <div style="font-size: 32px; font-weight: 700;">2,547</div>
+                <div style="font-size: 13px; opacity: 0.8; margin-top: 5px;">
+                    <i class="ri-arrow-up-line"></i> +12% so với tháng trước
+                </div>
+            </div>
+            <div style="padding: 20px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 12px; color: white;">
+                <div style="font-size: 14px; opacity: 0.9; margin-bottom: 5px;">Bệnh nhân</div>
+                <div style="font-size: 32px; font-weight: 700;">2,391</div>
+                <div style="font-size: 13px; opacity: 0.8; margin-top: 5px;">93.9% tổng số</div>
+            </div>
+            <div style="padding: 20px; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 12px; color: white;">
+                <div style="font-size: 14px; opacity: 0.9; margin-bottom: 5px;">Bác sĩ</div>
+                <div style="font-size: 32px; font-weight: 700;">156</div>
+                <div style="font-size: 13px; opacity: 0.8; margin-top: 5px;">6.1% tổng số</div>
+            </div>
+            <div style="padding: 20px; background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); border-radius: 12px; color: white;">
+                <div style="font-size: 14px; opacity: 0.9; margin-bottom: 5px;">Người dùng mới</div>
+                <div style="font-size: 32px, font-weight: 700;">234</div>
+                <div style="font-size: 13px; opacity: 0.8; margin-top: 5px;">
+                    <i class="ri-user-add-line"></i> Tháng này
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top: 20px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+            <h5 style="color: #2c3e50; font-size: 15px; font-weight: 600; margin-bottom: 15px;">Tăng trưởng theo thời gian</h5>
+            <table class="data-table" style="background: transparent;">
+                <thead>
+                    <tr>
+                        <th>Thời gian</th>
+                        <th>Người dùng mới</th>
+                        <th>Tổng cộng</th>
+                        <th>Tốc độ tăng trưởng</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Tuần này</td>
+                        <td><strong style="color: #27ae60;">+67</strong></td>
+                        <td>2,547</td>
+                        <td><span style="color: #27ae60;">↑ 15%</span></td>
+                    </tr>
+                    <tr>
+                        <td>Tuần trước</td>
+                        <td><strong style="color: #3498db;">+58</strong></td>
+                        <td>2,480</td>
+                        <td><span style="color: #3498db;">↑ 12%</span></td>
+                    </tr>
+                    <tr>
+                        <td>2 tuần trước</td>
+                        <td><strong style="color: #f39c12;">+52</strong></td>
+                        <td>2,422</td>
+                        <td><span style="color: #f39c12;">↑ 10%</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    `;
+
+            container.innerHTML = stats;
+        }
+
+        // Update review distribution table
+        function updateReviewDistributionTable() {
+            const distributions = [
+                { stars: 5, count: 1456, color: '#27ae60' },
+                { stars: 4, count: 856, color: '#3498db' },
+                { stars: 3, count: 312, color: '#f39c12' },
+                { stars: 2, count: 98, color: '#e67e22' },
+                { stars: 1, count: 45, color: '#e74c3c' }
+            ];
+
+            const total = distributions.reduce((sum, d) => sum + d.count, 0);
+            const tbody = document.getElementById('reviewDistributionTable');
+
+            tbody.innerHTML = distributions.map(dist => {
+                const percent = ((dist.count / total) * 100).toFixed(1);
+                const stars = '⭐'.repeat(dist.stars);
+                return `
+            <tr>
+                <td>
+                    <span style="font-size: 16px;">${stars}</span>
+                    <span style="margin-left: 8px; color: #7f8c8d;">(${dist.stars} sao)</span>
+                </td>
+                <td><strong>${dist.count.toLocaleString('vi-VN')}</strong></td>
+                <td>${percent}%</td>
+                <td>
+                    <div class="progress-bar" style="width: 200px;">
+                        <div class="progress-bar-fill" style="width: ${percent}%; background: ${dist.color};"></div>
+                    </div>
+                </td>
+            </tr>
+        `;
+            }).join('');
+        }
+
+        // Filter report tables based on selected type
+        function filterReportTables() {
+            const selectedType = document.getElementById('reportTypeFilter').value;
+
+            // Hide all tables
+            document.querySelectorAll('.report-table-container').forEach(table => {
+                table.style.display = 'none';
+            });
+
+            // Show selected table or all
+            if (selectedType === 'all') {
+                document.querySelectorAll('.report-table-container').forEach(table => {
+                    table.style.display = 'block';
+                });
+            } else {
+                const tableId = selectedType + 'ReportTable';
+                const table = document.getElementById(tableId);
+                if (table) {
+                    table.style.display = 'block';
+                }
+            }
+        }
+
+        // Refresh reports
+        function refreshReports() {
+            // Show loading indicator
+            const statsGrid = document.getElementById('reportStatsGrid');
+            if (statsGrid) {
+                statsGrid.style.opacity = '0.5';
+            }
+
+            // Simulate refresh delay
+            setTimeout(() => {
+                updateReports();
+                if (statsGrid) {
+                    statsGrid.style.opacity = '1';
+                }
+                alert('✅ Đã làm mới dữ liệu báo cáo!');
+            }, 500);
+        }
+
+        // Export report
+        function exportReport() {
+            const period = document.getElementById('reportTimeFilter').value;
+            const type = document.getElementById('reportTypeFilter').value;
+            const data = reportData[period];
+
+            if (!data) {
+                alert('⚠️ Không có dữ liệu để xuất!');
+                return;
+            }
+
+            // Create report content
+            const reportContent = `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+BÁO CÁO THỐNG KKÊ HỆ THỐNG
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📅 Thời gian: ${document.getElementById('periodText').textContent}
+📊 Loại báo cáo: ${type === 'all' ? 'Tất cả' : type}
+🕐 Thời điểm xuất: ${new Date().toLocaleString('vi-VN')}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━���━━━━
+TỔNG QUAN
+━━━━━━━━━━━━━━━━━━━━━━━��━━━━━━━━━━━━
+
+📅 Tổng lịch hẹn: ${data.appointments.total.toLocaleString('vi-VN')}
+   └─ Tăng trưởng: ${data.appointments.trend}%
+
+💰 Tổng doanh thu: ₫${data.revenue.total.toLocaleString('vi-VN')}
+   └─ Tăng trưởng: ${data.revenue.trend}%
+
+👥 Người dùng mới: ${data.users.total.toLocaleString('vi-VN')}
+   └─ Tăng trưởng: ${data.users.trend}%
+
+⭐ Đánh giá trung bình: ${data.reviews.avgRating}/5.0
+   └─ Từ ${data.reviews.total} đánh giá
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CHI TIẾT LỊCH HẸN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ Đã xác nhận: 856 (46.7%)
+⏳ Chờ xác nhận: 145 (7.9%)
+✔️ Hoàn thành: 745 (40.6%)
+❌ Đã hủy: 88 (4.8%)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━���━━━━
+CHI TIẾT DOANH THU
+━━━━━━━━━━━━━━━━━━━━━━━���━━━━━━━━━━━━
+
+💳 VNPay: ₫214,000,000 (46.7%)
+📱 MoMo: ₫130,750,000 (28.5%)
+💙 ZaloPay: ₫78,000,000 (17.0%)
+💵 Tiền mặt: ₫35,750,000 (7.8%)
+
+━━━━━━━━━━━━━━━━━━━━━━━���━━━━━━━━━━━━
+PHÂN BỐ ĐÁNH GIÁ
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⭐⭐⭐⭐⭐: 1,456 (52.3%)
+⭐⭐⭐⭐: 856 (30.7%)
+⭐⭐⭐: 312 (11.2%)
+⭐⭐: 98 (3.5%)
+⭐: 45 (1.6%)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Hệ thống đặt lịch hẹn bác sĩ
+© 2025 - All rights reserved
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    `;
+
+            // Create and download file
+            const blob = new Blob([reportContent], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `bao-cao-thong-ke-${period}-${new Date().getTime()}.txt`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+            alert('✅ Đã xuất báo cáo thành công!');
+        }
+
+        // ============================================
+        // END REPORTS & STATISTICS FUNCTIONS
+        // ============================================
+
+        // ============================================
+        // UI FUNCTIONS FOR ADMIN PROFILE (uses API from admin_profile.js)
+        // ============================================
+
+        // Change avatar -> open file picker and upload
+        function changeAvatar() {
+            const input = document.getElementById('avatarFileInput');
+            if (!input) return alert('Không hỗ trợ upload avatar');
+            input.value = null;
+            input.click();
+        }
+
+        document.getElementById('avatarFileInput').addEventListener('change', async function (e) {
+            const file = e.target.files && e.target.files[0];
+            if (!file) return;
+            if (!file.type.startsWith('image/')) return alert('Vui lòng chọn file ảnh hợp lệ');
+
+            const result = await uploadAvatar(file);
+            if (result) {
+                document.getElementById('profileAvatarLarge').innerHTML = `<img src="${adminData.avatar_url}" alt="avatar" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
+                alert('✅ Đã cập nhật ảnh đại diện thành công!');
+            } else {
+                alert('⚠️ Lỗi khi tải ảnh lên. Vui lòng thử lại.');
+            }
+        });
+
+        // Open admin profile modal
+        function openAdminProfile() {
+            // Close dropdown menu
+            document.getElementById('adminMenu').classList.remove('active');
+
+            // Populate form with current data
+            if (adminData.avatar_url) {
+                document.getElementById('profileAvatarLarge').innerHTML = `<img src="${adminData.avatar_url}" alt="avatar" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
+            } else {
+                document.getElementById('profileAvatarLarge').textContent = adminData.avatar || '';
+            }
+            document.getElementById('profileName').textContent = adminData.fullName || 'Đang cập nhật';
+            document.getElementById('profileRole').textContent = adminData.role || 'Đang cập nhật';
+            document.getElementById('profileFullName').value = adminData.fullName || '';
+            document.getElementById('profileUsername').value = adminData.username || '';
+            document.getElementById('profileEmail').value = adminData.email || '';
+            document.getElementById('profilePhone').value = adminData.phone || '';
+            document.getElementById('profileAddress').value = adminData.address || '';
+            document.getElementById('profileCreatedDate').value = adminData.createdDate || '';
+            document.getElementById('profileLastLogin').value = adminData.lastLogin || '';
+
+            openModal('adminProfileModal');
+        }
+
+        // Profile form submission - handled by native form action or API in admin_profile.js
+
+        // ============================================
+        // LOG DETAIL MODAL FUNCTIONS
+        // ============================================
+        let currentLogType = '';
+        let currentLogData = [];
+
+        async function openLogDetailModal(type) {
+            currentLogType = type;
+            const modal = document.getElementById('logDetailModal');
+            if (!modal) {
+                createLogDetailModal();
+            }
+
+            const titleEl = document.getElementById('logDetailTitle');
+            const contentEl = document.getElementById('logDetailContent');
+
+            // Set title based on type
+            const titles = {
+                'rating': 'Đánh giá tiêu cực (1-2 sao)',
+                'feedback': 'Báo cáo/Phản hồi',
+                'ip': 'Danh sách IP bị chặn',
+                'system': 'Log hệ thống'
+            };
+            titleEl.textContent = titles[type] || 'Chi tiết Log';
+            contentEl.innerHTML = '<div style="text-align:center;padding:20px;"><i class="ri-loader-4-line ri-spin"></i> Đang tải...</div>';
+
+            document.getElementById('logDetailModal').classList.add('active');
+
+            // Load data
+            try {
+                let response;
+                if (type === 'rating') {
+                    response = await apiRequest('/admin/negative-reviews?limit=100');
+                } else if (type === 'feedback') {
+                    response = await apiRequest('/admin/feedbacks?limit=100&status=all');
+                } else if (type === 'ip') {
+                    response = await apiRequest('/admin/blocked-ips');
+                } else if (type === 'system') {
+                    response = await apiRequest('/admin/logs?limit=100');
+                }
+
+                if (response.ok) {
+                    const result = await response.json();
+                    currentLogData = result.data || [];
+                    renderLogDetailContent(type, currentLogData);
+                }
+            } catch (error) {
+                contentEl.innerHTML = '<div style="color:red;text-align:center;padding:20px;">Lỗi tải dữ liệu</div>';
+            }
+        }
+
+        function createLogDetailModal() {
+            const modalHtml = `
+                <div id="logDetailModal" class="modal">
+                    <div class="modal-content" style="max-width: 900px; max-height: 80vh;">
+                        <div class="modal-header">
+                            <h2 id="logDetailTitle">Chi tiết Log</h2>
+                            <div class="close-modal" onclick="closeModal('logDetailModal')">
+                                <i class="ri-close-line"></i>
+                            </div>
+                        </div>
+                        <div id="logDetailContent" style="max-height: 60vh; overflow-y: auto; padding: 20px;">
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+        }
+
+        function renderLogDetailContent(type, data) {
+            const contentEl = document.getElementById('logDetailContent');
+
+            if (!data || data.length === 0) {
+                contentEl.innerHTML = '<div style="text-align:center;padding:40px;color:#999;"><i class="ri-inbox-line" style="font-size:48px;display:block;margin-bottom:10px;"></i>Không có dữ liệu</div>';
+                return;
+            }
+
+            if (type === 'rating') {
+                contentEl.innerHTML = `
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Bệnh nhân</th>
+                                <th>Bác sĩ</th>
+                                <th>Sao</th>
+                                <th>Nội dung</th>
+                                <th>Ngày</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${data.map(r => `
+                                <tr>
+                                    <td>${r.user_name || r.user_email || 'Ẩn danh'}</td>
+                                    <td>${r.doctor_name || 'N/A'}</td>
+                                    <td><span style="color:${r.rating === 1 ? '#e74c3c' : '#f39c12'};">${r.rating}★</span></td>
+                                    <td style="max-width:250px;overflow:hidden;text-overflow:ellipsis;">${r.comment || 'Không có'}</td>
+                                    <td>${new Date(r.created_at).toLocaleDateString('vi-VN')}</td>
+                                    <td>
+                                        <button class="btn-icon" onclick="deleteReviewAdmin(${r.id})" title="Xóa">
+                                            <i class="ri-delete-bin-line"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } else if (type === 'feedback') {
+                contentEl.innerHTML = `
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Người báo cáo</th>
+                                <th>Loại</th>
+                                <th>Lý do</th>
+                                <th>Trạng thái</th>
+                                <th>Ngày</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${data.map(r => `
+                                <tr>
+                                    <td>${r.reporter_name || 'Ẩn danh'}</td>
+                                    <td>${r.type || r.report_type || 'feedback'}</td>
+                                    <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;">${r.reason || r.detail || 'Không rõ'}</td>
+                                    <td><span class="status-badge status-${(r.status || 'pending').toLowerCase()}">${r.status || 'PENDING'}</span></td>
+                                    <td>${new Date(r.created_at).toLocaleDateString('vi-VN')}</td>
+                                    <td>
+                                        <button class="btn-icon" onclick="updateReportStatus(${r.id}, 'REVIEWED')" title="Đánh dấu đã xem">
+                                            <i class="ri-check-line"></i>
+                                        </button>
+                                        <button class="btn-icon" onclick="deleteReportAdmin(${r.id})" title="Xóa">
+                                            <i class="ri-delete-bin-line"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } else if (type === 'ip') {
+                contentEl.innerHTML = `
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Địa chỉ IP</th>
+                                <th>Lý do</th>
+                                <th>Thời gian chặn</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${data.map(ip => `
+                                <tr>
+                                    <td><strong>${ip.ip || ip}</strong></td>
+                                    <td>${ip.reason || 'Vi phạm chính sách'}</td>
+                                    <td>${ip.blocked_at ? new Date(ip.blocked_at).toLocaleDateString('vi-VN') : '--'}</td>
+                                    <td>
+                                        <button class="btn-icon" onclick="unblockIp('${ip.ip || ip}')" title="Bỏ chặn">
+                                            <i class="ri-lock-unlock-line"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } else if (type === 'system') {
+                const actionNames = {
+                    'low_rating_review': '⚠️ Đánh giá thấp',
+                    'SETTING_CHANGED': 'Thay đổi cấu hình',
+                    'ADMIN_UPDATE_SETTINGS': 'Cập nhật cấu hình',
+                    'ADMIN_BLOCK_IP': 'Chặn IP',
+                    'ADMIN_UNBLOCK_IP': 'Bỏ chặn IP',
+                    'ADMIN_CLEAR_CACHE': 'Xóa cache',
+                    'LOGIN_SUCCESS': 'Đăng nhập thành công',
+                    'LOGIN_FAILED': 'Đăng nhập thất bại'
+                };
+                contentEl.innerHTML = `
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Thời gian</th>
+                                <th>Hành động</th>
+                                <th>Người thực hiện</th>
+                                <th>Chi tiết</th>
+                                <th>IP</th>
+                                <th>Xóa</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${data.map(log => {
+                                const meta = log.metadata || {};
+                                let detail = '';
+                                if (log.action === 'low_rating_review' && meta.message) {
+                                    detail = meta.message;
+                                } else if (meta.setting_key) {
+                                    detail = meta.setting_key + ': ' + (meta.new_value || '');
+                                }
+                                return `
+                                <tr>
+                                    <td>${log.created_at}</td>
+                                    <td><strong>${actionNames[log.action] || log.action}</strong></td>
+                                    <td>${log.user?.name || 'System'}</td>
+                                    <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;">${detail}</td>
+                                    <td>${log.ip_address || '--'}</td>
+                                    <td>
+                                        <button class="btn-icon" onclick="deleteSystemLog(${log.id})" title="Xóa">
+                                            <i class="ri-delete-bin-line"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            `}).join('')}
+                        </tbody>
+                    </table>
+                `;
+            }
+        }
+
+        async function deleteReviewAdmin(id) {
+            if (!confirm('Bạn có chắc muốn xóa đánh giá này?')) return;
+            try {
+                const response = await apiRequest('/admin/reviews/' + id, { method: 'DELETE' });
+                if (response.ok) {
+                    alert('Đã xóa đánh giá');
+                    openLogDetailModal('rating');
+                    refreshLogPreview();
+                }
+            } catch (error) {
+                alert('Lỗi xóa đánh giá');
+            }
+        }
+
+        async function updateReportStatus(id, status) {
+            try {
+                const response = await apiRequest('/admin/reports/' + id + '/status', {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: status })
+                });
+                if (response.ok) {
+                    alert('Đã cập nhật trạng thái');
+                    openLogDetailModal('feedback');
+                    refreshLogPreview();
+                }
+            } catch (error) {
+                alert('Lỗi cập nhật');
+            }
+        }
+
+        async function deleteReportAdmin(id) {
+            if (!confirm('Bạn có chắc muốn xóa báo cáo này?')) return;
+            try {
+                const response = await apiRequest('/admin/reports/' + id, { method: 'DELETE' });
+                if (response.ok) {
+                    alert('Đã xóa báo cáo');
+                    openLogDetailModal('feedback');
+                    refreshLogPreview();
+                }
+            } catch (error) {
+                alert('Lỗi xóa báo cáo');
+            }
+        }
+
+        async function deleteSystemLog(id) {
+            if (!confirm('Bạn có chắc muốn xóa log này?')) return;
+            try {
+                const response = await apiRequest('/admin/logs/' + id, { method: 'DELETE' });
+                if (response.ok) {
+                    alert('Đã xóa log');
+                    openLogDetailModal('system');
+                    refreshLogPreview();
+                }
+            } catch (error) {
+                alert('Lỗi xóa log');
+            }
+        }
+    </script>
+</body>
+
+</html>

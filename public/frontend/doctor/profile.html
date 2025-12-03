@@ -1,0 +1,4410 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/x-icon" href="../img/favicon.ico" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.2.0/remixicon.min.css">
+  <title>Trang Cá Nhân Bác Sĩ</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Inter", sans-serif;
+    }
+
+    body {
+      display: flex;
+      height: 100vh;
+      background: #f0f5fd;
+      overflow: hidden;
+    }
+
+    .sidebar {
+      background: #fff;
+      width: 260px;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      padding: 25px 20px;
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #f0f5fd;
+    }
+
+    .sidebar-header i {
+      font-size: 32px;
+      color: #4a69bd;
+    }
+
+    .sidebar-header h2 {
+      color: #2c3e50;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .nav-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      color: #5a6c7d;
+      cursor: pointer;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .nav-item i {
+      font-size: 20px;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+      background: #4a69bd;
+      color: #fff;
+    }
+
+    .nav-item {
+      position: relative;
+    }
+
+    .nav-badge {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: #e74c3c;
+      color: #fff;
+      min-width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      font-size: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+    }
+
+    .logout-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      color: #e74c3c;
+      cursor: pointer;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      font-size: 15px;
+      font-weight: 500;
+      margin-top: auto;
+    }
+
+    .logout-btn i {
+      font-size: 20px;
+    }
+
+    .logout-btn:hover {
+      background: #ffe5e5;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 25px;
+      overflow-y: auto;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      background: #fff;
+      padding: 20px 25px;
+      border-radius: 16px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .page-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .page-title i {
+      font-size: 28px;
+      color: #4a69bd;
+    }
+
+    .page-title h1 {
+      font-size: 24px;
+      color: #2c3e50;
+      font-weight: 700;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .icon-btn {
+      width: 45px;
+      height: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #4a69bd;
+      color: #fff;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .icon-btn:hover {
+      background: #3c5aa6;
+      transform: translateY(-2px);
+    }
+
+    .icon-btn i {
+      font-size: 20px;
+    }
+
+    .badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: #e74c3c;
+      color: #fff;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+    }
+
+    .content-section {
+      display: none;
+    }
+
+    .content-section.active {
+      display: block;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 25px;
+    }
+
+    .section-card {
+      background: #fff;
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #f0f5fd;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 18px;
+      font-weight: 700;
+      color: #2c3e50;
+    }
+
+    .section-title i {
+      color: #4a69bd;
+    }
+
+    .btn-primary {
+      padding: 10px 20px;
+      background: #4a69bd;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary:hover {
+      background: #3c5aa6;
+      transform: translateY(-2px);
+    }
+
+    .profile-info {
+      display: flex;
+      gap: 25px;
+      align-items: flex-start;
+    }
+
+    .profile-avatar {
+      position: relative;
+    }
+
+    .profile-avatar img {
+      width: 150px;
+      height: 150px;
+      border-radius: 20px;
+      object-fit: cover;
+      background: #e0e0e0;
+    }
+
+    .edit-avatar {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      width: 35px;
+      height: 35px;
+      background: #4a69bd;
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .edit-avatar:hover {
+      background: #3c5aa6;
+    }
+
+    .profile-details {
+      flex: 1;
+    }
+
+    .info-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .info-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .info-field label {
+      font-size: 13px;
+      color: #7f8c8d;
+      font-weight: 600;
+    }
+
+    .info-field input,
+    .info-field select,
+    .info-field textarea {
+      padding: 12px;
+      border: 2px solid #e8eaf6;
+      border-radius: 10px;
+      font-size: 14px;
+      color: #2c3e50;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .info-field input:focus,
+    .info-field select:focus,
+    .info-field textarea:focus {
+      border-color: #4a69bd;
+    }
+
+    .notification-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .notification-item {
+      display: flex;
+      gap: 15px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .notification-item:hover {
+      background: #e8eaf6;
+    }
+
+    .notification-icon {
+      width: 45px;
+      height: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      font-size: 20px;
+    }
+
+    .notif-schedule {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .notif-change {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .notif-system {
+      background: #d1ecf1;
+      color: #0c5460;
+    }
+
+    .notification-content {
+      flex: 1;
+    }
+
+    .notification-content h4 {
+      font-size: 14px;
+      color: #2c3e50;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+
+    .notification-content p {
+      font-size: 13px;
+      color: #7f8c8d;
+    }
+
+    .notification-time {
+      font-size: 12px;
+      color: #95a5a6;
+      white-space: nowrap;
+    }
+
+    .full-width {
+      grid-column: 1 / -1;
+    }
+
+    .dw-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .dw-controls .left {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .dw-date {
+      padding: 12px 14px;
+      border: 2px solid #e8eaf6;
+      border-radius: 12px;
+      font-size: 14px;
+      background: #fff;
+    }
+
+    .dw-btn {
+      padding: 10px 16px;
+      background: #4a69bd;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+    }
+
+    .dw-btn:hover {
+      background: #3c5aa6;
+      transform: translateY(-2px);
+    }
+
+    .dw-cal-wrap {
+      border: 1px solid #e8eaf6;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .dw-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1200px;
+    }
+
+    .dw-table thead {
+      background: #4a69bd;
+      color: #fff;
+    }
+
+    .dw-table th {
+      padding: 16px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    .dw-table th:first-child {
+      text-align: left;
+      min-width: 180px;
+    }
+
+    .dw-table th {
+      min-width: 220px;
+    }
+
+    .dw-table td {
+      padding: 16px;
+      border-bottom: 1px solid #eef2ff;
+      border-right: 1px solid #eef2ff;
+      vertical-align: top;
+      min-height: 120px;
+    }
+
+    .dw-table td:last-child {
+      border-right: none;
+    }
+
+    .dw-slot {
+      background: #eef2ff;
+      color: #1f2a44;
+      font-weight: 700;
+      padding: 18px;
+      font-size: 15px;
+    }
+
+    .dw-slot .rng {
+      font-size: 12px;
+      opacity: 0.85;
+      font-weight: 500;
+      margin-top: 6px;
+    }
+
+    .dw-card {
+      border-left: 4px solid #2196f3;
+      background: #eaf3ff;
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+    }
+
+    .dw-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    }
+
+    .dw-card.pending {
+      border-left-color: #fbc02d;
+      background: #fff9e6;
+    }
+
+    .dw-card.completed {
+      border-left-color: #4caf50;
+      background: #e8f5e9;
+    }
+
+    .dw-card.cancelled {
+      border-left-color: #f44336;
+      background: #ffebee;
+    }
+
+    .dw-card.confirmed {
+      border-left-color: #2196f3;
+      background: #eaf3ff;
+    }
+
+    /* Schedule status labels */
+    .schedule-status-label {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .schedule-status-label.ended {
+      background: #e0e0e0;
+      color: #666;
+    }
+
+    .schedule-status-label.ongoing {
+      background: #4caf50;
+      color: #fff;
+      animation: pulse 2s infinite;
+    }
+
+    .schedule-status-label.upcoming {
+      background: #ff9800;
+      color: #fff;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    .dw-card {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .dw-card h4 {
+      margin: 0 0 10px 0;
+      font-size: 15px;
+      font-weight: 700;
+      color: #2c3e50;
+    }
+
+    .dw-meta {
+      font-size: 13px;
+      color: #556;
+      line-height: 1.8;
+    }
+
+    .dw-meta div {
+      margin-bottom: 4px;
+    }
+
+    .dw-meta strong {
+      color: #2c3e50;
+      margin-right: 4px;
+    }
+
+    .dw-empty {
+      color: #999;
+      font-size: 13px;
+      font-style: italic;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .patient-notes-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .patient-note-card {
+      background: #fff;
+      border: 2px solid #e8eaf6;
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .patient-note-card:hover {
+      border-color: #4a69bd;
+      box-shadow: 0 4px 12px rgba(74, 105, 189, 0.1);
+    }
+
+    .note-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 15px;
+    }
+
+    .note-patient-info h3 {
+      color: #2c3e50;
+      font-size: 18px;
+      margin-bottom: 5px;
+    }
+
+    .note-patient-info p {
+      color: #7f8c8d;
+      font-size: 13px;
+    }
+
+    .note-date {
+      background: #4a69bd;
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .note-content {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+
+    .note-content h4 {
+      color: #2c3e50;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .note-content p {
+      color: #5a6c7d;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .note-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-edit,
+    .btn-delete {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-edit {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .btn-edit:hover {
+      background: #c3e6cb;
+    }
+
+    .btn-delete {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .btn-delete:hover {
+      background: #f5c6cb;
+    }
+
+    .forum-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .forum-thread {
+      background: #fff;
+      border: 2px solid #e8eaf6;
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .forum-thread:hover {
+      border-color: #4a69bd;
+      box-shadow: 0 4px 12px rgba(74, 105, 189, 0.1);
+    }
+
+    .thread-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 12px;
+    }
+
+    .thread-title {
+      color: #2c3e50;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .thread-meta {
+      display: flex;
+      gap: 15px;
+      font-size: 13px;
+      color: #7f8c8d;
+    }
+
+    .thread-meta span {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .thread-content {
+      color: #5a6c7d;
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+
+    .thread-tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      background: #e8eaf6;
+      color: #4a69bd;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .forum-bridge {
+      background: #eef2ff;
+      border: 1px dashed #4a69bd;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      color: #3c5aa6;
+    }
+
+    .forum-bridge i {
+      font-size: 24px;
+    }
+
+    .tab-buttons {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: 1px solid #dfe7ff;
+      background: #fff;
+      color: #4a69bd;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn.active,
+    .tab-btn:hover {
+      background: #4a69bd;
+      color: #fff;
+      box-shadow: 0 10px 20px rgba(74, 105, 189, 0.2);
+    }
+
+    .forum-post {
+      background: #fff;
+      border-radius: 16px;
+      padding: 20px;
+      border: 1px solid #e8eaf6;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
+    }
+
+    .forum-posts {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .forum-new-question {
+      background: #f8f9ff;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      border: 2px dashed #dfe6ff;
+    }
+
+    .forum-form-group {
+      margin-bottom: 15px;
+    }
+
+    .forum-form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #2c3e50;
+    }
+
+    .forum-form-group input,
+    .forum-form-group textarea {
+      width: 100%;
+      border: 2px solid #e0e7ff;
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 14px;
+      font-family: inherit;
+      resize: vertical;
+    }
+
+    .forum-form-group textarea {
+      min-height: 120px;
+    }
+
+    .forum-empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #7f8c8d;
+      border: 2px dashed #dfe6ff;
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    .forum-empty-state i {
+      font-size: 48px;
+      margin-bottom: 15px;
+      display: inline-block;
+      color: #4a69bd;
+    }
+
+    .forum-answer {
+      background: #fff;
+      border-radius: 12px;
+      padding: 15px;
+      border-left: 4px solid #4a69bd;
+      margin-top: 15px;
+    }
+
+    .forum-reply-form {
+      margin-top: 15px;
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid #dfe6ff;
+      padding: 15px;
+    }
+
+    .forum-reply-form textarea {
+      width: 100%;
+      border: 2px solid #e0e7ff;
+      border-radius: 10px;
+      padding: 12px;
+      min-height: 100px;
+      font-family: inherit;
+      resize: vertical;
+      margin-bottom: 12px;
+    }
+
+    .reply-form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .appointment-status {
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .status-confirmed {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .status-pending {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .post-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .post-author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .author-avatar {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: #4a69bd;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .post-content {
+      color: #5a6c7d;
+      line-height: 1.7;
+      margin-bottom: 16px;
+    }
+
+    .post-stats {
+      display: flex;
+      gap: 16px;
+      font-size: 13px;
+      color: #95a5a6;
+    }
+
+    .post-stats span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .settings-grid {
+      display: grid;
+      gap: 20px;
+    }
+
+    .settings-section {
+      background: #fff;
+      padding: 25px;
+      border-radius: 16px;
+      border: 2px solid #e8eaf6;
+    }
+
+    .settings-section h3 {
+      color: #2c3e50;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .settings-section h3 i {
+      color: #4a69bd;
+    }
+
+    #feedbackTextarea:focus {
+      border-color: #4a69bd;
+      box-shadow: 0 0 0 3px rgba(74, 105, 189, 0.1);
+    }
+
+    .setting-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
+      border-bottom: 1px solid #f0f5fd;
+    }
+
+    .setting-item:last-child {
+      border-bottom: none;
+    }
+
+    .setting-info h4 {
+      color: #2c3e50;
+      font-size: 15px;
+      margin-bottom: 5px;
+    }
+
+    .setting-info p {
+      color: #7f8c8d;
+      font-size: 13px;
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 50px;
+      height: 26px;
+      background: #ccc;
+      border-radius: 13px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .toggle-switch.active {
+      background: #4a69bd;
+    }
+
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: #fff;
+      border-radius: 50%;
+      top: 3px;
+      left: 3px;
+      transition: all 0.3s ease;
+    }
+
+    .toggle-switch.active::after {
+      left: 27px;
+    }
+
+    /* Toast notification */
+    .toast-notification {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: linear-gradient(135deg, #4CAF50, #45a049);
+      color: white;
+      padding: 15px 25px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 5px 20px rgba(76, 175, 80, 0.3);
+      z-index: 9999;
+      transform: translateX(120%);
+      transition: transform 0.3s ease;
+    }
+
+    .toast-notification.show {
+      transform: translateX(0);
+    }
+
+    .toast-notification.toast-error {
+      background: linear-gradient(135deg, #f44336, #e53935);
+      box-shadow: 0 5px 20px rgba(244, 67, 54, 0.3);
+    }
+
+    .toast-notification.toast-info {
+      background: linear-gradient(135deg, #2196F3, #1976D2);
+      box-shadow: 0 5px 20px rgba(33, 150, 243, 0.3);
+    }
+
+    /* Dark mode styles */
+    body.dark-mode {
+      background-color: #1a1a2e;
+      color: #e0e0e0;
+    }
+
+    body.dark-mode .dashboard-container {
+      background-color: #16213e;
+    }
+
+    body.dark-mode .sidebar {
+      background: linear-gradient(180deg, #0f3460, #1a1a2e);
+    }
+
+    body.dark-mode .main-content {
+      background-color: #1a1a2e;
+    }
+
+    body.dark-mode .content-section {
+      background-color: #16213e;
+    }
+
+    body.dark-mode .settings-section,
+    body.dark-mode .stat-card,
+    body.dark-mode .info-card,
+    body.dark-mode .activity-item,
+    body.dark-mode .notification-item {
+      background-color: #0f3460;
+      border-color: #1f4287;
+    }
+
+    body.dark-mode .setting-item {
+      border-color: #1f4287;
+    }
+
+    body.dark-mode h1, body.dark-mode h2, body.dark-mode h3,
+    body.dark-mode h4, body.dark-mode h5 {
+      color: #e0e0e0;
+    }
+
+    body.dark-mode p, body.dark-mode span, body.dark-mode label {
+      color: #b0b0b0;
+    }
+
+    body.dark-mode input, body.dark-mode select, body.dark-mode textarea {
+      background-color: #16213e;
+      border-color: #1f4287;
+      color: #e0e0e0;
+    }
+
+    body.dark-mode .modal-content {
+      background-color: #16213e;
+      border: 1px solid #1f4287;
+    }
+
+    /* Autocomplete suggestions */
+    .autocomplete-suggestions {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 2px solid #e8eaf6;
+      border-top: none;
+      border-radius: 0 0 10px 10px;
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 1000;
+      display: none;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+
+    .autocomplete-suggestions.show {
+      display: block;
+    }
+
+    .autocomplete-item {
+      padding: 12px 15px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #f0f0f0;
+      transition: background-color 0.2s;
+    }
+
+    .autocomplete-item:last-child {
+      border-bottom: none;
+    }
+
+    .autocomplete-item:hover {
+      background-color: #e3f2fd;
+    }
+
+    .autocomplete-item .patient-name {
+      font-weight: 600;
+      color: #333;
+    }
+
+    .autocomplete-item .patient-info {
+      font-size: 12px;
+      color: #666;
+    }
+
+    .autocomplete-item .appointment-date {
+      font-size: 11px;
+      color: #5c6bc0;
+      background: #e8eaf6;
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+
+    .autocomplete-loading {
+      padding: 15px;
+      text-align: center;
+      color: #888;
+    }
+
+    /* Login history styles */
+    .login-history-list {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .login-history-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+      border-bottom: 1px solid #e8eaf6;
+      transition: background-color 0.3s ease;
+    }
+
+    .login-history-item:hover {
+      background-color: #f5f5f5;
+    }
+
+    .login-history-item:last-child {
+      border-bottom: none;
+    }
+
+    .history-device {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .history-device i {
+      font-size: 24px;
+      color: #5c6bc0;
+    }
+
+    .history-device strong {
+      display: block;
+      color: #333;
+      font-weight: 600;
+    }
+
+    .history-device small {
+      color: #888;
+      font-size: 12px;
+    }
+
+    .history-time {
+      text-align: right;
+    }
+
+    .history-time span {
+      display: block;
+      color: #333;
+      font-weight: 500;
+    }
+
+    .history-time small {
+      color: #888;
+      font-size: 12px;
+    }
+
+    body.dark-mode .login-history-item {
+      border-color: #1f4287;
+    }
+
+    body.dark-mode .login-history-item:hover {
+      background-color: #0f3460;
+    }
+
+    body.dark-mode .history-device strong,
+    body.dark-mode .history-time span {
+      color: #e0e0e0;
+    }
+
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      overflow: auto;
+    }
+
+    .modal.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: auto;
+      padding: 0;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 25px 30px;
+      border-bottom: 2px solid #f0f5fd;
+      background: linear-gradient(135deg, #4a69bd 0%, #3c5aa6 100%);
+      color: #fff;
+      border-radius: 16px 16px 0 0;
+    }
+
+    .modal-header h3 {
+      font-size: 20px;
+      font-weight: 700;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .close-modal {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      font-size: 28px;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.3s;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .close-modal:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: rotate(90deg);
+    }
+
+    .modal-body {
+      padding: 30px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      color: #2c3e50;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e8eaf6;
+      border-radius: 10px;
+      font-size: 14px;
+      color: #2c3e50;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      border-color: #4a69bd;
+    }
+
+    .form-group textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      padding: 20px 30px;
+      border-top: 2px solid #f0f5fd;
+    }
+
+    .btn-secondary {
+      padding: 10px 20px;
+      background: #95a5a6;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+      background: #7f8c8d;
+    }
+
+    .tag-input-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 8px;
+      border: 2px solid #e8eaf6;
+      border-radius: 10px;
+      min-height: 46px;
+    }
+
+    .tag-input-wrapper input {
+      border: none;
+      outline: none;
+      flex: 1;
+      min-width: 120px;
+      padding: 4px;
+    }
+
+    .tag-item {
+      background: #4a69bd;
+      color: #fff;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tag-item .remove-tag {
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .history-table th {
+      background: #f8f9fa;
+      padding: 12px;
+      text-align: left;
+      font-size: 13px;
+      color: #7f8c8d;
+      font-weight: 600;
+      border-bottom: 2px solid #e8eaf6;
+    }
+
+    .history-table td {
+      padding: 12px;
+      border-bottom: 1px solid #f0f5fd;
+      font-size: 14px;
+      color: #2c3e50;
+    }
+
+    .history-table tr:hover {
+      background: #f8f9fa;
+    }
+
+    .status-login {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .status-success {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .status-failed {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .notification-item {
+      position: relative;
+    }
+
+    .unread-badge {
+      position: absolute;
+      top: 50%;
+      right: 15px;
+      transform: translateY(-50%);
+      width: 10px;
+      height: 10px;
+      background: #e74c3c;
+      border-radius: 50%;
+      display: none;
+    }
+
+    .notification-item.unread .unread-badge {
+      display: block;
+    }
+
+    .notification-item.unread {
+      background: #fff3e6;
+      border-left: 3px solid #ff9800;
+    }
+
+    /* Notification drag effect */
+    .notification-item {
+      transition: all 0.3s ease;
+      user-select: none;
+    }
+
+    .notification-item.dragging {
+      opacity: 0.8;
+      transform: scale(1.02);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      cursor: grabbing;
+    }
+
+    .notification-item.delete-preview {
+      background: #ffebee !important;
+      border-left-color: #f44336 !important;
+    }
+
+    .notification-actions-bar {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-bottom: 15px;
+    }
+
+    .notification-actions-bar .btn-action {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+    }
+
+    .notification-actions-bar .btn-read-all {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .notification-actions-bar .btn-read-all:hover {
+      background: #c3e6cb;
+    }
+
+    .notification-actions-bar .btn-delete-all {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .notification-actions-bar .btn-delete-all:hover {
+      background: #f5c6cb;
+    }
+
+    /* Appointment detail modal */
+    .appointment-detail-modal .detail-row {
+      display: flex;
+      padding: 12px 0;
+      border-bottom: 1px solid #f0f5fd;
+    }
+
+    .appointment-detail-modal .detail-row:last-child {
+      border-bottom: none;
+    }
+
+    .appointment-detail-modal .detail-label {
+      width: 140px;
+      color: #7f8c8d;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .appointment-detail-modal .detail-value {
+      flex: 1;
+      color: #2c3e50;
+      font-size: 14px;
+    }
+
+    .appointment-detail-modal .amount-due {
+      font-size: 18px;
+      font-weight: 700;
+      color: #e74c3c;
+    }
+
+    .appointment-detail-modal .status-badge {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .appointment-detail-modal .status-paid {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .appointment-detail-modal .status-unpaid {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .appointment-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 2px solid #f0f5fd;
+    }
+
+    .btn-complete {
+      flex: 1;
+      padding: 12px 20px;
+      background: #27ae60;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-complete:hover {
+      background: #219a52;
+    }
+
+    .btn-cancel-appointment {
+      flex: 1;
+      padding: 12px 20px;
+      background: #e74c3c;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-cancel-appointment:hover {
+      background: #c0392b;
+    }
+
+    .cancel-reason-form {
+      margin-top: 15px;
+      padding: 15px;
+      background: #fff3e6;
+      border-radius: 10px;
+      display: none;
+    }
+
+    .cancel-reason-form.active {
+      display: block;
+    }
+
+    .cancel-reason-form label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+
+    .cancel-reason-form select,
+    .cancel-reason-form input {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid #e8eaf6;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .notif-like {
+      background: #ffe0e6;
+      color: #c0392b;
+    }
+
+    .notif-comment {
+      background: #e3f2fd;
+      color: #1565c0;
+    }
+
+    .notif-view {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    /* Chat styles */
+    .chat-message {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .patient-message {
+      flex-direction: row;
+    }
+
+    .doctor-message {
+      flex-direction: row-reverse;
+    }
+
+    .message-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .patient-message .message-avatar {
+      background: #e3f2fd;
+      color: #1976d2;
+    }
+
+    .doctor-message .message-avatar {
+      background: #4a69bd;
+      color: #fff;
+    }
+
+    .message-content {
+      display: flex;
+      flex-direction: column;
+      max-width: 70%;
+    }
+
+    .doctor-message .message-content {
+      align-items: flex-end;
+    }
+
+    .message-bubble {
+      padding: 12px 16px;
+      border-radius: 12px;
+      word-wrap: break-word;
+    }
+
+    .patient-message .message-bubble {
+      background: #fff;
+      border: 2px solid #e8eaf6;
+      border-radius: 12px 12px 12px 4px;
+    }
+
+    .doctor-message .message-bubble {
+      background: #4a69bd;
+      color: #fff;
+      border-radius: 12px 12px 4px 12px;
+    }
+
+    .message-bubble p {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .message-time {
+      font-size: 11px;
+      color: #95a5a6;
+      margin-top: 4px;
+      padding: 0 4px;
+    }
+
+    .quick-reply-btn {
+      padding: 8px 14px;
+      background: #f0f5fd;
+      color: #4a69bd;
+      border: 2px solid #e8eaf6;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .quick-reply-btn:hover {
+      background: #4a69bd;
+      color: #fff;
+      border-color: #4a69bd;
+      transform: translateY(-2px);
+    }
+
+    .quick-reply-btn i {
+      font-size: 16px;
+    }
+
+    #chatMessagesArea::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    #chatMessagesArea::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+
+    #chatMessagesArea::-webkit-scrollbar-thumb {
+      background: #4a69bd;
+      border-radius: 10px;
+    }
+
+    #chatMessagesArea::-webkit-scrollbar-thumb:hover {
+      background: #3c5aa6;
+    }
+
+    @media (max-width: 1200px) {
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        position: fixed;
+        left: -260px;
+        z-index: 1000;
+      }
+
+      .sidebar.active {
+        left: 0;
+      }
+
+      .info-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Forum Post Card Styles */
+.forum-post-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  margin-bottom: 24px;
+  padding: 20px 24px;
+  transition: box-shadow 0.2s;
+  border: 1px solid #f0f0f0;
+  position: relative;
+}
+
+.forum-post-card:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  border-color: #b3c6ff;
+}
+
+.forum-post-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.forum-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 14px;
+  border: 2px solid #e0e7ff;
+}
+
+.forum-author h4 {
+  margin: 0 0 2px 0;
+  font-size: 1.1rem;
+  color: #334155;
+  font-weight: 600;
+}
+
+.forum-author small {
+  color: #94a3b8;
+  font-size: 0.92rem;
+}
+
+.forum-post-content h3 {
+  margin: 0 0 6px 0;
+  font-size: 1.15rem;
+  color: #2563eb;
+  font-weight: 600;
+}
+
+.forum-post-content p {
+  margin: 0 0 8px 0;
+  color: #334155;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.forum-post-stats {
+  display: flex;
+  gap: 18px;
+  margin: 10px 0 0 0;
+  color: #64748b;
+  font-size: 0.98rem;
+}
+
+.forum-post-stats i {
+  margin-right: 4px;
+  color: #94a3b8;
+}
+
+.forum-post-card .forum-post-stats span {
+  display: flex;
+  align-items: center;
+}
+
+.empty-state {
+  text-align: center;
+  color: #b91c1c;
+  font-size: 1.1rem;
+  margin: 30px 0;
+  padding: 20px 0;
+  background: #fff0f0;
+  border-radius: 8px;
+}
+
+.forum-bridge {
+  background: #eef2ff;
+  border: 1px dashed #4a69bd;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  color: #3c5aa6;
+}
+
+.forum-bridge i {
+  font-size: 24px;
+}
+
+.forum-new-question {
+  background: #f8f9ff;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  border: 2px dashed #dfe6ff;
+}
+
+.forum-form-group {
+  margin-bottom: 15px;
+}
+
+.forum-form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #2c3e50;
+}
+
+.forum-form-group input,
+.forum-form-group textarea {
+  width: 100%;
+  border: 2px solid #e0e7ff;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.forum-form-group textarea {
+  min-height: 120px;
+}
+
+.forum-empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #7f8c8d;
+  border: 2px dashed #dfe6ff;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.forum-empty-state i {
+  font-size: 48px;
+  margin-bottom: 15px;
+  display: inline-block;
+  color: #4a69bd;
+}
+
+.forum-answer {
+  background: #fff;
+  border-radius: 12px;
+  padding: 15px;
+  border-left: 4px solid #4a69bd;
+  margin-top: 15px;
+}
+
+.forum-reply-form {
+  margin-top: 15px;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #dfe6ff;
+  padding: 15px;
+}
+
+.forum-reply-form textarea {
+  width: 100%;
+  border: 2px solid #e0e7ff;
+  border-radius: 10px;
+  padding: 12px;
+  min-height: 100px;
+  font-family: inherit;
+  resize: vertical;
+  margin-bottom: 12px;
+}
+
+.reply-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.forum-posts {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+  </style>
+</head>
+
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <img src="../img/logomau.jpg" style="
+            width: 280px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+          " />
+    </div>
+
+    <nav class="nav-menu">
+      <div class="nav-item active" data-section="profile">
+        <i class="ri-user-line"></i>
+        <span>Thông tin cá nhân</span>
+      </div>
+      <div class="nav-item" data-section="schedule">
+        <i class="ri-calendar-line"></i>
+        <span>Lịch làm việc</span>
+      </div>
+      <div class="nav-item" data-section="notifications">
+        <i class="ri-notification-3-line"></i>
+        <span>Thông báo</span>
+        <span class="nav-badge" id="navNotifBadge" style="display: none;">0</span>
+      </div>
+      <div class="nav-item" data-section="notes">
+        <i class="ri-file-text-line"></i>
+        <span>Ghi chú khám bệnh</span>
+      </div>
+      <div class="nav-item" data-section="forum">
+        <i class="ri-question-answer-line"></i>
+        <span>Phản hồi người dùng</span>
+      </div>
+      <div class="nav-item" data-section="settings">
+        <i class="ri-settings-3-line"></i>
+        <span>Cài đặt</span>
+      </div>
+    </nav>
+
+    <div class="logout-btn">
+      <i class="ri-logout-box-r-line"></i>
+      <span>Đăng xuất</span>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Top Bar -->
+    <div class="top-bar">
+      <div class="page-title">
+        <i class="ri-user-3-fill" id="pageTitleIcon"></i>
+        <h1 id="pageTitleText">Thông Tin Cá Nhân</h1>
+      </div>
+      <div class="top-actions">
+        <div class="icon-btn" onclick="openNotificationsModal()">
+          <i class="ri-notification-3-line"></i>
+          <span class="badge">5</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profile Section -->
+    <div class="content-section active" id="profileSection">
+      <div class="content-grid">
+        <div class="section-card full-width">
+          <div class="section-header">
+            <div class="section-title">
+              <i class="ri-user-settings-line"></i>
+              Thông Tin Cá Nhân
+            </div>
+            <button class="btn-primary" onclick="saveProfileChanges()">
+              <i class="ri-save-line"></i>
+              Lưu thay đổi
+            </button>
+          </div>
+
+          <div class="profile-info">
+            <div class="profile-avatar">
+              <img src="../img/logocanhan.jpg" alt="Ảnh đại diện" id="profileImage">
+              <div class="edit-avatar" onclick="document.getElementById('avatarInput').click()">
+                <i class="ri-camera-line"></i>
+              </div>
+              <input type="file" id="avatarInput" accept="image/*" style="display: none;"
+                onchange="changeAvatar(event)">
+            </div>
+
+            <div class="profile-details">
+              <div class="info-row">
+                <div class="info-field">
+                  <label>Họ và tên</label>
+                  <input type="text" id="profileName" value="TS.BS Nguyễn Văn A">
+                </div>
+                <div class="info-field">
+                  <label>Giới tính</label>
+                  <select id="profileGender">
+                    <option>Nam</option>
+                    <option>Nữ</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="info-row">
+                <div class="info-field">
+                  <label>Ngày sinh</label>
+                  <input type="date" id="profileBirthday" value="1985-03-15">
+                </div>
+                <div class="info-field">
+                  <label>Số điện thoại</label>
+                  <input type="tel" id="profilePhone" value="0901234567">
+                </div>
+              </div>
+
+              <div class="info-row">
+                <div class="info-field">
+                  <label>Email</label>
+                  <input type="email" id="profileEmail" value="" readonly style="background-color: #f5f5f5; cursor: not-allowed;">
+                </div>
+                <div class="info-field">
+                  <label>Chuyên khoa</label>
+                  <select id="profileSpecialty">
+                    <option>Ngoại Thần kinh - Cột Sống</option>
+                    <option>Tai - Mũi - Họng</option>
+                    <option>Nội khoa</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="info-row">
+                <div class="info-field">
+                  <label>Bằng cấp</label>
+                  <input type="text" id="profileDegree" value="Tiến sĩ, Bác sĩ Chuyên khoa II">
+                </div>
+                <div class="info-field">
+                  <label>Kinh nghiệm</label>
+                  <input type="text" id="profileExperience" value="30 năm">
+                </div>
+              </div>
+
+              <div class="info-field">
+                <label>Địa chỉ liên hệ</label>
+                <input type="text" id="profileAddress" value="123 Đường ABC, Quận 1, TP.HCM">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Schedule Section -->
+    <div class="content-section" id="scheduleSection">
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-title">
+            <i class="ri-calendar-check-line"></i>
+            Lịch làm việc tuần
+          </div>
+        </div>
+
+        <div class="dw-controls">
+          <div class="left">
+            <input type="date" id="dwDateInput" class="dw-date">
+            <button class="dw-btn" id="dwTodayBtn">Hiện tại</button>
+          </div>
+          <div class="right" style="display: flex; gap: 8px;">
+            <button class="dw-btn" id="dwPrevBtn">◀</button>
+            <button class="dw-btn" id="dwNextBtn">▶</button>
+          </div>
+        </div>
+
+        <div class="dw-cal-wrap">
+          <div style="overflow-x: auto;">
+            <table class="dw-table" id="dwCalendarTable"></table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notifications Section -->
+    <div class="content-section" id="notificationsSection">
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-title">
+            <i class="ri-notification-3-line"></i>
+            Tất cả thông báo
+          </div>
+        </div>
+
+        <div class="notification-actions-bar">
+          <button class="btn-action btn-read-all" onclick="markAllNotificationsRead()">
+            <i class="ri-check-double-line"></i>
+            Đọc tất cả
+          </button>
+          <button class="btn-action btn-delete-all" onclick="deleteAllNotifications()">
+            <i class="ri-delete-bin-line"></i>
+            Xóa tất cả
+          </button>
+        </div>
+
+        <div class="notification-list" id="notificationListContainer">
+          <!-- Notifications will be loaded dynamically -->
+          <div style="text-align: center; padding: 40px; color: #999;">
+            <i class="ri-loader-4-line" style="font-size: 32px; animation: spin 1s linear infinite;"></i>
+            <p>Đang tải thông báo...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Patient Notes Section -->
+    <div class="content-section" id="notesSection">
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-title">
+            <i class="ri-file-text-line"></i>
+            Ghi chú khám bệnh
+          </div>
+          <button class="btn-primary" onclick="openNewNoteModal()">
+            <i class="ri-add-line"></i>
+            Thêm ghi chú mới
+          </button>
+        </div>
+
+        <div class="patient-notes-list">
+          <div class="patient-note-card">
+            <div class="note-header">
+              <div class="note-patient-info">
+                <h3>Nguyễn Thị B</h3>
+                <p>Mã BN: BN001234 | Chuyên khoa: Nội tổng quát</p>
+              </div>
+              <div class="note-date">15/10/2025</div>
+            </div>
+            <div class="note-content">
+              <h4><i class="ri-stethoscope-line"></i> Triệu chứng</h4>
+              <p>Đau đầu, chóng mặt, mệt mỏi</p>
+              <h4><i class="ri-file-list-line"></i> Chẩn đoán</h4>
+              <p>Thiếu máu nhẹ, huyết áp thấp</p>
+              <h4><i class="ri-medicine-bottle-line"></i> Đơn thuốc</h4>
+              <p>Viên bổ sung sắt - 1 viên/ngày sau ăn, Vitamin C - 1 viên/ngày</p>
+            </div>
+            <div class="note-actions">
+              <button class="btn-edit" onclick="openEditNoteModal('note1')">
+                <i class="ri-edit-line"></i>
+                Chỉnh sửa
+              </button>
+              <button class="btn-delete" onclick="deleteNote(this, 'note1')">
+                <i class="ri-delete-bin-line"></i>
+                Xóa
+              </button>
+            </div>
+          </div>
+
+          <div class="patient-note-card">
+            <div class="note-header">
+              <div class="note-patient-info">
+                <h3>Trần Văn C</h3>
+                <p>Mã BN: BN001567 | Chuyên khoa: Nội khoa</p>
+              </div>
+              <div class="note-date">01/08/2025</div>
+            </div>
+            <div class="note-content">
+              <h4><i class="ri-stethoscope-line"></i> Triệu chứng</h4>
+              <p>Khám định kỳ</p>
+              <h4><i class="ri-file-list-line"></i> Chẩn đoán</h4>
+              <p>Sức khỏe tốt, không có bất thường</p>
+              <h4><i class="ri-medicine-bottle-line"></i> Ghi chú</h4>
+              <p>Nên duy trì chế độ ăn uống và tập luyện hiện tại</p>
+            </div>
+            <div class="note-actions">
+              <button class="btn-edit" onclick="openEditNoteModal('note2')">
+                <i class="ri-edit-line"></i>
+                Chỉnh sửa
+              </button>
+              <button class="btn-delete" onclick="deleteNote(this, 'note1')">
+                <i class="ri-delete-bin-line"></i>
+                Xóa
+              </button>
+            </div>
+          </div>
+
+          <div class="patient-note-card">
+            <div class="note-header">
+              <div class="note-patient-info">
+                <h3>Lê Thị D</h3>
+                <p>Mã BN: BN001890 | Chuyên khoa: Nội khoa</p>
+              </div>
+              <div class="note-date">20/10/2025</div>
+            </div>
+            <div class="note-content">
+              <h4><i class="ri-stethoscope-line"></i> Triệu chứng</h4>
+              <p>Đau bụng, khó tiêu</p>
+              <h4><i class="ri-file-list-line"></i> Chẩn đoán</h4>
+              <p>Rối loạn tiêu hóa nhẹ</p>
+              <h4><i class="ri-medicine-bottle-line"></i> Đơn thuốc</h4>
+              <p>Men tiêu hóa - 2 viên/ngày sau ăn, Thuốc giảm đau bụng - 1 viên khi cần</p>
+            </div>
+            <div class="note-actions">
+              <button class="btn-edit" onclick="openEditNoteModal('note3')">
+                <i class="ri-edit-line"></i>
+                Chỉnh sửa
+              </button>
+              <button class="btn-delete" onclick="deleteNote(this, 'note1')">
+                <i class="ri-delete-bin-line"></i>
+                Xóa
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal: New Note -->
+    <div id="newNoteModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3><i class="ri-add-line"></i> Thêm ghi chú khám bệnh mới</h3>
+          <button class="close-modal" onclick="closeModal('newNoteModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="newNoteForm">
+            <div class="form-group" style="position: relative;">
+              <label>Tên bệnh nhân * (từ lịch đã hoàn thành)</label>
+              <input type="text" id="newPatientName" placeholder="Nhập tên để tìm kiếm..." autocomplete="off" required>
+              <input type="hidden" id="newPatientUserId">
+              <div id="patientSuggestions" class="autocomplete-suggestions"></div>
+            </div>
+            <div class="form-group">
+              <label>Mã bệnh nhân</label>
+              <input type="text" id="newPatientId" placeholder="Tự động điền khi chọn bệnh nhân" readonly style="background-color: #f5f5f5; cursor: not-allowed;">
+            </div>
+            <div class="form-group">
+              <label>Ngày khám *</label>
+              <input type="date" id="newNoteDate" required>
+            </div>
+            <div class="form-group">
+              <label>Triệu chứng *</label>
+              <textarea id="newSymptoms" placeholder="Nhập triệu chứng của bệnh nhân..." required></textarea>
+            </div>
+            <div class="form-group">
+              <label>Chẩn đoán *</label>
+              <textarea id="newDiagnosis" placeholder="Nhập chẩn đoán..." required></textarea>
+            </div>
+            <div class="form-group">
+              <label>Đơn thuốc / Ghi chú điều trị *</label>
+              <textarea id="newPrescription" placeholder="Nhập đơn thuốc hoặc ghi chú điều trị..." required></textarea>
+            </div>
+            <div style="background: #d1ecf1; padding: 12px; border-radius: 8px; margin-top: 15px;">
+              <p style="font-size: 13px; color: #0c5460; margin: 0;">
+                <i class="ri-information-line"></i>
+                Chỉ có thể tạo ghi chú cho các lịch hẹn đã hoàn thành.
+              </p>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary" onclick="closeModal('newNoteModal')">Hủy</button>
+          <button class="btn-primary" onclick="submitNewNote()">
+            <i class="ri-save-line"></i>
+            Lưu ghi chú
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Forum Section -->
+<div class="content-section" id="forumSection">
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-title">
+        <i class="ri-question-answer-line"></i>
+        Phản hồi người dùng
+      </div>
+      <button class="btn-primary" type="button" data-forum-refresh>
+        <i class="ri-refresh-line"></i>
+        Đồng bộ mới
+      </button>
+    </div>
+
+    <div class="shared-forum" id="doctorForumContainer" data-forum-app data-user-type="doctor" data-user-name=""
+      data-user-id="" data-user-avatar="" data-default-filter="pending">
+
+      <div class="forum-bridge">
+        <i class="ri-link-m"></i>
+        <div>
+          <strong>Phản hồi câu hỏi từ người dùng</strong>
+          <p style="margin: 4px 0 0; color: #5a6c7d;">
+            Mọi câu hỏi mà bệnh nhân đặt ở trang cá nhân sẽ xuất hiện tại đây để bác sĩ phản hồi.
+          </p>
+        </div>
+      </div>
+
+      <div class="tab-buttons" data-forum-filters>
+        <button class="tab-btn active" data-filter="pending">Chờ phản hồi</button>
+        <button class="tab-btn" data-filter="all">Tất cả câu hỏi</button>
+        <button class="tab-btn" data-filter="answered">Đã trả lời</button>
+        <button class="tab-btn" data-filter="mine">Câu trả lời của tôi</button>
+      </div>
+
+      <div class="forum-posts" data-forum-list></div>
+    </div>
+  </div>
+</div>
+
+    <!-- Settings Section -->
+    <div class="content-section" id="settingsSection">
+      <div class="settings-grid">
+        <div class="settings-section">
+          <h3>
+            <i class="ri-feedback-line"></i>
+            Góp ý & Hỗ trợ
+          </h3>
+          <div class="setting-item" style="flex-direction: column; align-items: stretch; gap: 15px; padding: 20px 0;">
+            <div class="setting-info">
+              <h4>Gửi góp ý tới Admin</h4>
+              <p>Thông điệp sẽ xuất hiện trong hộp log góp ý ở trang Admin</p>
+            </div>
+            <textarea id="feedbackTextarea"
+              placeholder="Ví dụ: Cần bật gửi mail tự động cho lịch tái khám vào cuối tuần..."
+              style="width: 100%; min-height: 120px; padding: 12px; border: 2px solid #e8eaf6; border-radius: 10px; font-size: 14px; resize: vertical; outline: none; transition: all 0.3s ease;"></textarea>
+            <button class="btn-primary" onclick="submitFeedback()" style="align-self: flex-start;">
+              <i class="ri-send-plane-2-line"></i>
+              Gửi góp ý
+            </button>
+          </div>
+        </div>
+        <div class="settings-section">
+          <h3>
+            <i class="ri-notification-3-line"></i>
+            Thông báo
+          </h3>
+          <div class="setting-item">
+            <div class="setting-info">
+              <h4>Thông báo lịch hẹn mới</h4>
+              <p>Nhận thông báo khi có lịch hẹn mới từ bệnh nhân</p>
+            </div>
+            <div class="toggle-switch active" id="toggleNewAppointment" data-setting="notifyNewAppointment"></div>
+          </div>
+          <div class="setting-item">
+            <div class="setting-info">
+              <h4>Thông báo thay đổi lịch</h4>
+              <p>Nhận thông báo khi bệnh nhân yêu cầu thay đổi lịch hẹn</p>
+            </div>
+            <div class="toggle-switch active" id="toggleScheduleChange" data-setting="notifyScheduleChange"></div>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h3>
+            <i class="ri-lock-line"></i>
+            Bảo mật
+          </h3>
+          <div class="setting-item">
+            <div class="setting-info">
+              <h4>Xác thực 2 yếu tố</h4>
+              <p>Bảo vệ tài khoản với xác thực 2 yếu tố</p>
+            </div>
+            <div class="toggle-switch active" id="toggle2FA" data-setting="twoFactorAuth"></div>
+          </div>
+          <div class="setting-item">
+            <div class="setting-info">
+              <h4>Đổi mật khẩu</h4>
+              <p>Thay đổi mật khẩu đăng nhập của bạn</p>
+            </div>
+            <button class="btn-primary" onclick="openChangePasswordModal()">Đổi mật khẩu</button>
+          </div>
+          <div class="setting-item">
+            <div class="setting-info">
+              <h4>Lịch sử đăng nhập</h4>
+              <p>Xem lịch sử các lần đăng nhập gần đây</p>
+            </div>
+            <button class="btn-primary" onclick="openLoginHistoryModal()">Xem lịch sử</button>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h3>
+            <i class="ri-calendar-line"></i>
+            Lịch làm việc
+          </h3>
+          <div class="setting-item">
+            <div class="setting-info">
+              <h4>Tự động chấp nhận lịch hẹn</h4>
+              <p>Tự động xác nhận lịch hẹn trong khung giờ làm việc</p>
+            </div>
+            <div class="toggle-switch" id="toggleAutoAccept" data-setting="autoAcceptAppointment"></div>
+          </div>
+          <div class="setting-item">
+            <div class="setting-info">
+              <h4>Giới hạn số lượng bệnh nhân/ngày</h4>
+              <p>Số lượng bệnh nhân tối đa có thể khám trong một ngày</p>
+            </div>
+            <input type="number" id="inputMaxPatients" value="20" min="1" max="100"
+              style="width: 80px; padding: 8px; border: 2px solid #e8eaf6; border-radius: 8px;">
+          </div>
+          <div class="setting-item">
+            <div class="setting-info">
+              <h4>Thời gian khám trung bình</h4>
+              <p>Thời gian dành cho mỗi bệnh nhân (phút)</p>
+            </div>
+            <input type="number" id="inputAvgTime" value="30" min="5" max="120"
+              style="width: 80px; padding: 8px; border: 2px solid #e8eaf6; border-radius: 8px;">
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h3>
+            <i class="ri-global-line"></i>
+            Giao diện & Ngôn ngữ
+          </h3>
+          <div class="setting-item">
+            <div class="setting-info">
+              <h4>Ngôn ngữ</h4>
+              <p>Chọn ngôn ngữ hiển thị</p>
+            </div>
+            <select id="selectLanguage" style="padding: 8px 12px; border: 2px solid #e8eaf6; border-radius: 8px; min-width: 150px;">
+              <option value="vi">Tiếng Việt</option>
+              <option value="en">English</option>
+            </select>
+          </div>
+          <div class="setting-item">
+            <div class="setting-info">
+              <h4>Chế độ tối</h4>
+              <p>Sử dụng giao diện tối cho mắt</p>
+            </div>
+            <div class="toggle-switch" id="toggleDarkMode" data-setting="darkMode"></div>
+          </div>
+        </div>
+
+        <div class="settings-section" style="text-align: center; padding: 20px;">
+          <button class="btn-primary" onclick="saveAllSettings()" style="padding: 12px 30px; font-size: 16px;">
+            <i class="ri-save-line"></i> Lưu tất cả cài đặt
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Edit Note -->
+  <div id="editNoteModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3><i class="ri-edit-line"></i> Chỉnh sửa ghi chú khám bệnh</h3>
+        <button class="close-modal" onclick="closeModal('editNoteModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="editNoteForm">
+          <div class="form-group">
+            <label>Tên bệnh nhân</label>
+            <input type="text" id="editPatientName" value="Nguyễn Thị B" readonly>
+          </div>
+          <div class="form-group">
+            <label>Mã bệnh nhân</label>
+            <input type="text" id="editPatientId" value="BN001234" readonly>
+          </div>
+          <div class="form-group">
+            <label>Chuyên khoa</label>
+            <select id="editSpecialty">
+              <option>Nội tổng quát</option>
+              <option>Ngoại khoa</option>
+              <option>Tim mạch</option>
+              <option>Da liễu</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Triệu chứng</label>
+            <textarea id="editSymptoms"
+              placeholder="Nhập triệu chứng của bệnh nhân...">Đau đầu, chóng mặt, mệt mỏi</textarea>
+          </div>
+          <div class="form-group">
+            <label>Chẩn đoán</label>
+            <textarea id="editDiagnosis" placeholder="Nhập chẩn đoán...">Thiếu máu nhẹ, huyết áp thấp</textarea>
+          </div>
+          <div class="form-group">
+            <label>Đơn thuốc / Ghi chú điều trị</label>
+            <textarea id="editPrescription"
+              placeholder="Nhập đơn thuốc hoặc ghi chú điều trị...">Viên bổ sung sắt - 1 viên/ngày sau ăn, Vitamin C - 1 viên/ngày</textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('editNoteModal')">Hủy</button>
+        <button class="btn-primary" onclick="saveEditNote()">
+          <i class="ri-save-line"></i>
+          Lưu thay đổi
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: New Thread -->
+  <div id="newThreadModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3><i class="ri-add-line"></i> Tạo chủ đề mới</h3>
+        <button class="close-modal" onclick="closeModal('newThreadModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="newThreadForm">
+          <div class="form-group">
+            <label>Tiêu đề chủ đề *</label>
+            <input type="text" id="threadTitle" placeholder="Nhập tiêu đề chủ đề..." required>
+          </div>
+          <div class="form-group">
+            <label>Nội dung *</label>
+            <textarea id="threadContent" placeholder="Nhập nội dung chi tiết..." required></textarea>
+          </div>
+          <div class="form-group">
+            <label>Danh mục</label>
+            <select id="threadCategory">
+              <option>Thảo luận chung</option>
+              <option>Chia sẻ kinh nghiệm</option>
+              <option>Hỏi đáp chuyên môn</option>
+              <option>Phản hồi bệnh nhân</option>
+              <option>Thông báo</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Thẻ tags (nhấn Enter để thêm)</label>
+            <div class="tag-input-wrapper" id="tagInputWrapper">
+              <input type="text" id="tagInput" placeholder="Nhập thẻ và nhấn Enter...">
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('newThreadModal')">Hủy</button>
+        <button class="btn-primary" onclick="submitNewThread()">
+          <i class="ri-send-plane-fill"></i>
+          Đăng bài
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Change Password -->
+  <div id="changePasswordModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3><i class="ri-lock-password-line"></i> Đổi mật khẩu</h3>
+        <button class="close-modal" onclick="closeModal('changePasswordModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="changePasswordForm">
+          <div class="form-group">
+            <label>Mật khẩu hiện tại *</label>
+            <input type="password" id="currentPassword" placeholder="Nhập mật khẩu hiện tại..." required>
+          </div>
+          <div class="form-group">
+            <label>Mật khẩu mới *</label>
+            <input type="password" id="newPassword" placeholder="Nhập mật khẩu mới..." required>
+          </div>
+          <div class="form-group">
+            <label>Xác nhận mật khẩu mới *</label>
+            <input type="password" id="confirmPassword" placeholder="Nhập lại mật khẩu mới..." required>
+          </div>
+          <div style="background: #fff3cd; padding: 12px; border-radius: 8px; margin-top: 15px;">
+            <p style="font-size: 13px; color: #856404; margin: 0;">
+              <i class="ri-information-line"></i>
+              Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và số.
+            </p>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('changePasswordModal')">Hủy</button>
+        <button class="btn-primary" onclick="submitChangePassword()">
+          <i class="ri-check-line"></i>
+          Đổi mật khẩu
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Login History -->
+  <div id="loginHistoryModal" class="modal">
+    <div class="modal-content" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3><i class="ri-history-line"></i> Lịch sử đăng nhập</h3>
+        <button class="close-modal" onclick="closeModal('loginHistoryModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="login-history-list">
+          <!-- Login history items will be loaded dynamically -->
+          <div style="text-align: center; padding: 30px; color: #888;">
+            <i class="ri-loader-4-line" style="font-size: 30px; animation: spin 1s linear infinite;"></i>
+            <p>Đang tải lịch sử đăng nhập...</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-primary" onclick="closeModal('loginHistoryModal')">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Notifications -->
+  <div id="notificationsModal" class="modal">
+    <div class="modal-content" style="max-width: 700px;">
+      <div class="modal-header">
+        <h3><i class="ri-notification-3-line"></i> Thông báo</h3>
+        <button class="close-modal" onclick="closeModal('notificationsModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="notification-list">
+          <div class="notification-item unread" onclick="markAsRead(this)">
+            <div class="notification-icon notif-schedule">
+              <i class="ri-calendar-line"></i>
+            </div>
+            <div class="notification-content">
+              <h4>Lịch khám mới</h4>
+              <p>Bệnh nhân Nguyễn Văn E đặt lịch khám lúc 14:00</p>
+            </div>
+            <div class="notification-time">10 phút trước</div>
+            <span class="unread-badge"></span>
+          </div>
+          <div class="notification-item unread" onclick="markAsRead(this)">
+            <div class="notification-icon notif-change">
+              <i class="ri-time-line"></i>
+            </div>
+            <div class="notification-content">
+              <h4>Thay đổi lịch hẹn</h4>
+              <p>Bệnh nhân Trần Thị F yêu cầu đổi lịch</p>
+            </div>
+            <div class="notification-time">1 giờ trước</div>
+            <span class="unread-badge"></span>
+          </div>
+          <div class="notification-item unread" onclick="markAsRead(this)">
+            <div class="notification-icon notif-system">
+              <i class="ri-information-line"></i>
+            </div>
+            <div class="notification-content">
+              <h4>Cập nhật hệ thống</h4>
+              <p>Hệ thống sẽ bảo trì vào 23:00 tối nay</p>
+            </div>
+            <div class="notification-time">2 giờ trước</div>
+            <span class="unread-badge"></span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-primary" onclick="closeModal('notificationsModal')">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Appointment Detail -->
+  <div id="appointmentDetailModal" class="modal">
+    <div class="modal-content appointment-detail-modal" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3><i class="ri-calendar-check-line"></i> Chi tiết lịch hẹn</h3>
+        <button class="close-modal" onclick="closeModal('appointmentDetailModal')">&times;</button>
+      </div>
+      <div class="modal-body" id="appointmentDetailBody">
+        <!-- Content will be loaded dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Delete Notification Confirm -->
+  <div id="deleteNotifModal" class="modal">
+    <div class="modal-content" style="max-width: 400px;">
+      <div class="modal-header" style="background: #e74c3c;">
+        <h3><i class="ri-delete-bin-line"></i> Xác nhận xóa</h3>
+        <button class="close-modal" onclick="closeModal('deleteNotifModal')">&times;</button>
+      </div>
+      <div class="modal-body" style="text-align: center; padding: 30px;">
+        <i class="ri-question-line" style="font-size: 48px; color: #e74c3c; margin-bottom: 15px;"></i>
+        <p style="font-size: 16px; color: #2c3e50; margin-bottom: 0;">Bạn có muốn xóa thông báo này?</p>
+      </div>
+      <div class="modal-footer" style="justify-content: center;">
+        <button class="btn-secondary" onclick="closeModal('deleteNotifModal')">Không</button>
+        <button class="btn-primary" onclick="confirmDeleteNotification()" style="background: #e74c3c;">
+          <i class="ri-delete-bin-line"></i> Xóa
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/maintenance-check.js"></script>
+  <script>
+    // ============ GLOBAL VARIABLES ============
+    let doctorAppointments = [];
+    let notifications = [];
+    let pendingDeleteNotifId = null;
+
+    // Navigation system
+    const navItems = document.querySelectorAll('.nav-item');
+    const contentSections = document.querySelectorAll('.content-section');
+    const pageTitleText = document.getElementById('pageTitleText');
+    const pageTitleIcon = document.getElementById('pageTitleIcon');
+
+    const sectionTitles = {
+      profile: { text: 'Thông Tin Cá Nhân', icon: 'ri-user-3-fill' },
+      schedule: { text: 'Lịch Làm Việc', icon: 'ri-calendar-line' },
+      notifications: { text: 'Thông Báo', icon: 'ri-notification-3-line' },
+      notes: { text: 'Ghi Chú Khám Bệnh', icon: 'ri-file-text-line' },
+      forum: { text: 'Phản Hồi Người Dùng', icon: 'ri-question-answer-line' },
+      settings: { text: 'Cài Đặt', icon: 'ri-settings-3-line' }
+    };
+
+    navItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const section = item.getAttribute('data-section');
+        navItems.forEach(nav => nav.classList.remove('active'));
+        item.classList.add('active');
+        contentSections.forEach(sec => sec.classList.remove('active'));
+        const targetSection = document.getElementById(section + 'Section');
+        if (targetSection) {
+          targetSection.classList.add('active');
+        }
+        if (sectionTitles[section]) {
+          pageTitleText.textContent = sectionTitles[section].text;
+          pageTitleIcon.className = sectionTitles[section].icon;
+        }
+        // Load notifications when section is clicked
+        if (section === 'notifications') {
+          loadNotifications();
+        }
+        // Load settings when section is clicked
+        if (section === 'settings') {
+          loadSavedSettings();
+        }
+      });
+    });
+
+    // ============ SETTINGS FUNCTIONS ============
+    // Load saved settings from localStorage
+    function loadSavedSettings() {
+      const settings = JSON.parse(localStorage.getItem('doctorSettings') || '{}');
+
+      // Load toggle states
+      const toggleMappings = {
+        'toggleNewAppointment': 'notifyNewAppointment',
+        'toggleScheduleChange': 'notifyScheduleChange',
+        'toggleNewMessage': 'notifyNewMessage',
+        'toggle2FA': 'twoFactorAuth',
+        'toggleAutoAccept': 'autoAcceptAppointment',
+        'toggleDarkMode': 'darkMode'
+      };
+
+      Object.entries(toggleMappings).forEach(([id, key]) => {
+        const toggle = document.getElementById(id);
+        if (toggle && settings[key] !== undefined) {
+          if (settings[key]) {
+            toggle.classList.add('active');
+          } else {
+            toggle.classList.remove('active');
+          }
+        }
+      });
+
+      // Load input values
+      if (settings.maxPatients) {
+        document.getElementById('inputMaxPatients').value = settings.maxPatients;
+      }
+      if (settings.avgTime) {
+        document.getElementById('inputAvgTime').value = settings.avgTime;
+      }
+      if (settings.language) {
+        document.getElementById('selectLanguage').value = settings.language;
+      }
+
+      // Apply dark mode if enabled
+      if (settings.darkMode) {
+        document.body.classList.add('dark-mode');
+      }
+    }
+
+    // Save all settings
+    function saveAllSettings() {
+      const settings = {
+        notifyNewAppointment: document.getElementById('toggleNewAppointment')?.classList.contains('active') || false,
+        notifyScheduleChange: document.getElementById('toggleScheduleChange')?.classList.contains('active') || false,
+        notifyNewMessage: document.getElementById('toggleNewMessage')?.classList.contains('active') || false,
+        twoFactorAuth: document.getElementById('toggle2FA')?.classList.contains('active') || false,
+        autoAcceptAppointment: document.getElementById('toggleAutoAccept')?.classList.contains('active') || false,
+        darkMode: document.getElementById('toggleDarkMode')?.classList.contains('active') || false,
+        maxPatients: parseInt(document.getElementById('inputMaxPatients')?.value) || 20,
+        avgTime: parseInt(document.getElementById('inputAvgTime')?.value) || 30,
+        language: document.getElementById('selectLanguage')?.value || 'vi'
+      };
+
+      localStorage.setItem('doctorSettings', JSON.stringify(settings));
+
+      // Apply dark mode
+      if (settings.darkMode) {
+        document.body.classList.add('dark-mode');
+      } else {
+        document.body.classList.remove('dark-mode');
+      }
+
+      // Show success message
+      showToast('Cài đặt đã được lưu thành công!', 'success');
+    }
+
+    // Toast notification
+    function showToast(message, type = 'info') {
+      const toast = document.createElement('div');
+      toast.className = `toast-notification toast-${type}`;
+      toast.innerHTML = `
+        <i class="ri-${type === 'success' ? 'check-line' : 'information-line'}"></i>
+        <span>${message}</span>
+      `;
+      document.body.appendChild(toast);
+
+      setTimeout(() => toast.classList.add('show'), 100);
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    // Toggle switches with auto-save preview
+    const toggleSwitches = document.querySelectorAll('.toggle-switch');
+    toggleSwitches.forEach(toggle => {
+      toggle.addEventListener('click', () => {
+        toggle.classList.toggle('active');
+
+        // Special handling for dark mode - instant preview
+        if (toggle.id === 'toggleDarkMode') {
+          document.body.classList.toggle('dark-mode');
+        }
+      });
+    });
+
+    // Load settings on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      loadSavedSettings();
+    });
+
+    // ============ SCHEDULE CALENDAR ============
+    (function () {
+      let dwCurrent = new Date();
+      const dwTimeSlots = [
+        { label: 'Sáng', key: 'morning', startHour: 7, endHour: 11 },
+        { label: 'Trưa', key: 'noon', startHour: 11, endHour: 13 },
+        { label: 'Chiều', key: 'afternoon', startHour: 13, endHour: 17 },
+        { label: 'Tối', key: 'evening', startHour: 17, endHour: 21 }
+      ];
+
+      function dwKey(d) {
+        const y = d.getFullYear();
+        const m = (d.getMonth() + 1).toString().padStart(2, '0');
+        const da = d.getDate().toString().padStart(2, '0');
+        return `${y}-${m}-${da}`;
+      }
+
+      function dwFmt(d) {
+        return `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getFullYear()}`;
+      }
+
+      function dwWeek(d) {
+        const c = new Date(d);
+        const f = c.getDate() - c.getDay() + 1;
+        const arr = [];
+        for (let i = 0; i < 7; i++) {
+          const day = new Date(c);
+          day.setDate(f + i);
+          arr.push(day);
+        }
+        return arr;
+      }
+
+      function isToday(d) {
+        const t = new Date();
+        return d.toDateString() === t.toDateString();
+      }
+
+      // Get appointment status based on time
+      function getAppointmentTimeStatus(dateStr, startTime, endTime) {
+        const now = new Date();
+        const appointmentDate = new Date(dateStr);
+
+        // Parse times
+        const [startH, startM] = (startTime || '00:00').split(':').map(Number);
+        const [endH, endM] = (endTime || '23:59').split(':').map(Number);
+
+        const startDateTime = new Date(appointmentDate);
+        startDateTime.setHours(startH, startM, 0, 0);
+
+        const endDateTime = new Date(appointmentDate);
+        endDateTime.setHours(endH, endM, 0, 0);
+
+        const oneHourBefore = new Date(startDateTime.getTime() - 60 * 60 * 1000);
+
+        if (now > endDateTime) {
+          return { status: 'ended', label: 'Đã kết thúc', class: 'ended' };
+        } else if (now >= startDateTime && now <= endDateTime) {
+          return { status: 'ongoing', label: 'Đang diễn ra', class: 'ongoing' };
+        } else if (now >= oneHourBefore && now < startDateTime) {
+          return { status: 'upcoming', label: 'Sắp diễn ra', class: 'upcoming' };
+        } else {
+          return { status: 'scheduled', label: 'Chưa đến giờ', class: '' };
+        }
+      }
+
+      // Parse time slot to start/end times
+      function parseTimeSlot(timeSlot, slotInfo) {
+        if (timeSlot && timeSlot.includes('-')) {
+          const [start, end] = timeSlot.split('-').map(t => t.trim());
+          return { startTime: start, endTime: end };
+        }
+        // Fallback to slot default times
+        return {
+          startTime: `${slotInfo.startHour.toString().padStart(2, '0')}:00`,
+          endTime: `${slotInfo.endHour.toString().padStart(2, '0')}:00`
+        };
+      }
+
+      function organizeAppointmentsBySlot(appointments) {
+        const organized = {};
+
+        appointments.forEach(apt => {
+          const dateKey = apt.date;
+          if (!organized[dateKey]) {
+            organized[dateKey] = { morning: [], noon: [], afternoon: [], evening: [] };
+          }
+
+          // Determine slot based on start_time or time_slot
+          let slotKey = 'morning';
+          const startTime = apt.start_time || '';
+          const hour = parseInt(startTime.split(':')[0]) || 8;
+
+          if (hour >= 7 && hour < 11) slotKey = 'morning';
+          else if (hour >= 11 && hour < 13) slotKey = 'noon';
+          else if (hour >= 13 && hour < 17) slotKey = 'afternoon';
+          else if (hour >= 17 && hour < 21) slotKey = 'evening';
+
+          organized[dateKey][slotKey].push(apt);
+        });
+
+        return organized;
+      }
+
+      async function loadDoctorAppointments() {
+        try {
+          const token = localStorage.getItem('access_token');
+          if (!token) return;
+
+          const response = await fetch('/api/doctor/appointments/confirmed', {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+
+          if (response.ok) {
+            doctorAppointments = await response.json();
+            renderDw();
+          }
+        } catch (err) {
+          console.error('Error loading appointments:', err);
+        }
+      }
+
+      function renderDw() {
+        const table = document.getElementById('dwCalendarTable');
+        if (!table) return;
+
+        const days = dwWeek(dwCurrent);
+        const organizedData = organizeAppointmentsBySlot(doctorAppointments);
+
+        let head = '<thead><tr><th>Buổi khám</th>';
+        days.forEach(day => {
+          head += `<th${isToday(day) ? ' style="background:#ffb020;color:#fff"' : ''}>Thứ ${day.getDay() === 0 ? 'CN' : day.getDay() + 1}<div style="font-weight:500;opacity:.9">${dwFmt(day)}</div></th>`;
+        });
+        head += '</tr></thead>';
+
+        let body = '<tbody>';
+        dwTimeSlots.forEach(slot => {
+          body += '<tr>';
+          body += `<td class="dw-slot">${slot.label}<div class="rng">${slot.startHour.toString().padStart(2,'0')}:00 - ${slot.endHour.toString().padStart(2,'0')}:00</div></td>`;
+
+          days.forEach(day => {
+            const key = dwKey(day);
+            const dayData = organizedData[key] || {};
+            const items = dayData[slot.key] || [];
+            body += `<td${isToday(day) ? ' style="background:#fff6e6"' : ''}>`;
+
+            if (items.length) {
+              items.forEach(apt => {
+                const times = parseTimeSlot(apt.time_slot, slot);
+                const timeStatus = getAppointmentTimeStatus(apt.date, apt.start_time || times.startTime, apt.end_time || times.endTime);
+                const statusClass = apt.status || 'confirmed';
+
+                body += `
+                  <div class="dw-card ${statusClass}" onclick="openAppointmentDetail(${JSON.stringify(apt).replace(/"/g, '&quot;')}, '${timeStatus.status}')">
+                    <h4>${apt.patient_name || 'Bệnh nhân'}</h4>
+                    <div class="dw-meta">
+                      <div><strong>Thời gian:</strong> ${apt.start_time || times.startTime} - ${apt.end_time || times.endTime}</div>
+                      <div><strong>Phòng:</strong> ${apt.room_number || apt.clinic_name || 'Chưa xác định'}</div>
+                    </div>
+                    ${timeStatus.class ? `<span class="schedule-status-label ${timeStatus.class}">${timeStatus.label}</span>` : ''}
+                  </div>
+                `;
+              });
+            } else {
+              body += '<div class="dw-empty">Không có lịch</div>';
+            }
+            body += '</td>';
+          });
+          body += '</tr>';
+        });
+        body += '</tbody>';
+        table.innerHTML = head + body;
+
+        const di = document.getElementById('dwDateInput');
+        if (di) {
+          di.value = `${dwCurrent.getFullYear()}-${(dwCurrent.getMonth() + 1).toString().padStart(2, '0')}-${dwCurrent.getDate().toString().padStart(2, '0')}`;
+        }
+      }
+
+      // Make loadDoctorAppointments globally accessible
+      window.loadDoctorAppointments = loadDoctorAppointments;
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const prev = document.getElementById('dwPrevBtn');
+        const next = document.getElementById('dwNextBtn');
+        const today = document.getElementById('dwTodayBtn');
+        const di = document.getElementById('dwDateInput');
+
+        if (prev) prev.addEventListener('click', () => { dwCurrent.setDate(dwCurrent.getDate() - 7); renderDw(); });
+        if (next) next.addEventListener('click', () => { dwCurrent.setDate(dwCurrent.getDate() + 7); renderDw(); });
+        if (today) today.addEventListener('click', () => { dwCurrent = new Date(); renderDw(); });
+        if (di) di.addEventListener('change', (e) => { dwCurrent = new Date(e.target.value); renderDw(); });
+
+        loadDoctorAppointments();
+
+        // Auto refresh every minute
+        setInterval(() => {
+          renderDw();
+        }, 60000);
+      });
+    })();
+
+    // ============ APPOINTMENT DETAIL MODAL ============
+    let currentAppointmentData = null;
+
+    function openAppointmentDetail(aptData, timeStatus) {
+      currentAppointmentData = aptData;
+      const modal = document.getElementById('appointmentDetailModal');
+      const body = document.getElementById('appointmentDetailBody');
+
+      const isPaid = aptData.payment_status === 'paid' || aptData.payment_status === 'PAID';
+      const amount = aptData.fee_amount || aptData.price || aptData.amount || 500000; // Default fee
+
+      let statusDisplay = '';
+      let actionsHtml = '';
+
+      if (timeStatus === 'ended') {
+        // Show doctor's choice status
+        statusDisplay = `<span class="status-badge" style="background:#e0e0e0;color:#666;">Đã hoàn thành</span>`;
+        actionsHtml = `<p style="text-align:center;color:#7f8c8d;margin-top:20px;">Lịch hẹn này đã kết thúc</p>`;
+      } else if (timeStatus === 'upcoming') {
+        statusDisplay = `<span class="status-badge" style="background:#fff3cd;color:#856404;">Chưa đến giờ</span>`;
+        actionsHtml = `<p style="text-align:center;color:#7f8c8d;margin-top:20px;">Lịch hẹn sẽ diễn ra sớm</p>`;
+      } else if (timeStatus === 'ongoing') {
+        statusDisplay = `<span class="status-badge" style="background:#d4edda;color:#155724;">Đang diễn ra</span>`;
+        actionsHtml = `
+          <div class="appointment-actions">
+            <button class="btn-complete" onclick="completeAppointment()">
+              <i class="ri-check-line"></i> Xác nhận hoàn thành
+            </button>
+            <button class="btn-cancel-appointment" onclick="showCancelForm()">
+              <i class="ri-close-line"></i> Hủy lịch hẹn
+            </button>
+          </div>
+          <div class="cancel-reason-form" id="cancelReasonForm">
+            <label>Chọn lý do hủy:</label>
+            <select id="cancelReasonSelect" onchange="toggleOtherReason()">
+              <option value="">-- Chọn lý do --</option>
+              <option value="Khách hàng không đến">Khách hàng không đến</option>
+              <option value="Khách hàng phản đối">Khách hàng phản đối</option>
+              <option value="Khách hàng đập bác sĩ :))">Khách hàng đập bác sĩ :))</option>
+              <option value="Khách hàng thiếu ý thức">Khách hàng thiếu ý thức</option>
+              <option value="other">Khác (vui lòng nhập)</option>
+            </select>
+            <input type="text" id="cancelReasonOther" placeholder="Nhập lý do khác..." style="display:none;">
+            <div style="display:flex;gap:10px;margin-top:10px;">
+              <button class="btn-secondary" onclick="hideCancelForm()">Hủy bỏ</button>
+              <button class="btn-primary" onclick="confirmCancelAppointment()" style="background:#e74c3c;">Xác nhận hủy</button>
+            </div>
+          </div>
+        `;
+      } else {
+        statusDisplay = `<span class="status-badge" style="background:#e3f2fd;color:#1565c0;">Đã lên lịch</span>`;
+        actionsHtml = '';
+      }
+
+      // Build patient avatar HTML
+      const patientName = aptData.patient_name || 'Bệnh nhân';
+      const initials = patientName.split(' ').map(s => s[0]).slice(0, 2).join('').toUpperCase();
+      let avatarHtml = '';
+      if (aptData.patient_avatar) {
+        avatarHtml = `<img src="${aptData.patient_avatar}" alt="Avatar" style="width:60px;height:60px;border-radius:50%;object-fit:cover;border:2px solid #4a69bd;">`;
+      } else {
+        avatarHtml = `<div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);display:flex;align-items:center;justify-content:center;color:white;font-weight:600;font-size:20px;border:2px solid #4a69bd;">${initials}</div>`;
+      }
+
+      // Build clickable phone/email HTML
+      const phoneHtml = aptData.patient_phone 
+        ? `<a href="tel:${aptData.patient_phone}" style="color:#4a69bd;text-decoration:none;display:inline-flex;align-items:center;gap:5px;"><i class="ri-phone-line"></i>${aptData.patient_phone}</a>`
+        : '<span style="color:#999;">Chưa có</span>';
+      
+      const emailHtml = aptData.patient_email
+        ? `<a href="mailto:${aptData.patient_email}" style="color:#4a69bd;text-decoration:none;display:inline-flex;align-items:center;gap:5px;"><i class="ri-mail-line"></i>${aptData.patient_email}</a>`
+        : '<span style="color:#999;">Chưa có</span>';
+
+      body.innerHTML = `
+        <div style="display:flex;align-items:center;gap:15px;margin-bottom:20px;padding-bottom:15px;border-bottom:1px solid #eee;">
+          ${avatarHtml}
+          <div>
+            <div style="font-size:18px;font-weight:600;color:#2c3e50;">${patientName}</div>
+            <div style="font-size:13px;color:#7f8c8d;margin-top:4px;">${aptData.service_name || 'Khám bệnh'}</div>
+          </div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Số điện thoại:</div>
+          <div class="detail-value">${phoneHtml}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Email:</div>
+          <div class="detail-value">${emailHtml}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Phòng khám:</div>
+          <div class="detail-value">${aptData.clinic_name || 'Chưa xác định'}${aptData.room_number ? ' - Phòng ' + aptData.room_number : ''}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Địa chỉ:</div>
+          <div class="detail-value">${aptData.clinic_address || 'Chưa có'}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Yêu cầu:</div>
+          <div class="detail-value">${aptData.notes || 'Không có yêu cầu đặc biệt'}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Trạng thái:</div>
+          <div class="detail-value">${statusDisplay}</div>
+        </div>
+        ${!isPaid ? `
+        <div class="detail-row">
+          <div class="detail-label">Số tiền phải thu:</div>
+          <div class="detail-value amount-due">${new Intl.NumberFormat('vi-VN').format(amount)}đ</div>
+        </div>
+        ` : `
+        <div class="detail-row">
+          <div class="detail-label">Thanh toán:</div>
+          <div class="detail-value"><span class="status-badge status-paid">Đã thanh toán</span></div>
+        </div>
+        `}
+        ${actionsHtml}
+      `;
+
+      modal.classList.add('active');
+    }
+
+    function showCancelForm() {
+      document.getElementById('cancelReasonForm').classList.add('active');
+    }
+
+    function hideCancelForm() {
+      document.getElementById('cancelReasonForm').classList.remove('active');
+      document.getElementById('cancelReasonSelect').value = '';
+      document.getElementById('cancelReasonOther').style.display = 'none';
+    }
+
+    function toggleOtherReason() {
+      const select = document.getElementById('cancelReasonSelect');
+      const other = document.getElementById('cancelReasonOther');
+      other.style.display = select.value === 'other' ? 'block' : 'none';
+    }
+
+    async function completeAppointment() {
+      if (!currentAppointmentData) return;
+
+      if (confirm('Xác nhận hoàn thành lịch hẹn này?')) {
+        try {
+          const token = localStorage.getItem('access_token');
+          const response = await fetch(`/api/appointments/${currentAppointmentData.id}`, {
+            method: 'PUT',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ status: 'completed' })
+          });
+
+          if (response.ok) {
+            alert('Đã xác nhận hoàn thành lịch hẹn!');
+            closeModal('appointmentDetailModal');
+            loadDoctorAppointments();
+          } else {
+            alert('Có lỗi xảy ra. Vui lòng thử lại.');
+          }
+        } catch (err) {
+          console.error(err);
+          alert('Có lỗi xảy ra. Vui lòng thử lại.');
+        }
+      }
+    }
+
+    async function confirmCancelAppointment() {
+      if (!currentAppointmentData) return;
+
+      const select = document.getElementById('cancelReasonSelect');
+      let reason = select.value;
+
+      if (reason === 'other') {
+        reason = document.getElementById('cancelReasonOther').value.trim();
+      }
+
+      if (!reason) {
+        alert('Vui lòng chọn hoặc nhập lý do hủy!');
+        return;
+      }
+
+      try {
+        const token = localStorage.getItem('access_token');
+        const response = await fetch(`/api/appointments/${currentAppointmentData.id}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            status: 'cancelled',
+            cancel_reason: reason
+          })
+        });
+
+        if (response.ok) {
+          alert('Đã hủy lịch hẹn!');
+          closeModal('appointmentDetailModal');
+          loadDoctorAppointments();
+        } else {
+          alert('Có lỗi xảy ra. Vui lòng thử lại.');
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Có lỗi xảy ra. Vui lòng thử lại.');
+      }
+    }
+
+    // ============ NOTIFICATIONS ============
+    async function loadNotifications() {
+      const container = document.getElementById('notificationListContainer');
+      if (!container) return;
+
+      try {
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+          container.innerHTML = '<p style="text-align:center;color:#999;padding:20px;">Vui lòng đăng nhập để xem thông báo</p>';
+          return;
+        }
+
+        const response = await fetch('/api/doctor/notifications', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (response.ok) {
+          notifications = await response.json();
+          renderNotifications();
+          updateNavBadge();
+        }
+      } catch (err) {
+        console.error('Error loading notifications:', err);
+        container.innerHTML = '<p style="text-align:center;color:#999;padding:20px;">Không thể tải thông báo</p>';
+      }
+    }
+
+    function renderNotifications() {
+      const container = document.getElementById('notificationListContainer');
+      if (!container) return;
+
+      if (!notifications || notifications.length === 0) {
+        container.innerHTML = `
+          <div style="text-align:center;padding:40px;color:#999;">
+            <i class="ri-notification-off-line" style="font-size:48px;color:#ccc;"></i>
+            <p style="margin-top:15px;">Chưa có thông báo nào</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = notifications.map(notif => {
+        let iconClass = 'notif-schedule';
+        let iconName = 'ri-notification-3-line';
+
+        // Type: 1 = lịch hẹn, 2 = đánh giá, 3 = forum, 4 = admin
+        switch (notif.type) {
+          case 1:
+            iconClass = 'notif-schedule';
+            iconName = 'ri-calendar-line';
+            break;
+          case 2:
+            iconClass = 'notif-change';
+            iconName = 'ri-star-line';
+            break;
+          case 3:
+            // Forum notifications - check message content
+            if (notif.message && notif.message.includes('like')) {
+              iconClass = 'notif-like';
+              iconName = 'ri-heart-line';
+            } else if (notif.message && notif.message.includes('bình luận')) {
+              iconClass = 'notif-comment';
+              iconName = 'ri-chat-3-line';
+            } else if (notif.message && notif.message.includes('lượt xem')) {
+              iconClass = 'notif-view';
+              iconName = 'ri-eye-line';
+            } else {
+              iconClass = 'notif-system';
+              iconName = 'ri-message-3-line';
+            }
+            break;
+          case 4:
+            iconClass = 'notif-system';
+            iconName = 'ri-information-line';
+            break;
+        }
+
+        return `
+          <div class="notification-item ${notif.is_read ? '' : 'unread'}"
+               data-id="${notif.id}"
+               onmousedown="startDragNotification(event, ${notif.id})"
+               onclick="markNotificationRead(${notif.id})">
+            <div class="notification-icon ${iconClass}">
+              <i class="${iconName}"></i>
+            </div>
+            <div class="notification-content">
+              <h4>${notif.title || 'Thông báo'}</h4>
+              <p>${notif.message || ''}</p>
+            </div>
+            <div class="notification-time">${notif.created_at_human || ''}</div>
+            <span class="unread-badge"></span>
+          </div>
+        `;
+      }).join('');
+
+      // Initialize drag for notifications
+      initNotificationDrag();
+    }
+
+    function updateNavBadge() {
+      const navBadge = document.getElementById('navNotifBadge');
+      const topBadge = document.querySelector('.icon-btn .badge');
+
+      const unreadCount = notifications.filter(n => !n.is_read).length;
+
+      if (navBadge) {
+        if (unreadCount > 0) {
+          navBadge.textContent = unreadCount > 99 ? '99+' : unreadCount;
+          navBadge.style.display = 'flex';
+        } else {
+          navBadge.style.display = 'none';
+        }
+      }
+
+      if (topBadge) {
+        if (unreadCount > 0) {
+          topBadge.textContent = unreadCount > 99 ? '99+' : unreadCount;
+          topBadge.style.display = 'flex';
+        } else {
+          topBadge.style.display = 'none';
+        }
+      }
+    }
+
+    async function markNotificationRead(id) {
+      try {
+        const token = localStorage.getItem('access_token');
+        await fetch(`/api/profile/notifications/${id}/read`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        const notif = notifications.find(n => n.id === id);
+        if (notif) notif.is_read = true;
+
+        renderNotifications();
+        updateNavBadge();
+      } catch (err) {
+        console.error('Error marking notification read:', err);
+      }
+    }
+
+    async function markAllNotificationsRead() {
+      try {
+        const token = localStorage.getItem('access_token');
+        await fetch('/api/doctor/notifications/read-all', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        notifications.forEach(n => n.is_read = true);
+        renderNotifications();
+        updateNavBadge();
+        alert('Đã đánh dấu tất cả thông báo là đã đọc!');
+      } catch (err) {
+        console.error('Error:', err);
+        alert('Có lỗi xảy ra!');
+      }
+    }
+
+    async function deleteAllNotifications() {
+      if (!confirm('Bạn có chắc muốn xóa tất cả thông báo?')) return;
+
+      try {
+        const token = localStorage.getItem('access_token');
+        await fetch('/api/profile/notifications/all', {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        notifications = [];
+        renderNotifications();
+        updateNavBadge();
+        alert('Đã xóa tất cả thông báo!');
+      } catch (err) {
+        console.error('Error:', err);
+        alert('Có lỗi xảy ra!');
+      }
+    }
+
+    // ============ NOTIFICATION DRAG TO DELETE ============
+    let draggedNotifId = null;
+    let isDragging = false;
+    let startY = 0;
+    let startX = 0;
+    let notifContainer = null;
+
+    function initNotificationDrag() {
+      notifContainer = document.getElementById('notificationListContainer');
+    }
+
+    function startDragNotification(e, id) {
+      if (e.button !== 0) return; // Only left click
+
+      draggedNotifId = id;
+      startX = e.clientX;
+      startY = e.clientY;
+
+      document.addEventListener('mousemove', onDragNotification);
+      document.addEventListener('mouseup', endDragNotification);
+    }
+
+    function onDragNotification(e) {
+      if (!draggedNotifId) return;
+
+      const diffX = Math.abs(e.clientX - startX);
+      const diffY = Math.abs(e.clientY - startY);
+
+      if (diffX > 10 || diffY > 10) {
+        isDragging = true;
+        const item = document.querySelector(`.notification-item[data-id="${draggedNotifId}"]`);
+        if (item) {
+          item.classList.add('dragging');
+          item.style.transform = `translate(${e.clientX - startX}px, ${e.clientY - startY}px)`;
+
+          // Check if outside container
+          const containerRect = notifContainer.getBoundingClientRect();
+          if (e.clientX < containerRect.left || e.clientX > containerRect.right ||
+              e.clientY < containerRect.top || e.clientY > containerRect.bottom) {
+            item.classList.add('delete-preview');
+          } else {
+            item.classList.remove('delete-preview');
+          }
+        }
+      }
+    }
+
+    function endDragNotification(e) {
+      document.removeEventListener('mousemove', onDragNotification);
+      document.removeEventListener('mouseup', endDragNotification);
+
+      if (isDragging && draggedNotifId) {
+        const item = document.querySelector(`.notification-item[data-id="${draggedNotifId}"]`);
+        if (item) {
+          item.classList.remove('dragging');
+          item.style.transform = '';
+
+          // Check if was dragged outside
+          if (item.classList.contains('delete-preview')) {
+            item.classList.remove('delete-preview');
+            pendingDeleteNotifId = draggedNotifId;
+            document.getElementById('deleteNotifModal').classList.add('active');
+          }
+        }
+      }
+
+      draggedNotifId = null;
+      isDragging = false;
+    }
+
+    async function confirmDeleteNotification() {
+      if (!pendingDeleteNotifId) return;
+
+      try {
+        const token = localStorage.getItem('access_token');
+        await fetch(`/api/doctor/notifications/${pendingDeleteNotifId}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        notifications = notifications.filter(n => n.id !== pendingDeleteNotifId);
+        renderNotifications();
+        updateNavBadge();
+        closeModal('deleteNotifModal');
+        pendingDeleteNotifId = null;
+      } catch (err) {
+        console.error('Error:', err);
+        alert('Có lỗi xảy ra!');
+      }
+    }
+
+    // Logout button
+    document.querySelector('.logout-btn').addEventListener('click', () => {
+      if (confirm('Bạn có chắc muốn đăng xuất?')) {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        window.location.href = '/dang-nhap';
+      }
+    });
+
+    // Modal functions
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('active');
+    }
+
+    function openEditNoteModal(noteId) {
+      document.getElementById('editNoteModal').classList.add('active');
+    }
+
+    function saveEditNote() {
+      alert('Ghi chú đã được cập nhật!');
+      closeModal('editNoteModal');
+    }
+
+    function openNewThreadModal() {
+      document.getElementById('newThreadModal').classList.add('active');
+    }
+
+    function submitNewThread() {
+      const title = document.getElementById('threadTitle').value;
+      const content = document.getElementById('threadContent').value;
+
+      if (!title || !content) {
+        alert('Vui lòng điền đầy đủ tiêu đề và nội dung!');
+        return;
+      }
+
+      alert('Chủ đề mới đã được đăng thành công!');
+      closeModal('newThreadModal');
+    }
+
+    function openChangePasswordModal() {
+      document.getElementById('changePasswordModal').classList.add('active');
+    }
+
+    async function submitChangePassword() {
+      const current = document.getElementById('currentPassword').value;
+      const newPass = document.getElementById('newPassword').value;
+      const confirmPass = document.getElementById('confirmPassword').value;
+
+      if (!current || !newPass || !confirmPass) {
+        showToast('Vui lòng điền đầy đủ thông tin!', 'error');
+        return;
+      }
+
+      if (newPass !== confirmPass) {
+        showToast('Mật khẩu xác nhận không khớp!', 'error');
+        return;
+      }
+
+      if (newPass.length < 8) {
+        showToast('Mật khẩu phải có ít nhất 8 ký tự!', 'error');
+        return;
+      }
+
+      try {
+        const token = localStorage.getItem('access_token');
+        const response = await fetch('/api/profile/change-password', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            current_password: current,
+            new_password: newPass,
+            new_password_confirmation: confirmPass
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          showToast('Đổi mật khẩu thành công!', 'success');
+          document.getElementById('currentPassword').value = '';
+          document.getElementById('newPassword').value = '';
+          document.getElementById('confirmPassword').value = '';
+          closeModal('changePasswordModal');
+        } else {
+          showToast(data.message || 'Có lỗi xảy ra!', 'error');
+        }
+      } catch (err) {
+        console.error(err);
+        showToast('Không thể đổi mật khẩu. Vui lòng thử lại.', 'error');
+      }
+    }
+
+    async function openLoginHistoryModal() {
+      document.getElementById('loginHistoryModal').classList.add('active');
+      await loadLoginHistory();
+    }
+
+    async function loadLoginHistory() {
+      const historyContainer = document.querySelector('#loginHistoryModal .login-history-list');
+      if (!historyContainer) return;
+
+      historyContainer.innerHTML = '<div style="text-align: center; padding: 20px;"><i class="ri-loader-4-line" style="font-size: 30px; animation: spin 1s linear infinite;"></i></div>';
+
+      try {
+        const token = localStorage.getItem('access_token');
+        const response = await fetch('/api/profile/login-history', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success && data.data.length > 0) {
+          historyContainer.innerHTML = data.data.map(item => `
+            <div class="login-history-item">
+              <div class="history-device">
+                <i class="ri-computer-line"></i>
+                <div>
+                  <strong>${item.device}</strong>
+                  <small>${item.ip_address}</small>
+                </div>
+              </div>
+              <div class="history-time">
+                <span>${item.created_at}</span>
+                <small>${item.last_used}</small>
+              </div>
+            </div>
+          `).join('');
+        } else if (data.data && data.data.length === 0) {
+          historyContainer.innerHTML = '<p style="text-align: center; padding: 20px; color: #888;">Chưa có lịch sử đăng nhập</p>';
+        } else {
+          historyContainer.innerHTML = '<p style="text-align: center; padding: 20px; color: #f44336;">Không thể tải lịch sử đăng nhập</p>';
+        }
+      } catch (err) {
+        console.error(err);
+        historyContainer.innerHTML = '<p style="text-align: center; padding: 20px; color: #f44336;">Lỗi kết nối</p>';
+      }
+    }
+
+    function openNotificationsModal() {
+      loadNotifications();
+      document.getElementById('notificationsModal').classList.add('active');
+    }
+
+    // Tag input functionality
+    const tagInput = document.getElementById('tagInput');
+    const tagWrapper = document.getElementById('tagInputWrapper');
+    const tags = [];
+
+    if (tagInput) {
+      tagInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && tagInput.value.trim()) {
+          e.preventDefault();
+          const tagValue = tagInput.value.trim();
+
+          if (!tags.includes(tagValue)) {
+            tags.push(tagValue);
+            const tagElement = document.createElement('span');
+            tagElement.className = 'tag-item';
+            tagElement.innerHTML = `${tagValue} <span class="remove-tag" onclick="removeTag('${tagValue}')">&times;</span>`;
+            tagWrapper.insertBefore(tagElement, tagInput);
+          }
+          tagInput.value = '';
+        }
+      });
+    }
+
+    function removeTag(tagValue) {
+      const index = tags.indexOf(tagValue);
+      if (index > -1) tags.splice(index, 1);
+
+      const tagElements = document.querySelectorAll('.tag-item');
+      tagElements.forEach(el => {
+        if (el.textContent.includes(tagValue)) el.remove();
+      });
+    }
+
+    // Profile functions
+    async function saveProfileChanges() {
+      const token = localStorage.getItem('access_token');
+      if (!token) {
+        showToast('Vui lòng đăng nhập lại!', 'error');
+        return;
+      }
+
+      // Get experience value and convert to integer
+      let experienceRaw = document.getElementById('profileExperience').value;
+      let experienceYears = parseInt(experienceRaw.replace(/\D/g, '')) || 0;
+
+      // Get selected specialization_id from dropdown
+      const specialtySelect = document.getElementById('profileSpecialty');
+      const specialization_id = specialtySelect.value ? parseInt(specialtySelect.value) : null;
+
+      // Map gender from display value to API value
+      let genderValue = 'MALE';
+      const genderDisplay = document.getElementById('profileGender').value;
+      if (genderDisplay === 'Nữ' || genderDisplay === 'FEMALE') genderValue = 'FEMALE';
+      else if (genderDisplay === 'Khác' || genderDisplay === 'OTHER') genderValue = 'OTHER';
+      else genderValue = 'MALE';
+
+      // Update user basic info (use correct field names from API)
+      const userUpdateData = {
+        full_name: document.getElementById('profileName').value,
+        phone: document.getElementById('profilePhone').value,
+        address: document.getElementById('profileAddress').value,
+        gender: genderValue,
+        dob: document.getElementById('profileBirthday').value
+      };
+
+      // Update doctor specific info
+      const doctorUpdateData = {
+        degree: document.getElementById('profileDegree').value,
+        experience: experienceYears,
+        specialization_id: specialization_id
+      };
+
+      try {
+        // Update user info
+        const userResponse = await fetch('/api/profile/me', {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(userUpdateData)
+        });
+
+        // Update doctor profile
+        const doctorResponse = await fetch('/api/profile/doctor', {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(doctorUpdateData)
+        });
+
+        if (userResponse.ok || doctorResponse.ok) {
+          showToast('Thông tin cá nhân đã được cập nhật thành công!', 'success');
+
+          // Also save to localStorage as backup
+          localStorage.setItem('doctorProfile', JSON.stringify({
+            name: userUpdateData.name,
+            phone: userUpdateData.phone,
+            address: userUpdateData.address,
+            gender: userUpdateData.gender,
+            birthday: userUpdateData.birthday,
+            email: document.getElementById('profileEmail').value,
+            degree: doctorUpdateData.degree,
+            experience: experienceYears + ' năm',
+            specialty: specialization_id
+          }));
+        } else {
+          showToast('Có lỗi xảy ra khi cập nhật thông tin!', 'error');
+        }
+      } catch (err) {
+        console.error('Error saving profile:', err);
+        showToast('Có lỗi xảy ra khi cập nhật thông tin!', 'error');
+      }
+    }
+
+    function changeAvatar(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          document.getElementById('profileImage').src = e.target.result;
+          localStorage.setItem('doctorAvatar', e.target.result);
+          alert('Ảnh đại diện đã được cập nhật!');
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // Load saved profile on page load
+    document.addEventListener('DOMContentLoaded', async function () {
+      let doctorName = 'Bác sĩ';
+      let doctorId = '';
+      let doctorAvatar = '/frontend/img/logocanhan.jpg';
+
+      const token = localStorage.getItem('access_token');
+
+      // Load specializations for dropdown
+      await loadSpecializations();
+
+      if (token) {
+        try {
+          // Load user basic info from API
+          const userResponse = await fetch('/api/profile/me', {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+
+          if (userResponse.ok) {
+            const user = await userResponse.json();
+            // API returns data directly, not wrapped in 'user' object
+            document.getElementById('profileName').value = user.full_name || '';
+            document.getElementById('profilePhone').value = user.phone || '';
+            document.getElementById('profileEmail').value = user.email || '';
+            document.getElementById('profileAddress').value = user.address || '';
+
+            // Map gender values
+            let genderDisplay = 'Nam';
+            if (user.gender === 'MALE') genderDisplay = 'Nam';
+            else if (user.gender === 'FEMALE') genderDisplay = 'Nữ';
+            document.getElementById('profileGender').value = genderDisplay;
+
+            if (user.dob) {
+              // dob is already in YYYY-MM-DD format
+              document.getElementById('profileBirthday').value = user.dob;
+            }
+
+            doctorName = user.full_name || 'Bác sĩ';
+            doctorId = user.email || 'doctor-' + user.id;
+          }
+
+          // Load doctor specific info from API
+          const doctorResponse = await fetch('/api/profile/doctor', {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+
+          if (doctorResponse.ok) {
+            const doctorData = await doctorResponse.json();
+            if (doctorData.doctor) {
+              const doctor = doctorData.doctor;
+              document.getElementById('profileDegree').value = doctor.degree || '';
+              document.getElementById('profileExperience').value = doctor.experience ? doctor.experience + ' năm' : '';
+
+              // Set specialty dropdown value
+              if (doctor.specialization_id) {
+                document.getElementById('profileSpecialty').value = doctor.specialization_id;
+              }
+
+              // Save to localStorage as backup
+              localStorage.setItem('doctorProfile', JSON.stringify({
+                name: document.getElementById('profileName').value,
+                phone: document.getElementById('profilePhone').value,
+                email: document.getElementById('profileEmail').value,
+                address: document.getElementById('profileAddress').value,
+                gender: document.getElementById('profileGender').value,
+                birthday: document.getElementById('profileBirthday').value,
+                degree: doctor.degree || '',
+                experience: doctor.experience ? doctor.experience + ' năm' : '',
+                specialty: doctor.specialization_id
+              }));
+            }
+          }
+        } catch (err) {
+          console.error('Error loading profile from API:', err);
+          // Fall back to localStorage
+          loadProfileFromLocalStorage();
+        }
+      } else {
+        // No token, try localStorage
+        loadProfileFromLocalStorage();
+      }
+
+      // Load saved avatar from localStorage
+      const savedAvatar = localStorage.getItem('doctorAvatar');
+      if (savedAvatar) {
+        document.getElementById('profileImage').src = savedAvatar;
+        doctorAvatar = savedAvatar;
+      }
+
+      // Update forum container với thông tin bác sĩ thực
+      const forumContainer = document.getElementById('doctorForumContainer');
+      if (forumContainer) {
+        forumContainer.dataset.userId = doctorId;
+        forumContainer.dataset.userName = doctorName;
+        forumContainer.dataset.userAvatar = doctorAvatar;
+        forumContainer.dataset.userType = 'doctor';
+      }
+
+      // Load notifications initially
+      loadNotifications();
+
+      // Khởi tạo forum sau khi đã có thông tin bác sĩ
+      if (typeof window.initForumSync === 'function') {
+        window.initForumSync();
+      }
+    });
+
+    // Load specializations for dropdown
+    async function loadSpecializations() {
+      try {
+        const response = await fetch('/api/public/specializations');
+        if (response.ok) {
+          const specializations = await response.json();
+          const select = document.getElementById('profileSpecialty');
+          select.innerHTML = '<option value="">Chọn chuyên khoa</option>';
+          specializations.forEach(spec => {
+            select.innerHTML += `<option value="${spec.id}">${spec.name}</option>`;
+          });
+        }
+      } catch (err) {
+        console.error('Error loading specializations:', err);
+      }
+    }
+
+    // Fallback function to load from localStorage
+    function loadProfileFromLocalStorage() {
+      const savedProfile = localStorage.getItem('doctorProfile');
+      if (savedProfile) {
+        const profileData = JSON.parse(savedProfile);
+        document.getElementById('profileName').value = profileData.name || '';
+        document.getElementById('profileGender').value = profileData.gender || 'Nam';
+        document.getElementById('profileBirthday').value = profileData.birthday || '';
+        document.getElementById('profilePhone').value = profileData.phone || '';
+        document.getElementById('profileEmail').value = profileData.email || '';
+        document.getElementById('profileDegree').value = profileData.degree || '';
+        document.getElementById('profileExperience').value = profileData.experience || '';
+        document.getElementById('profileAddress').value = profileData.address || '';
+
+        if (profileData.specialty) {
+          document.getElementById('profileSpecialty').value = profileData.specialty;
+        }
+      }
+    }
+
+    // Delete note function
+    function deleteNote(buttonElement, noteId) {
+      if (confirm('Bạn có chắc chắn muốn xóa ghi chú khám bệnh này?\n\nHành động này không thể hoàn tác!')) {
+        const noteCard = buttonElement.closest('.patient-note-card');
+        if (noteCard) {
+          noteCard.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+          noteCard.style.opacity = '0';
+          noteCard.style.transform = 'translateX(-20px)';
+
+          setTimeout(() => {
+            noteCard.remove();
+            alert('Ghi chú khám bệnh đã được xóa thành công!');
+
+            const remainingNotes = document.querySelectorAll('.patient-note-card');
+            if (remainingNotes.length === 0) {
+              const notesList = document.querySelector('.patient-notes-list');
+              notesList.innerHTML = `
+                <div style="text-align: center; padding: 40px; color: #7f8c8d;">
+                  <i class="ri-file-text-line" style="font-size: 64px; opacity: 0.3;"></i>
+                  <p style="margin-top: 15px; font-size: 16px;">Chưa có ghi chú khám bệnh nào</p>
+                  <button class="btn-primary" onclick="openNewNoteModal()" style="margin-top: 20px;">
+                    <i class="ri-add-line"></i> Thêm ghi chú mới
+                  </button>
+                </div>
+              `;
+            }
+          }, 300);
+        }
+      }
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function (event) {
+      if (event.target.classList.contains('modal')) {
+        event.target.classList.remove('active');
+      }
+    };
+
+    // ============ PATIENT AUTOCOMPLETE FOR MEDICAL NOTES ============
+    let completedPatients = [];
+    let patientSearchTimeout = null;
+
+    async function loadCompletedPatients() {
+      try {
+        const token = localStorage.getItem('access_token');
+        const response = await fetch('/api/doctor/completed-patients', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await response.json();
+        if (data.success && data.data) {
+          completedPatients = data.data;
+        }
+      } catch (err) {
+        console.error('Error loading completed patients:', err);
+      }
+    }
+
+    // Initialize patient autocomplete
+    const patientNameInput = document.getElementById('newPatientName');
+    const patientSuggestions = document.getElementById('patientSuggestions');
+
+    if (patientNameInput && patientSuggestions) {
+      patientNameInput.addEventListener('input', function() {
+        const query = this.value.trim().toLowerCase();
+
+        if (query.length < 1) {
+          patientSuggestions.classList.remove('show');
+          return;
+        }
+
+        clearTimeout(patientSearchTimeout);
+        patientSearchTimeout = setTimeout(() => {
+          searchPatients(query);
+        }, 200);
+      });
+
+      patientNameInput.addEventListener('focus', function() {
+        if (this.value.trim().length >= 1) {
+          searchPatients(this.value.trim().toLowerCase());
+        }
+      });
+
+      document.addEventListener('click', function(e) {
+        if (!patientNameInput.contains(e.target) && !patientSuggestions.contains(e.target)) {
+          patientSuggestions.classList.remove('show');
+        }
+      });
+    }
+
+    async function searchPatients(query) {
+      const suggestionsContainer = document.getElementById('patientSuggestions');
+
+      // Always fetch from API with search query for more accurate results
+      suggestionsContainer.innerHTML = '<div class="autocomplete-loading"><i class="ri-loader-4-line" style="animation: spin 1s linear infinite;"></i> Đang tìm...</div>';
+      suggestionsContainer.classList.add('show');
+
+      try {
+        const token = localStorage.getItem('access_token');
+        const response = await fetch(`/api/doctor/completed-patients?search=${encodeURIComponent(query)}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await response.json();
+        
+        if (data.success && data.data && data.data.length > 0) {
+          completedPatients = data.data; // Cache for local filtering
+          displayPatientSuggestions(data.data.slice(0, 10));
+        } else {
+          // If no results from API, show message
+          suggestionsContainer.innerHTML = '<div class="autocomplete-loading">Không tìm thấy bệnh nhân phù hợp</div>';
+        }
+      } catch (err) {
+        console.error('Search patients error:', err);
+        suggestionsContainer.innerHTML = '<div class="autocomplete-loading">Lỗi tải dữ liệu</div>';
+      }
+    }
+
+    function displayPatientSuggestions(patients) {
+      const suggestionsContainer = document.getElementById('patientSuggestions');
+
+      if (patients.length === 0) {
+        suggestionsContainer.innerHTML = '<div class="autocomplete-loading">Không tìm thấy bệnh nhân. Nhập tên, SĐT hoặc email để tìm.</div>';
+        suggestionsContainer.classList.add('show');
+        return;
+      }
+
+      suggestionsContainer.innerHTML = patients.map(p => {
+        // Build avatar HTML
+        const initials = (p.patient_name || 'BN').split(' ').map(s => s[0]).slice(0, 2).join('').toUpperCase();
+        const avatarHtml = p.patient_avatar 
+          ? `<img src="${p.patient_avatar}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;">`
+          : `<div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);display:flex;align-items:center;justify-content:center;color:white;font-weight:600;font-size:12px;">${initials}</div>`;
+        
+        // Status badge
+        const statusBadge = getStatusBadge(p.status);
+        
+        return `
+          <div class="autocomplete-item" onclick="selectPatient('${escapeStr(p.patient_name)}', '${p.patient_id || ''}', '${p.appointment_date || ''}', '${escapeStr(p.patient_phone || '')}')">
+            <div style="display:flex;align-items:center;gap:10px;">
+              ${avatarHtml}
+              <div>
+                <div class="patient-name">${p.patient_name}</div>
+                <div class="patient-info">
+                  ${p.patient_phone ? `<i class="ri-phone-line"></i> ${p.patient_phone}` : ''}
+                  ${p.patient_email ? ` • ${p.patient_email}` : ''}
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;">
+              ${p.appointment_date ? `<span class="appointment-date">${formatDate(p.appointment_date)}</span>` : ''}
+              ${statusBadge}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      suggestionsContainer.classList.add('show');
+    }
+
+    function getStatusBadge(status) {
+      const statusMap = {
+        'completed': { label: 'Hoàn thành', bg: '#d4edda', color: '#155724' },
+        'COMPLETED': { label: 'Hoàn thành', bg: '#d4edda', color: '#155724' },
+        'ended': { label: 'Đã kết thúc', bg: '#e0e0e0', color: '#666' },
+        'ENDED': { label: 'Đã kết thúc', bg: '#e0e0e0', color: '#666' },
+        'confirmed': { label: 'Đã xác nhận', bg: '#e3f2fd', color: '#1565c0' },
+        'CONFIRMED': { label: 'Đã xác nhận', bg: '#e3f2fd', color: '#1565c0' },
+        'booked': { label: 'Đã đặt', bg: '#fff3cd', color: '#856404' },
+        'BOOKED': { label: 'Đã đặt', bg: '#fff3cd', color: '#856404' },
+        'in_progress': { label: 'Đang khám', bg: '#cce5ff', color: '#004085' },
+        'IN_PROGRESS': { label: 'Đang khám', bg: '#cce5ff', color: '#004085' }
+      };
+      const s = statusMap[status];
+      if (!s) return '';
+      return `<span style="font-size:10px;padding:2px 6px;border-radius:10px;background:${s.bg};color:${s.color};">${s.label}</span>`;
+    }
+
+    function escapeStr(str) {
+      if (!str) return '';
+      return str.replace(/'/g, "\\'").replace(/"/g, '\\"');
+    }
+
+    function selectPatient(name, patientId, appointmentDate, phone) {
+      document.getElementById('newPatientName').value = name;
+      // Generate patient code from patient_id
+      document.getElementById('newPatientId').value = patientId ? 'BN' + patientId.toString().padStart(6, '0') : '';
+      document.getElementById('newPatientUserId').value = patientId || '';
+      document.getElementById('patientSuggestions').classList.remove('show');
+      
+      // Set phone if available
+      const phoneInput = document.getElementById('newPatientPhone');
+      if (phoneInput && phone) {
+        phoneInput.value = phone;
+      }
+
+      // If appointment date exists, set it
+      if (appointmentDate) {
+        document.getElementById('newNoteDate').value = appointmentDate.split(' ')[0];
+      }
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '';
+      const date = new Date(dateStr);
+      return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
+    }
+
+    function openNewNoteModal() {
+      const today = new Date();
+      const dateStr = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
+      document.getElementById('newNoteDate').value = dateStr;
+      document.getElementById('newPatientName').value = '';
+      document.getElementById('newPatientId').value = '';
+      document.getElementById('newPatientUserId').value = '';
+
+      // Load completed patients for autocomplete
+      loadCompletedPatients();
+
+      document.getElementById('newNoteModal').classList.add('active');
+    }
+
+    function submitNewNote() {
+      const patientName = document.getElementById('newPatientName').value;
+      const patientId = document.getElementById('newPatientId').value;
+      const noteDate = document.getElementById('newNoteDate').value;
+      const symptoms = document.getElementById('newSymptoms').value;
+      const diagnosis = document.getElementById('newDiagnosis').value;
+      const prescription = document.getElementById('newPrescription').value;
+
+      if (!patientName || !patientId || !noteDate || !symptoms || !diagnosis || !prescription) {
+        showToast('Vui lòng điền đầy đủ tất cả thông tin bắt buộc!', 'error');
+        return;
+      }
+
+      // TODO: Call API to save medical note
+      showToast('Ghi chú khám bệnh mới đã được tạo thành công!', 'success');
+      document.getElementById('newNoteForm').reset();
+      closeModal('newNoteModal');
+    }
+
+    // ============ FEEDBACK TO ADMIN ============
+    async function submitFeedback() {
+      const feedback = document.getElementById('feedbackTextarea').value.trim();
+
+      if (!feedback) {
+        showToast('Vui lòng nhập nội dung góp ý!', 'error');
+        return;
+      }
+
+      try {
+        const token = localStorage.getItem('access_token');
+        const response = await fetch('/api/profile/feedback', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            content: feedback,
+            type: 'feedback'
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          showToast('Cảm ơn bạn đã góp ý! Thông điệp đã được gửi tới Admin.', 'success');
+          document.getElementById('feedbackTextarea').value = '';
+        } else {
+          showToast(data.message || 'Có lỗi xảy ra. Vui lòng thử lại.', 'error');
+        }
+      } catch (err) {
+        console.error(err);
+        showToast('Có lỗi xảy ra. Vui lòng thử lại.', 'error');
+      }
+    }
+
+    // Add CSS keyframe for spin animation
+    const styleSheet = document.createElement('style');
+    styleSheet.textContent = `
+      @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+    `;
+    document.head.appendChild(styleSheet);
+  </script>
+  <script src="../js/forum-sync.js"></script>
+</body>
+
+</html>

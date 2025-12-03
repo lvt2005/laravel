@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../../img/favicon.ico" />
+    <title>Quyền và Nghĩa vụ của người bệnh</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .container1 {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            background-color: #ffffff;
+            margin-bottom: 60px;
+        }
+
+        /* Menu styles */
+        .header-wrap {
+            background-color: #ffffff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header-nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 80px;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 280px;
+            margin-right: 30px;
+        }
+
+        .logo-img {
+            width: 280px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .logo-text h1 {
+            font-size: 16px;
+            color: #333;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        .logo-text h1 small {
+            display: block;
+            font-size: 13px;
+            color: #666;
+            font-weight: 400;
+        }
+
+        .search-box {
+            flex: 0 0 200px;
+            margin-right: 30px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            font-size: 13px;
+            color: #999;
+            background-color: #f9f9f9;
+        }
+
+        .search-box input::placeholder {
+            color: #bbb;
+        }
+
+        .menu-list {
+            display: flex;
+            align-items: center;
+            list-style: none;
+            flex: 1;
+            gap: 0;
+            margin: 0;
+        }
+
+        .menu-item {
+            position: relative;
+        }
+
+        .menu-item>a {
+            display: flex;
+            align-items: center;
+            padding: 25px 15px;
+            color: #333;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
+            transition: color 0.3s ease;
+        }
+
+        .menu-item>a:hover {
+            color: #3498db;
+        }
+
+        .menu-item.menu-item-has-children>a {
+            display: flex;
+            gap: 5px;
+        }
+
+        .menu-item i {
+            font-size: 14px;
+            transition: transform 0.3s ease;
+        }
+
+        .menu-item.menu-dropdown:hover>i {
+            transform: rotate(180deg);
+        }
+
+        /* Dropdown Menu */
+        .child {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #ffffff;
+            list-style: none;
+            min-width: 200px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border-radius: 4px;
+            overflow: hidden;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .menu-item.menu-dropdown:hover .child {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .child li {
+            list-style: none;
+        }
+
+        .child li a {
+            display: block;
+            padding: 12px 20px;
+            color: #666;
+            text-decoration: none;
+            font-size: 13px;
+            transition: all 0.3s ease;
+            white-space: normal;
+        }
+
+        .child li a:hover {
+            background-color: #f0f8ff;
+            color: #3498db;
+            padding-left: 25px;
+        }
+
+        /* Mega Menu */
+        .menu-mega {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border-radius: 4px;
+            overflow: hidden;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 100;
+            display: flex;
+            min-width: 600px;
+        }
+
+        .menu-mega ul {
+            flex: 1;
+            list-style: none;
+            padding: 15px 0;
+            border-right: 1px solid #f0f0f0;
+        }
+
+        .menu-mega ul:last-child {
+            border-right: none;
+        }
+
+        .menu-mega li {
+            list-style: none;
+        }
+
+        .menu-mega .menu-link {
+            display: block;
+            padding: 10px 20px;
+            color: #666;
+            text-decoration: none;
+            font-size: 13px;
+            transition: all 0.3s ease;
+        }
+
+        .menu-mega .menu-link:hover {
+            background-color: #f0f8ff;
+            color: #3498db;
+            padding-left: 25px;
+        }
+
+        .menu-chuyen-khoa:hover .menu-mega {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        /* Right Section */
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-left: auto;
+            position: relative;
+        }
+
+        .language-selector {
+            background-color: transparent;
+            border: none;
+            color: #333;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 8px 10px;
+            transition: color 0.3s ease;
+        }
+
+        .language-selector:hover {
+            color: #3498db;
+        }
+
+        .btn-register {
+            background-color: #f4c430;
+            color: #fff;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-register:hover {
+            background-color: #e8b81a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(244, 196, 48, 0.3);
+        }
+
+        /* User Menu Styles */
+        .user-menu {
+            position: relative;
+            display: none;
+        }
+
+        .user-menu.active {
+            display: block;
+        }
+
+        .user-button {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background-color: #f0f8ff;
+            color: #3498db;
+            border: 2px solid #3498db;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .user-button:hover {
+            background-color: #3498db;
+            color: #fff;
+        }
+
+        .user-button i {
+            font-size: 18px;
+        }
+
+        .user-dropdown {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            background-color: #ffffff;
+            min-width: 200px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border-radius: 8px;
+            overflow: hidden;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .user-menu:hover .user-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .user-dropdown-header {
+            padding: 15px 20px;
+            background-color: #f0f8ff;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .user-dropdown-header .user-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 3px;
+        }
+
+        .user-dropdown-header .user-role {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .user-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            color: #666;
+            text-decoration: none;
+            font-size: 13px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .user-dropdown-item:hover {
+            background-color: #f0f8ff;
+            color: #3498db;
+            padding-left: 25px;
+        }
+
+        .user-dropdown-item i {
+            font-size: 16px;
+        }
+
+        .user-dropdown-divider {
+            height: 1px;
+            background-color: #e0e0e0;
+            margin: 5px 0;
+        }
+
+        .user-dropdown-item.logout {
+            color: #e74c3c;
+        }
+
+        .user-dropdown-item.logout:hover {
+            background-color: #ffebee;
+            color: #c0392b;
+        }
+
+        /* Content Styles */
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            border-bottom: 3px solid #1e3c72;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            color: #1e3c72;
+            margin-bottom: 20px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .content {
+            padding: 0 20px;
+        }
+
+        .main-title {
+            text-align: center;
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #1a1a1a;
+            margin: 40px 0 20px 0;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        .section {
+            margin-bottom: 50px;
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #1a1a1a;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #1e3c72;
+        }
+
+        .subsection-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #1e3c72;
+            margin: 30px 0 15px 0;
+        }
+
+        .content-text {
+            color: #555;
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        .content ul {
+            margin: 15px 0 20px 40px;
+        }
+
+        .content ul li {
+            margin-bottom: 15px;
+            color: #555;
+            line-height: 1.8;
+        }
+
+        .content ul li::marker {
+            color: #1e3c72;
+            font-weight: bold;
+        }
+
+        .nested-list {
+            margin-left: 40px;
+            margin-top: 10px;
+        }
+
+        .highlight-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-left: 4px solid #1e3c72;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .highlight-section h3 {
+            color: #1e3c72;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        /* Footer styles */
+        footer {
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            color: #ffffff;
+            padding: 50px 0 30px;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 50px;
+            margin-bottom: 40px;
+        }
+
+        .footer-logo-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .footer-logo img {
+            width: 170px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 8px;
+        }
+
+        .footer-logo h3 {
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .footer-logo-section p {
+            font-size: 13px;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 8px;
+        }
+
+        footer h4 {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 18px;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .footer-section ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .footer-section ul li {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
+        }
+
+        .footer-section ul li a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer-section ul li a:hover {
+            color: #fbbf24;
+            padding-left: 8px;
+        }
+
+        .working-hours {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .working-hours strong {
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .hotline-btn {
+            display: inline-block;
+            background-color: #fbbf24;
+            color: #1e40af;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .hotline-btn:hover {
+            background-color: #fcd34d;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+        }
+
+        .contact-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .social-icons a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            background-color: #fbbf24;
+            color: #1e40af;
+            border-radius: 50%;
+            text-decoration: none;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            background-color: #fcd34d;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4);
+        }
+
+        .newsletter-section p {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .newsletter-form input {
+            flex: 1;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 25px;
+            font-size: 13px;
+            color: #333;
+            background-color: #ffffff;
+        }
+
+        .newsletter-form input::placeholder {
+            color: #999;
+        }
+
+        .newsletter-form input:focus {
+            outline: none;
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+        }
+
+        .newsletter-form button {
+            padding: 10px 20px;
+            background-color: #1e3a8a;
+            color: #ffffff;
+            border: none;
+            border-radius: 25px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .newsletter-form button:hover {
+            background-color: #1e40af;
+            transform: translateY(-2px);
+        }
+
+        .dmca-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .dmca-badge img {
+            width: 160px;
+            height: auto;
+        }
+
+        .footer-divider {
+            border: none;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            margin: 30px 0;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .footer-bottom p {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 0;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        .footer-links li {
+            font-size: 12px;
+        }
+
+        .footer-links li a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            padding: 0 15px;
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .footer-links li:last-child a {
+            border-right: none;
+        }
+
+        .footer-links li a:hover {
+            color: #fbbf24;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .menu-list {
+                gap: 0;
+            }
+
+            .menu-item>a {
+                padding: 20px 12px;
+                font-size: 12px;
+            }
+
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 40px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-nav {
+                height: auto;
+                padding: 15px 20px;
+                flex-wrap: wrap;
+            }
+
+            .menu-list {
+                flex-direction: column;
+                width: 100%;
+                margin-top: 15px;
+            }
+
+            .child {
+                position: static;
+                opacity: 1;
+                visibility: visible;
+                transform: none;
+                display: none;
+                box-shadow: none;
+                background-color: #f9f9f9;
+            }
+
+            .menu-item.menu-dropdown:hover .child {
+                display: block;
+            }
+
+            .user-dropdown {
+                right: auto;
+                left: 0;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .content {
+                padding: 0 10px;
+            }
+
+            .section-title {
+                font-size: 1.5em;
+            }
+
+            .subsection-title {
+                font-size: 1.2em;
+            }
+
+            .content ul {
+                margin-left: 20px;
+            }
+
+            .nested-list {
+                margin-left: 20px;
+            }
+
+            footer {
+                padding: 40px 0 20px;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            footer h4 {
+                font-size: 14px;
+                margin-bottom: 12px;
+            }
+
+            .newsletter-form {
+                flex-direction: column;
+            }
+
+            .newsletter-form input,
+            .newsletter-form button {
+                width: 100%;
+            }
+
+            .social-icons {
+                justify-content: flex-start;
+            }
+
+            .footer-links {
+                gap: 10px;
+                justify-content: center;
+            }
+
+            .footer-links li a {
+                padding: 0 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            .footer-content {
+                gap: 20px;
+            }
+
+            footer h4 {
+                font-size: 13px;
+            }
+
+            footer p {
+                font-size: 12px;
+            }
+
+            .social-icons {
+                gap: 10px;
+            }
+
+            .social-icons a {
+                width: 35px;
+                height: 35px;
+                font-size: 16px;
+            }
+        }
+        section {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            background-image: url('../../../img/banner1.png');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 40px;
+            box-sizing: border-box;
+            margin-bottom: 60px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 0;
+            /* Không gap để liền nhau */
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.85));
+            padding: 0;
+            border-radius: 25px;
+            /* Bo tròn toàn bộ thanh */
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            width: fit-content;
+            align-self: center;
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            overflow: hidden;
+            /* Để bo tròn chỉ ở hai đầu */
+        }
+
+        .btn {
+            padding: 15px 25px;
+            border: none;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s ease;
+            position: relative;
+            min-width: 140px;
+            text-align: center;
+        }
+
+        .btn::before {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+
+        .btn:first-child {
+            background-color: #007bff;
+            /* Xanh dương */
+            border-top-left-radius: 25px;
+            border-bottom-left-radius: 25px;
+        }
+
+        .btn:first-child::before {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z'/%3E%3C/svg%3E");
+            /* Icon điện thoại trắng */
+        }
+
+        .btn:nth-child(2) {
+            background-color: #ffc107;
+            /* Vàng */
+            color: black;
+        }
+
+        .btn:nth-child(2)::before {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'%3E%3Cpath d='M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z'/%3E%3C/svg%3E");
+            /* Icon lịch đen */
+        }
+
+        .btn:last-child {
+            background-color: #007bff;
+            /* Xanh dương */
+            border-top-right-radius: 25px;
+            border-bottom-right-radius: 25px;
+        }
+
+        .btn:last-child::before {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E");
+            /* Icon người trắng */
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        @media (max-width: 768px) {
+            section {
+                padding: 20px;
+                height: 500px;
+            }
+
+            .banner-text {
+                font-size: 1.8em;
+            }
+
+            .buttons {
+                flex-direction: column;
+                border-radius: 15px;
+                bottom: 20px;
+            }
+
+            .btn {
+                border-radius: 0;
+                min-width: auto;
+                width: 100%;
+            }
+
+            .btn:first-child {
+                border-top-left-radius: 15px;
+                border-top-right-radius: 15px;
+            }
+
+            .btn:last-child {
+                border-bottom-left-radius: 15px;
+                border-bottom-right-radius: 15px;
+            }
+        }
+
+
+    </style>
+</head>
+
+<body>
+    <div class="header-wrap">
+        <nav class="header-nav">
+            <!-- Logo Section -->
+            <div class="logo-section">
+                <a href="../index.html" title="Về trang chủ">
+                    <img src="../../../img/logomau.jpg" alt="Logo" class="logo-img">
+                </a>
+            </div>
+
+            <!-- Search Box -->
+            <div class="search-box">
+                <input type="text" placeholder="Tìm kiếm bác sĩ/chuyên khoa">
+            </div>
+
+            <!-- Main Menu -->
+            <ul id="menu-menu-main" class="menu-list">
+                <li class="menu-item menu-item-type-custom menu-item-object-custom">
+                    <a class="menu-link" href="../doctor-search.html" title="Đội Ngũ Bác Sĩ">Đội Ngũ Bác Sĩ</a>
+                </li>
+
+                <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-chuyen-khoa">
+                    <a class="menu-link" href="#" title="Chuyên Khoa">Chuyên Khoa</a>
+                    <i class="bx bxs-chevron-down"></i>
+                    <div class="menu-mega">
+                        <ul>
+                            <li class="menu-item">
+                                <a class="menu-link" href="../all-departments.html">Khoa Khám Bệnh</a>
+                            </li>
+                            <li><a class="menu-link" href="../specialty/khoangoaithanhkinh.html">Phòng Khám Ngoại Thần Kinh</a></li>
+                            <li><a class="menu-link" href="../specialty/khoachanthuongchinhhinh.html">Phòng Khám Chấn thương Chỉnh Hình, Cơ-Xương-Khớp</a></li>
+                            <li><a class="menu-link" href="../specialty/khoangoaitonghop.html">Phòng Ngoại Tổng Hợp</a></li>
+                            <li><a class="menu-link" href="../specialty/khoanoitonghop.html">Phòng Nội Tổng Hợp</a></li>
+                            <li><a class="menu-link" href="../specialty/khoataimuihong.html">Phòng Khám Tai - Mũi - Họng</a></li>
+                        </ul>
+                        <ul>
+                            <li><a class="menu-link" href="../specialty/khoavatlytrilieu.html">Khoa Vật Lý Trị Liệu - Phục Hồi Chức Năng</a></li>
+                            <li><a class="menu-link" href="../specialty/khoagayme.html">Khoa Gây mê - Hồi Sức</a></li>
+                            <li><a class="menu-link" href="../specialty/khoahoisuctichcuc.html">Khoa Hồi Sức Tích Cực - Cấp Cứu</a></li>
+                            <li><a class="menu-link" href="../specialty/khoaxetnghiem.html">Khoa Xét Nghiệm</a></li>
+                            <li><a class="menu-link" href="../specialty/khoachandoanhinhanh.html">Khoa Chẩn đoán Hình ảnh - Thăm Dò Chức Năng</a></li>
+                            <li><a class="menu-link" href="../specialty/khoaduoc.html">Khoa Dược</a></li>
+                        </ul>
+                    </div>
+                </li>
+
+                <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-dropdown">
+                    <a class="menu-link" href="#" title="Dịch Vụ">Dịch Vụ</a>
+                    <i class="bx bxs-chevron-down"></i>
+                    <ul class="child">
+                        <li><a class="menu-link" href="../cancer-services.html">Tầm Soát Ung Thư</a></li>
+                        <li><a class="menu-link" href="../endoscopy-services.html">Dịch Vụ Nội Soi</a></li>
+                        <li><a class="menu-link" href="../periodic-health-check.html">Khám Sức Khỏe Định Kỳ</a></li>
+                    </ul>
+                </li>
+
+                <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-dropdown">
+                    <a class="menu-link" href="#" title="Hướng Dẫn Khách Hàng">Hướng Dẫn Khách Hàng</a>
+                    <i class="bx bxs-chevron-down"></i>
+                    <ul class="child">
+                        <li><a class="menu-link" href="../service/hospital-pricing-table.html">Bảng Giá Tiền Giường</a></li>
+                        <li><a class="menu-link" href="../service/health-insurance.html">Bảo Hiểm</a></li>
+                        <li><a class="menu-link" href="../service/rights-and-obligations.html">Quyền và Nghĩa Vụ Của Người Bệnh</a></li>
+                    </ul>
+                </li>
+
+                <li class="menu-item menu-item-type-post_type menu-item-object-page">
+                    <a class="menu-link" href="../contact.html" title="Liên Hệ">Liên Hệ</a>
+                </li>
+            </ul>
+
+            <!-- Right Section -->
+            <div class="header-right">
+                <a href="/dang-nhap" class="btn-register" id="loginBtn">Đăng Nhập</a>
+
+                <div class="user-menu" id="userMenu">
+                    <button class="user-button">
+                        <i class='bx bxs-user-circle'></i>
+                        <span id="userName">Nguyễn Văn A</span>
+                    </button>
+                    <div class="user-dropdown">
+                        <div class="user-dropdown-header">
+                            <div class="user-name" id="userNameFull">Nguyễn Văn A</div>
+                            <div class="user-role">Bệnh nhân</div>
+                        </div>
+                        <a href="#" class="user-dropdown-item">
+                            <i class='bx bxs-user'></i>
+                            <span>Trang cá nhân</span>
+                        </a>
+                        <div class="user-dropdown-divider"></div>
+                        <a href="#" class="user-dropdown-item logout" id="logoutBtn">
+                            <i class='bx bx-log-out'></i>
+                            <span>Đăng xuất</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <section>
+        <div class="buttons">
+            <a href="tel:+0123456789" class="btn">Gọi tổng đài</a>
+            <a href="../booking.html" class="btn">Đặt lịch hẹn</a>
+            <a href="../doctor-search.html" class="btn">Tìm bác sĩ</a>
+        </div>/
+    </section>
+
+    <div class="container1">
+        <div class="header">
+            <h1>Quyền và Nghĩa Vụ của người bệnh</h1>
+            <p>Quý khách vui lòng đọc kỹ Quyền và nghĩa vụ của người bệnh, thân nhân người bệnh theo luật khám chữa bệnh mới để được đảm bảo quyền lợi khi khám và chữa bệnh tại Bệnh viện Đa khoa Quốc tế Nam Sài Gòn.</p>
+        </div>
+
+        <div class="content">
+            <div class="main-title">QUYỀN VÀ NGHĨA VỤ CỦA NGƯỜI BỆNH</div>
+            <p class="subtitle">(Chương II, Luật khám bệnh, chữa bệnh số 15/2023/QH15 ngày 09/01/2023)</p>
+
+            <!-- PHẦN I: QUYỀN CỦA NGƯỜI BỆNH -->
+            <div class="section">
+                <h2 class="section-title">I. QUYỀN CỦA NGƯỜI BỆNH</h2>
+
+                <!-- Quyền được khám bệnh, chữa bệnh -->
+                <h3 class="subsection-title">Quyền được khám bệnh, chữa bệnh</h3>
+                <ul>
+                    <li>Được thông tin, giải thích về tình trạng sức khỏe; phương pháp, dịch vụ khám bệnh, chữa bệnh, giá dịch vụ khám bệnh, chữa bệnh; được hướng dẫn cách tự theo dõi, chăm sóc, phòng ngừa tai biến.</li>
+                    <li>Được khám bệnh, chữa bệnh bằng phương pháp an toàn phù hợp với bệnh, tình trạng sức khỏe của mình và điều kiện thực tế của cơ sở khám bệnh, chữa bệnh</li>
+                </ul>
+
+                <!-- Quyền được tôn trọng -->
+                <h3 class="subsection-title">Quyền được tôn trọng danh dự, bảo vệ sức khỏe và tôn trọng bí mật riêng tư trong khám bệnh, chữa bệnh</h3>
+                <ul>
+                    <li>Được tôn trọng về tuổi, giới tính, dân tộc, tôn giáo, tín ngưỡng, tình trạng sức khỏe, điều kiện kinh tế, địa vị xã hội.</li>
+                    <li>Được giữ bí mật thông tin trong hồ sơ bệnh án và thông tin khác về đời tư mà người bệnh đã cung cấp cho người hành nghề trong quá trình khám bệnh, chữa bệnh, trừ trường hợp người bệnh đồng ý chia sẻ thông tin theo quy định của pháp luật hoặc trường hợp quy định tại khoản 3 và khoản 4 Điều 69 của Luật Khám bệnh, chữa bệnh số 15/2023/QH15.</li>
+                    <li>Không bị kỳ thị, phân biệt đối xử, ngược đãi, lạm dụng thể chất, lạm dụng tình dục trong quá trình khám bệnh, chữa bệnh.</li>
+                    <li>Không bị ép buộc khám bệnh, chữa bệnh, trừ trường hợp bắt buộc chữa bệnh bao gồm: người mắc bệnh truyền nhiễm nhóm A theo quy định của pháp luật về phòng, chống bệnh truyền nhiễm; người mắc bệnh trầm cảm có ý tưởng, hành vi tự sát; người mắc bệnh tâm thần ở trạng thái kích động có khả năng gây nguy hại cho bản thân hoặc có hành vi gây nguy hại cho người khác hoặc phá hoại tài sản và các trường hợp khác theo quy định của pháp luật.</li>
+                </ul>
+
+                <!-- Quyền được lựa chọn -->
+                <h3 class="subsection-title">Quyền được lựa chọn trong khám bệnh, chữa bệnh</h3>
+                <ul>
+                    <li>Lựa chọn phương pháp khám bệnh, chữa bệnh sau khi được cung cấp thông tin, giải thích, tư vấn đầy đủ về tình trạng bệnh, kết quả, rủi ro có thể xảy ra, trừ trường hợp người bệnh yêu cầu phương pháp khám bệnh, chữa bệnh không phù hợp với quy định về chuyên môn kỹ thuật.</li>
+                    <li>Chấp nhận hoặc từ chối tham gia nghiên cứu y sinh học về khám bệnh, chữa bệnh.</li>
+                </ul>
+
+                <!-- Quyền được cung cấp thông tin -->
+                <h3 class="subsection-title">Quyền được cung cấp thông tin về hồ sơ bệnh án và chi phí khám bệnh, chữa bệnh</h3>
+                <ul>
+                    <li>Người bệnh hoặc người đại diện của người bệnh được đọc, xem, sao chụp, ghi chép hồ sơ bệnh án và được cung cấp bản tóm tắt hồ sơ bệnh án khi có yêu cầu bằng văn bản.</li>
+                    <li>Được cung cấp và giải thích chi tiết về các khoản chi trả dịch vụ khám bệnh, chữa bệnh khi có yêu cầu.</li>
+                </ul>
+
+                <!-- Quyền được từ chối -->
+                <h3 class="subsection-title">Quyền được từ chối khám bệnh, chữa bệnh và rời khỏi cơ sở khám bệnh, chữa bệnh</h3>
+                <ul>
+                    <li>Được từ chối khám bệnh, chữa bệnh nhưng phải cam kết tự chịu trách nhiệm bằng văn bản về việc từ chối của mình sau khi đã được người hành nghề tư vấn, trừ trường hợp bắt buộc chữa bệnh.</li>
+                    <li>Được rời khỏi cơ sở khám bệnh, chữa bệnh khi chưa kết thúc chữa bệnh trái với chỉ định của người hành nghề nhưng phải cam kết tự chịu trách nhiệm bằng văn bản về việc rời khỏi cơ sở khám bệnh, chữa bệnh, trừ trường hợp bắt buộc chữa bệnh bao gồm: người mắc bệnh truyền nhiễm nhóm A theo quy định của pháp luật về phòng, chống bệnh truyền nhiễm; người mắc bệnh trầm cảm có ý tưởng, hành vi tự sát; người mắc bệnh tâm thần ở trạng thái kích động có khả năng gây nguy hại cho bản thân hoặc có hành vi gây nguy hại cho người khác hoặc phá hoại tài sản và các trường hợp khác theo quy định của pháp luật.</li>
+                </ul>
+
+                <!-- Quyền kiến nghị -->
+                <h3 class="subsection-title">Quyền kiến nghị và bồi thường</h3>
+                <ul>
+                    <li>Được kiến nghị về tồn tại, bất cập, khó khăn, vướng mắc và vấn đề khác trong quá trình khám bệnh, chữa bệnh.</li>
+                    <li>Trường hợp xảy ra tai biến y khoa đối với người bệnh, cơ sở khám bệnh, chữa bệnh có trách nhiệm bồi thường cho người bệnh theo quy định của pháp luật, trừ trường hợp người hành nghề không có sai sót chuyên môn kỹ thuật khi được Hội đồng chuyên xác định.</li>
+                </ul>
+
+                <!-- Phần đặc biệt -->
+                <div class="highlight-section">
+                    <h3>Việc thực hiện quyền của người bệnh bị mất năng lực hành vi dân sự, có khó khăn trong nhận thức, làm chủ hành vi, hạn chế năng lực hành vi dân sự, người bệnh là người chưa thành niên và người bệnh không có thân nhân</h3>
+
+                    <p class="content-text">Trường hợp người bệnh là người thành niên và rơi vào tình trạng mất năng lực hành vi dân sự, có khó khăn trong nhận thức, làm chủ hành vi, hạn chế năng lực hành vi dân sự nhưng trước đó đã có văn bản thể hiện nguyện vọng hợp pháp về khám bệnh, chữa bệnh của mình thì thực hiện theo nguyện vọng của người bệnh.</p>
+
+                    <p class="content-text">Trường hợp người bệnh là người thành niên và rơi vào tình trạng mất năng lực hành vi dân sự, có khó khăn trong nhận thức, làm chủ hành vi, hạn chế năng lực hành vi dân sự nhưng trước đó không có văn bản thể hiện nguyện vọng hợp pháp về khám bệnh, chữa bệnh của mình thì thực hiện như sau:</p>
+
+                    <ul class="nested-list">
+                        <li>Nếu có người đại diện thì thực hiện theo quyết định của người đại diện;</li>
+                        <li>Nếu không có người đại diện thì thực hiện theo quyết định của người chịu trách nhiệm chuyên môn hoặc người trực lãnh đạo của cơ sở khám bệnh, chữa bệnh.</li>
+                    </ul>
+
+                    <p class="content-text">Trường hợp người bệnh là người chưa thành niên thì thực hiện như sau:</p>
+
+                    <ul class="nested-list">
+                        <li>Nếu có người đại diện thì thực hiện theo quyết định của người đại diện;</li>
+                        <li>Nếu không có người đại diện thì thực hiện theo quyết định của người chịu trách nhiệm chuyên môn hoặc người trực lãnh đạo của cơ sở khám bệnh, chữa bệnh.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- PHẦN II: NGHĨA VỤ CỦA NGƯỜI BỆNH -->
+            <div class="section">
+                <h2 class="section-title">II. NGHĨA VỤ CỦA NGƯỜI BỆNH</h2>
+
+                <!-- Nghĩa vụ tôn trọng -->
+                <h3 class="subsection-title">Nghĩa vụ tôn trọng người hành nghề và người khác làm việc tại cơ sở khám bệnh, chữa bệnh</h3>
+                <p class="content-text">Tôn trọng người hành nghề; không được đe dọa, xâm phạm tính mạng, sức khỏe, xúc phạm danh dự, nhân phẩm của người hành nghề và người khác làm việc tại cơ sở khám bệnh, chữa bệnh.</p>
+
+                <!-- Nghĩa vụ chấp hành -->
+                <h3 class="subsection-title">Nghĩa vụ chấp hành các quy định trong khám bệnh, chữa bệnh</h3>
+                <p class="content-text">Cung cấp trung thực và chịu trách nhiệm về thông tin liên quan đến nhân thân, tình trạng sức khỏe của mình, hợp tác đầy đủ với người hành nghề và người khác làm việc tại cơ sở khám bệnh, chữa bệnh.</p>
+
+                <p class="content-text">Chấp hành chỉ định về chẩn đoán, phương pháp chữa bệnh của người hành nghề.</p>
+
+                <p class="content-text">Chấp hành và yêu cầu thân nhân, người đến thăm mình chấp hành nội quy của cơ sở khám bệnh, chữa bệnh, quy định của pháp luật về khám bệnh, chữa bệnh.</p>
+
+                <!-- Nghĩa vụ chi trả -->
+                <h3 class="subsection-title">Nghĩa vụ chi trả chi phí khám bệnh, chữa bệnh</h3>
+                <p class="content-text">Người bệnh tham gia bảo hiểm y tế có nghĩa vụ chi trả chi phí khám bệnh, chữa bệnh ngoài phạm vi được hưởng và mức hưởng theo quy định của pháp luật về bảo hiểm y tế.</p>
+
+                <p class="content-text">Người bệnh không tham gia bảo hiểm y tế có nghĩa vụ chi trả chi phí khám bệnh, chữa bệnh theo quy định của pháp luật.</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <!-- Logo & Info -->
+                <div class="footer-logo-section">
+                    <div class="footer-logo">
+                        <img src="../../../img/logomau.jpg" alt="Logo">
+                    </div>
+                    <p>Địa chỉ: 70 Đ. Tô Ký, Tân Chánh Hiệp, Quận 12, Thành phố Hồ Chí Minh, Việt Nam</p>
+                    <p>Email: nhom5@gmail.com</p>
+                    <p>Hotline: 1800 6767</p>
+                    <p>GPDKKD: 0312088602 cấp ngày 14/12/2012 bởi Sở Kế hoạch và Đầu tư TPHCM. Giấy phép hoạt động khám bệnh, chữa bệnh số 230/BYT-GPHD do Bộ Y Tế cấp.</p>
+                </div>
+
+                <!-- About -->
+                <div class="footer-section">
+                    <h4>Về chúng tôi</h4>
+                    <ul>
+                        <li><a href="#">Đội ngũ bác sĩ</a></li>
+                        <li><a href="#">Cơ sở vật chất</a></li>
+                        <li><a href="#">Câu chuyện khách hàng</a></li>
+                        <li><a href="#">Tuyển dụng</a></li>
+                        <li><a href="#">Cẩm nang bệnh</a></li>
+                        <li><a href="#">Chính sách bảo mật</a></li>
+                    </ul>
+                </div>
+
+                <!-- Working Hours -->
+                <div class="footer-section">
+                    <h4>Giờ làm việc</h4>
+                    <div class="working-hours">
+                        <p><strong>Từ thứ 2 đến thứ 7</strong></p>
+                        <p>Buổi sáng:<br>7:00 - 12:00</p>
+                        <p>Buổi chiều:<br>13:30 - 17:00</p>
+                    </div>
+                    <a href="#" class="hotline-btn">Hotline: 1800 6767</a>
+                </div>
+
+                <!-- Contact -->
+                <div class="contact-section">
+                    <h4>Liên hệ</h4>
+                    <div class="social-icons">
+                        <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+                        <a href="#" title="TikTok"><i class="fab fa-tiktok"></i></a>
+                        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    </div>
+                    <div class="newsletter-section">
+                        <p><strong>Theo dõi bản tin chúng tôi</strong></p>
+                        <form class="newsletter-form">
+                            <input type="email" placeholder="Email" required>
+                            <button type="submit">Đăng ký</button>
+                        </form>
+                    </div>
+                    <div class="dmca-badge">
+                        <img src="../../../img/dmca_protected_16_120.png" alt="">
+                    </div>
+                </div>
+            </div>
+
+            <hr class="footer-divider">
+
+            <div class="footer-bottom">
+                <p>&copy; Hệ thống đặt lịch hẹn. Tất cả các quyền được bảo vệ.</p>
+                <ul class="footer-links">
+                    <li><a href="#">Chính sách bảo mật</a></li>
+                    <li><a href="#">Điều khoản sử dụng</a></li>
+                    <li><a href="#">Liên hệ</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Check login status
+        function checkLoginStatus() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const userName = localStorage.getItem('userName');
+
+            const loginBtn = document.getElementById('loginBtn');
+            const userMenu = document.getElementById('userMenu');
+
+            if (isLoggedIn && userName) {
+                loginBtn.style.display = 'none';
+                userMenu.classList.add('active');
+                document.getElementById('userName').textContent = userName;
+                document.getElementById('userNameFull').textContent = userName;
+            } else {
+                loginBtn.style.display = 'inline-block';
+                userMenu.classList.remove('active');
+            }
+        }
+
+        // Logout function
+        document.getElementById('logoutBtn').addEventListener('click', function (e) {
+            e.preventDefault();
+            if (confirm('Bạn có chắc chắn muốn đăng xuất?')) {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('userName');
+                checkLoginStatus();
+            }
+        });
+
+        // Check login status when page loads
+        document.addEventListener('DOMContentLoaded', function () {
+            checkLoginStatus();
+        });
+    </script>
+</body>
+
+</html>

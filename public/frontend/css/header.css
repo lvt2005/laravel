@@ -1,0 +1,465 @@
+/* Header CSS - Main Navigation Styles */
+
+/* Menu styles */
+.header-wrap {
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.header-nav {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 80px;
+}
+
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 280px;
+    margin-right: 30px;
+}
+
+.logo-img {
+    width: 280px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.logo-text h1 {
+    font-size: 16px;
+    color: #333;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.logo-text h1 small {
+    display: block;
+    font-size: 13px;
+    color: #666;
+    font-weight: 400;
+}
+
+.menu-list {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    flex: 1;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.menu-item {
+    position: relative;
+}
+
+.menu-item > a {
+    display: flex;
+    align-items: center;
+    padding: 25px 15px;
+    color: #333;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: color 0.3s ease;
+}
+
+.menu-item > a:hover {
+    color: #3498db;
+}
+
+.menu-item.menu-item-has-children > a {
+    display: flex;
+    gap: 5px;
+}
+
+.menu-item i {
+    font-size: 14px;
+    transition: transform 0.3s ease;
+}
+
+.menu-item.menu-dropdown:hover > i {
+    transform: rotate(180deg);
+}
+
+.menu-item.menu-dropdown:hover .child {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Dropdown Menu */
+.child {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #ffffff;
+    list-style: none;
+    min-width: 200px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 100;
+    padding: 0;
+    margin: 0;
+}
+
+.child li {
+    list-style: none;
+}
+
+.child li a {
+    display: block;
+    padding: 12px 20px;
+    color: #666;
+    text-decoration: none;
+    font-size: 13px;
+    transition: all 0.3s ease;
+    white-space: normal;
+}
+
+.child li a:hover {
+    background-color: #f0f8ff;
+    color: #3498db;
+    padding-left: 25px;
+}
+
+/* Mega Menu */
+.menu-mega {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 100;
+    display: flex;
+    min-width: 600px;
+}
+
+.menu-mega ul {
+    flex: 1;
+    list-style: none;
+    padding: 15px 0;
+    border-right: 1px solid #f0f0f0;
+    margin: 0;
+}
+
+.menu-mega ul:last-child {
+    border-right: none;
+}
+
+.menu-mega li {
+    list-style: none;
+}
+
+.menu-mega .menu-link {
+    display: block;
+    padding: 10px 20px;
+    color: #666;
+    text-decoration: none;
+    font-size: 13px;
+    transition: all 0.3s ease;
+}
+
+.menu-mega .menu-link:hover {
+    background-color: #f0f8ff;
+    color: #3498db;
+    padding-left: 25px;
+}
+
+.menu-chuyen-khoa:hover .menu-mega {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Right Section */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-left: auto;
+    position: relative;
+}
+
+/* Header Button Styles */
+.btn-header-outline {
+    background-color: transparent;
+    color: #333;
+    border: 1px solid #ddd;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-header-outline:hover {
+    border-color: #3498db;
+    color: #3498db;
+}
+
+.btn-header-primary {
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-header-primary:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+/* User Menu Styles */
+.user-menu {
+    position: relative;
+    display: none;
+}
+
+.user-menu.active {
+    display: block;
+}
+
+.user-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #f0f8ff;
+    color: #3498db;
+    border: 2px solid #3498db;
+    padding: 8px 20px;
+    border-radius: 25px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.user-button:hover {
+    background-color: #3498db;
+    color: #fff;
+}
+
+.user-button i {
+    font-size: 18px;
+}
+
+.user-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    background-color: #ffffff;
+    min-width: 200px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 100;
+}
+
+.user-menu:hover .user-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.user-dropdown-header {
+    padding: 15px 20px;
+    background-color: #f0f8ff;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.user-dropdown-header .user-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 3px;
+}
+
+.user-dropdown-header .user-role {
+    font-size: 12px;
+    color: #666;
+}
+
+.user-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    color: #666;
+    text-decoration: none;
+    font-size: 13px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.user-dropdown-item:hover {
+    background-color: #f0f8ff;
+    color: #3498db;
+    padding-left: 25px;
+}
+
+.user-dropdown-item i {
+    font-size: 16px;
+}
+
+.user-dropdown-divider {
+    height: 1px;
+    background-color: #e0e0e0;
+    margin: 5px 0;
+}
+
+.user-dropdown-item.logout {
+    color: #e74c3c;
+}
+
+.user-dropdown-item.logout:hover {
+    background-color: #ffebee;
+    color: #c0392b;
+}
+
+/* Mobile Menu */
+.mobile-menu-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+.mobile-menu-overlay.active {
+    display: block;
+}
+
+.mobile-menu-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.mobile-menu-toggle .bar {
+    width: 25px;
+    height: 3px;
+    background-color: #333;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .menu-list {
+        gap: 0;
+    }
+
+    .menu-item > a {
+        padding: 20px 12px;
+        font-size: 12px;
+    }
+    
+    .logo-section {
+        min-width: 200px;
+    }
+    
+    .logo-img {
+        width: 200px;
+        height: 50px;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-nav {
+        height: auto;
+        padding: 15px 20px;
+        flex-wrap: wrap;
+    }
+
+    .menu-list {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        margin-top: 15px;
+        position: absolute;
+        top: 80px;
+        left: 0;
+        background: #fff;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        padding: 10px 0;
+    }
+    
+    .menu-list.active {
+        display: flex;
+    }
+    
+    .mobile-menu-toggle {
+        display: flex;
+    }
+
+    .user-dropdown {
+        right: auto;
+        left: 0;
+    }
+    
+    .logo-section {
+        min-width: auto;
+    }
+    
+    .logo-img {
+        width: 180px;
+        height: 45px;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo-img {
+        width: 150px;
+        height: 38px;
+    }
+}
