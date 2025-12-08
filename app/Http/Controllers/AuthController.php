@@ -79,7 +79,7 @@ class AuthController extends Controller
         if (!$user) {
             return response()->json(['error'=>'EMAIL_NOT_FOUND'],404);
         }
-        
+
         // Check if account status is INACTIVE (manually locked by admin)
         if ($user->status === 'INACTIVE') {
             return response()->json([
@@ -87,8 +87,7 @@ class AuthController extends Controller
                 'message' => 'Tài khoản của bạn đã bị khóa. Hãy liên hệ với chúng tôi để biết thêm chi tiết: nhom5@gmail.com'
             ], 403);
         }
-        
-        // Check if account is locked due to failed login attempts
+
         if ($user->locked_until && $user->locked_until > now()) {
             $remainingMinutes = now()->diffInMinutes($user->locked_until);
             return response()->json([
@@ -97,38 +96,36 @@ class AuthController extends Controller
                 'locked_until' => $user->locked_until->toIso8601String()
             ], 423);
         }
-        
-        // If lock expired, reset the lock
+
         if ($user->locked_until && $user->locked_until <= now()) {
             $user->locked_until = null;
             $user->locked_at = null;
             $user->failed_login_attempts = 0;
             $user->save();
         }
-        
+
         if (!Hash::check($data['password'],$user->password)) {
-            // Check if auto-block is enabled
             $autoBlockEnabled = SystemSetting::get('auto_block_failed_login', true);
             $maxAttempts = (int) SystemSetting::get('max_failed_login_attempts', 5);
-            
+
             if ($autoBlockEnabled) {
                 // Increment failed attempts
                 $user->failed_login_attempts = ($user->failed_login_attempts ?? 0) + 1;
                 $user->last_failed_login_at = now();
-                
+
                 // Lock account if max attempts reached
                 if ($user->failed_login_attempts >= $maxAttempts) {
                     $user->locked_at = now();
-                    $user->locked_until = now()->addMinutes(30); // Lock for 30 minutes
+                    $user->locked_until = now()->addMinutes(30);
                     $user->save();
-                    
+
                     return response()->json([
                         'error' => 'ACCOUNT_LOCKED',
                         'message' => "Tài khoản đã bị khóa do đăng nhập sai {$maxAttempts} lần liên tiếp. Vui lòng thử lại sau 30 phút.",
                         'locked_until' => $user->locked_until->toIso8601String()
                     ], 423);
                 }
-                
+
                 $user->save();
                 $remainingAttempts = $maxAttempts - $user->failed_login_attempts;
                 return response()->json([
@@ -137,12 +134,12 @@ class AuthController extends Controller
                     'remaining_attempts' => $remainingAttempts
                 ], 401);
             }
-            
+
             return response()->json(['error'=>'WRONG_PASSWORD'],401);
         }
-        
-        // Login successful - reset failed attempts
-        if ($user->failed_login_attempts > 0) {
+
+        if ($user->failed_login_attempts > 0)
+        {
             $user->failed_login_attempts = 0;
             $user->locked_at = null;
             $user->locked_until = null;
@@ -155,7 +152,7 @@ class AuthController extends Controller
                 'message' => 'Dữ liệu của bệnh nhân đang được bảo trì. Vui lòng quay lại sau.'
             ], 403);
         }
-        
+
         if ($user->type === 'DOCTOR' && !SystemSetting::isDoctorAccessEnabled()) {
             return response()->json([
                 'error' => 'ACCESS_DISABLED',
@@ -163,12 +160,9 @@ class AuthController extends Controller
             ], 403);
         }
 
-        // Check if 2FA is enabled (only for USER and DOCTOR, not ADMIN)
         if ($user->two_factor_enabled && in_array($user->type, ['USER', 'DOCTOR'])) {
-            // Generate and send 2FA code
             $code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-            
-            // Store code in verification_tokens table
+
             DB::table('verification_tokens')->insert([
                 'user_id' => $user->id,
                 'email' => $user->email,
@@ -180,7 +174,6 @@ class AuthController extends Controller
                 'created_at' => now(),
             ]);
 
-            // Send email with 2FA code
             try {
                 $mailService = new \App\Services\MailService();
                 $mailService->send2FACode($user->email, $user->full_name, $code);
@@ -194,7 +187,6 @@ class AuthController extends Controller
                 'message' => 'Mã xác thực đã được gửi đến email của bạn'
             ], 200);
         }
-
         $user->markLogin();
         $sessionId = (string) Str::uuid();
         $refreshPlain = Str::random(64);
@@ -220,9 +212,6 @@ class AuthController extends Controller
         ]);
     }
 
-    /**
-     * Verify 2FA code and complete login
-     */
     public function verify2FA(Request $request)
     {
         $data = $request->only(['email', 'code']);
@@ -239,7 +228,6 @@ class AuthController extends Controller
             return response()->json(['error' => 'EMAIL_NOT_FOUND'], 404);
         }
 
-        // Verify the 2FA code
         $tokenRecord = DB::table('verification_tokens')
             ->where('user_id', $user->id)
             ->where('verification_code', $data['code'])
@@ -253,19 +241,17 @@ class AuthController extends Controller
             return response()->json(['error' => 'INVALID_2FA_CODE', 'message' => 'Mã xác thực không hợp lệ hoặc đã hết hạn'], 400);
         }
 
-        // Mark token as used
         DB::table('verification_tokens')
             ->where('id', $tokenRecord->id)
             ->update(['used_at' => now(), 'is_active' => 0]);
 
-        // Check access control based on user type
         if ($user->type === 'USER' && !SystemSetting::isUserAccessEnabled()) {
             return response()->json([
                 'error' => 'ACCESS_DISABLED',
                 'message' => 'Dữ liệu của bệnh nhân đang được bảo trì. Vui lòng quay lại sau.'
             ], 403);
         }
-        
+
         if ($user->type === 'DOCTOR' && !SystemSetting::isDoctorAccessEnabled()) {
             return response()->json([
                 'error' => 'ACCESS_DISABLED',
@@ -273,7 +259,6 @@ class AuthController extends Controller
             ], 403);
         }
 
-        // Complete login
         $user->markLogin();
         $sessionId = (string) Str::uuid();
         $refreshPlain = Str::random(64);
@@ -286,7 +271,6 @@ class AuthController extends Controller
             'ip_address' => $request->ip(),
         ]);
         $access = app(JwtService::class)->createAccessToken($user, $sessionId);
-
         return response()->json([
             'user' => [
                 'id' => $user->id,
@@ -299,7 +283,6 @@ class AuthController extends Controller
             'session_id' => $sessionId
         ]);
     }
-
     public function refresh(Request $request)
     {
         $refresh = $request->input('refresh_token');
@@ -315,7 +298,6 @@ class AuthController extends Controller
             return response()->json(['message' => 'Refresh token expired'], 401);
         }
         $user = $tokenRow->user;
-        // Rotate refresh
         $newRefresh = Str::random(64);
         $tokenRow->refresh_token_hash = hash('sha256', $newRefresh);
         $tokenRow->save();
@@ -348,14 +330,12 @@ class AuthController extends Controller
             return response()->json(['error'=>'MISSING_EMAIL', 'message'=>'Thiếu email từ Google'],400);
         }
 
-        // Lấy đầy đủ thông tin từ Google
         $fullName = $request->input('full_name', $email);
         $avatarUrl = $request->input('avatar_url');
-        $dob = $request->input('dob'); // Ngày sinh (nếu có)
-        $gender = $request->input('gender'); // Giới tính: MALE, FEMALE, OTHER
+        $dob = $request->input('dob');
+        $gender = $request->input('gender');
         $address = $request->input('address');
 
-        // Validate gender nếu có
         if ($gender && !in_array(strtoupper($gender), ['MALE', 'FEMALE', 'OTHER'])) {
             $gender = null;
         } else if ($gender) {
@@ -364,7 +344,7 @@ class AuthController extends Controller
 
         // Kiểm tra user đã tồn tại chưa
         $existingUser = User::where('email', $email)->first();
-        
+
         if ($existingUser) {
             // Check if account status is INACTIVE (manually locked by admin)
             if ($existingUser->status === 'INACTIVE') {
@@ -373,12 +353,10 @@ class AuthController extends Controller
                     'message' => 'Tài khoản của bạn đã bị khóa. Hãy liên hệ với chúng tôi để biết thêm chi tiết: nhom5@gmail.com'
                 ], 403);
             }
-            
-            // Check if 2FA is enabled for existing user
+
             if ($existingUser->two_factor_enabled && in_array($existingUser->type, ['USER', 'DOCTOR'])) {
-                // Generate and send 2FA code
                 $code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-                
+
                 // Store code in verification_tokens table
                 DB::table('verification_tokens')->insert([
                     'user_id' => $existingUser->id,
@@ -405,7 +383,7 @@ class AuthController extends Controller
                     'message' => 'Mã xác thực đã được gửi đến email của bạn'
                 ], 200);
             }
-            
+
             // User đã tồn tại - chỉ cập nhật thông tin nếu chưa có
             if (!$existingUser->avatar_url && $avatarUrl) {
                 $existingUser->avatar_url = $avatarUrl;
@@ -429,7 +407,7 @@ class AuthController extends Controller
                     'message' => 'Đăng ký tài khoản đang tạm ngưng. Vui lòng quay lại sau.'
                 ], 403);
             }
-            
+
             // Tạo user mới với type = USER, password = null (không cần cho Google login)
             $user = User::create([
                 'full_name' => $fullName,
@@ -452,7 +430,7 @@ class AuthController extends Controller
                 'message' => 'Dữ liệu của bệnh nhân đang được bảo trì. Vui lòng quay lại sau.'
             ], 403);
         }
-        
+
         if ($user->type === 'DOCTOR' && !SystemSetting::isDoctorAccessEnabled()) {
             return response()->json([
                 'error' => 'ACCESS_DISABLED',
@@ -499,28 +477,28 @@ class AuthController extends Controller
             'email' => 'required|email',
             'type' => 'required|in:RESET_PASSWORD,EMAIL_VERIFY,_2FA'
         ]);
-        
+
         if ($v->fails()) {
             return response()->json(['error' => 'VALIDATION', 'fields' => $v->errors()], 422);
         }
-        
+
         $email = $request->input('email');
         $type = $request->input('type');
-        
+
         $user = User::where('email', $email)->first();
         if (!$user) {
             return response()->json(['error' => 'EMAIL_NOT_FOUND', 'message' => 'Email không tồn tại trong hệ thống'], 404);
         }
-        
+
         // Generate 6-digit code
         $code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-        
+
         // Delete any existing codes for this user and type
         DB::table('verification_tokens')
             ->where('user_id', $user->id)
             ->where('token_type', $type)
             ->delete();
-        
+
         // Create new verification token with 5-minute expiry
         $tokenId = DB::table('verification_tokens')->insertGetId([
             'user_id' => $user->id,
@@ -536,7 +514,7 @@ class AuthController extends Controller
             'created_at' => now(),
             'updated_at' => now()
         ]);
-        
+
         // Send email with verification code
         try {
             $mailService = new MailService();
@@ -546,7 +524,7 @@ class AuthController extends Controller
                 $code,
                 5 // 5 minutes expiry
             );
-            
+
             if (!$result['success']) {
                 return response()->json([
                     'error' => 'EMAIL_FAILED',
@@ -560,14 +538,14 @@ class AuthController extends Controller
                 'message' => 'Không thể gửi email. Vui lòng thử lại sau.'
             ], 500);
         }
-        
+
         return response()->json([
             'success' => true,
             'message' => 'Mã xác thực đã được gửi đến email của bạn',
             'expires_in' => 300 // 5 minutes in seconds
         ]);
     }
-    
+
     /**
      * Verify the code sent to email
      */
@@ -578,20 +556,20 @@ class AuthController extends Controller
             'code' => 'required|string|size:6',
             'type' => 'required|in:RESET_PASSWORD,EMAIL_VERIFY,_2FA'
         ]);
-        
+
         if ($v->fails()) {
             return response()->json(['error' => 'VALIDATION', 'fields' => $v->errors()], 422);
         }
-        
+
         $email = $request->input('email');
         $code = $request->input('code');
         $type = $request->input('type');
-        
+
         $user = User::where('email', $email)->first();
         if (!$user) {
             return response()->json(['error' => 'EMAIL_NOT_FOUND'], 404);
         }
-        
+
         $token = DB::table('verification_tokens')
             ->where('user_id', $user->id)
             ->where('token_type', $type)
@@ -599,21 +577,21 @@ class AuthController extends Controller
             ->whereNull('used_at')
             ->where('expires_at', '>', now())
             ->first();
-        
+
         if (!$token) {
             return response()->json([
                 'error' => 'CODE_EXPIRED',
                 'message' => 'Mã xác thực đã hết hạn hoặc không tồn tại'
             ], 400);
         }
-        
+
         if (!Hash::check($code, $token->verification_code)) {
             return response()->json([
                 'error' => 'INVALID_CODE',
                 'message' => 'Mã xác thực không chính xác'
             ], 400);
         }
-        
+
         // Mark code as used
         DB::table('verification_tokens')
             ->where('id', $token->id)
@@ -622,15 +600,15 @@ class AuthController extends Controller
                 'used_at' => now(),
                 'updated_at' => now()
             ]);
-        
+
         // Generate a temporary token for password reset
         $tempToken = Str::random(64);
-        
+
         // Store temp token for password reset (valid for 10 minutes)
         if ($type === 'RESET_PASSWORD') {
             // Delete existing record first
             DB::table('password_resets')->where('email', $email)->delete();
-            
+
             // Insert new record with all required fields
             DB::table('password_resets')->insert([
                 'email' => $email,
@@ -641,14 +619,14 @@ class AuthController extends Controller
                 'attempts' => 0
             ]);
         }
-        
+
         return response()->json([
             'success' => true,
             'message' => 'Xác thực thành công',
             'temp_token' => $tempToken
         ]);
     }
-    
+
     /**
      * Reset password with verified code
      */
@@ -660,44 +638,44 @@ class AuthController extends Controller
             'new_password' => 'required|string|min:6',
             'confirm_password' => 'required|same:new_password'
         ]);
-        
+
         if ($v->fails()) {
             return response()->json(['error' => 'VALIDATION', 'fields' => $v->errors()], 422);
         }
-        
+
         $email = $request->input('email');
         $tempToken = $request->input('temp_token');
         $newPassword = $request->input('new_password');
-        
+
         // Verify temp token
         $reset = DB::table('password_resets')
             ->where('email', $email)
             ->where('expires_at', '>', now())
             ->whereNull('used_at')
             ->first();
-        
+
         if (!$reset || !Hash::check($tempToken, $reset->token_hash)) {
             return response()->json([
                 'error' => 'INVALID_TOKEN',
                 'message' => 'Token không hợp lệ hoặc đã hết hạn'
             ], 400);
         }
-        
+
         // Update password
         $user = User::where('email', $email)->first();
         if (!$user) {
             return response()->json(['error' => 'USER_NOT_FOUND'], 404);
         }
-        
+
         $user->password = Hash::make($newPassword);
         $user->save();
-        
+
         // Delete reset token
         DB::table('password_resets')->where('email', $email)->delete();
-        
+
         // Revoke all existing sessions for security
         UserToken::where('user_id', $user->id)->update(['revoked_at' => now()]);
-        
+
         return response()->json([
             'success' => true,
             'message' => 'Mật khẩu đã được cập nhật thành công'
