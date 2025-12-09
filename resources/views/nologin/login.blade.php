@@ -284,7 +284,6 @@
           setErr('err_twofa_code', data.message || 'Mã xác thực không đúng');
           showToast(data.message || 'Mã xác thực không đúng', 'error');
         } else {
-          // Save tokens and redirect
           localStorage.setItem('access_token', data.access_token);
           localStorage.setItem('refresh_token', data.refresh_token);
           localStorage.setItem('session_id', data.session_id);
@@ -329,7 +328,6 @@
       }
     }
 
-    // Initialize Google Sign-In
     function initGoogleSignIn() {
       if (typeof google !== 'undefined' && google.accounts) {
         google.accounts.id.initialize({
@@ -341,7 +339,6 @@
       }
     }
 
-    // Redirect to Google OAuth (phương pháp chính - đáng tin cậy hơn)
     function redirectToGoogleOAuth() {
       const redirectUri = encodeURIComponent(window.location.origin + '/dang-nhap/google-callback');
       const scope = encodeURIComponent('email profile openid');
